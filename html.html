@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Gráfico de Dispersão</title>
+    <!-- Inclua as bibliotecas necessárias, como o Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Defina um tamanho máximo para o canvas */
+        canvas#scatterChart {
+            max-height: 400px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Gráfico de Dispersão</h1>
+
+    <label for="jsonInput">Insira o JSON:</label>
+    <textarea id="jsonInput" rows="10" cols="50"></textarea>
+    <button id="generateButton">Gerar Tabela e Gráfico</button>
+    
+    <!-- Adicione um botão para alternar a visualização da tabela dos eixos -->
+    <button id="toggleTableButton" disabled>Exibir Tabela dos Eixos</button>
+
+    <!-- Adicione um elemento para exibir o resumo das informações -->
+    <div id="summary">
+        <p>Status Geral (Inf. Do LOG): <span id="statusGeral"></span></p>
+        <p>HOTBOX: <span id="hotbox"></span></p>
+        <p>Absoluto (Low Limit): <span id="absolut"></span></p>
+        <p>Número de Eixos: <span id="axles"></span></p>
+        <p>Número de Alarmes: <span id="alarms"></span></p>
+    </div>
+    <table border="1">
+    <thead>
+        <tr>
+            <th>Análise</th>
+            <th>CH1</th>
+            <th>CH2</th>
+        </tr>
+    </thead>
+    <tbody id="analysisTable">
+        <tr>
+            <td>Temperatura Média</td>
+            <td id="avgTempCH1">-</td>
+            <td id="avgTempCH2">-</td>
+        </tr>
+        <tr>
+            <td>Desvio Padrão (DP)</td>
+            <td id="stdDevCH1">-</td>
+            <td id="stdDevCH2">-</td>
+        </tr>
+        <tr>
+            <td>Temperatura Crítica (N1)</td>
+            <td id="criticalTemp1CH1">-</td>
+            <td id="criticalTemp1CH2">-</td>
+        </tr>
+        <tr>
+            <td>Low Limit (N1)</td>
+            <td id="lowLimit1CH1">-</td>
+            <td id="lowLimit1CH2">-</td>
+        </tr>
+        <tr>
+            <td>Temperatura Crítica (N2)</td>
+            <td id="criticalTemp2CH1">-</td>
+            <td id="criticalTemp2CH2">-</td>
+        </tr>
+        <tr>
+            <td>Low Limit (N2)</td>
+            <td id="lowLimit2CH1">-</td>
+            <td id="lowLimit2CH2">-</td>
+        </tr>
+        <tr>
+            <td>Maior Temperatura</td>
+            <td id="maxTempCH1">-</td>
+            <td id="maxTempCH2">-</td>
+        </tr>
+        <tr>
+            <td>Nível SIGMA</td>
+            <td id="sigmaLevelCH1">-</td>
+            <td id="sigmaLevelCH2">-</td>
+        </tr>
+    </tbody>
+</table>
+
+
+    <table border="1" id="axlesTable" style="display: none;">
+        <thead>
+            <tr>
+                <th>Número do Veículo</th>
+                <th>Número do Eixo</th>
+                <th>CH1</th>
+                <th>CH2</th>
+            </tr>
+        </thead>
+        <tbody id="tableBody">
+        </tbody>
+    </table>
+
+    <canvas id="scatterChart"></canvas>
+
+    <script>
+        // Função para alternar a exibição da tabela dos eixos
+        document.getElementById("toggleTableButton").addEventListener("click", function () {
+            const axlesTable = document.getElementById("axlesTable");
+            const scatterChart = document.getElementById("scatterChart");
+
+            if (axlesTable.style.display === "none") {
+                axlesTable.style.display = "table";
+                scatterChart.style.display = "none";
+                this.textContent = "Ocultar Tabela dos Eixos";
+            } else {
+                axlesTable.style.display = "none";
+                scatterChart.style.display = "block";
+                this.textContent = "Exibir Tabela dos Eixos";
+            }
+        });
+
+        // Função para gerar a tabela e o gráfico com base no JSON inserido
+        document.getElementById("generateButton").addEventListener("click", function () {
+            const jsonInput = document.getElementById("jsonInput").value;
+            const toggleTableButton = document.getElementById("toggleTableButton");
+
+            try {
+                const jsonData = JSON.parse(jsonInput);
+
+                // Extrair informações do cabeçalho
+                const statusGeral = jsonData.fichaTrem.trem.infDoLOG;
+                const hotbox = jsonData.cabecalhoLeitura.state.reported.siteName;
+                const absolut = jsonData.cabecalhoLeitura.state.reported.absolut;
+                const axles = jsonData.cabecalhoLeitura.state.reported.axles;
+                const alarms = jsonData.cabecalhoLeitura.state.reported.Alarms;
+
+                // Preencher o resumo das informações
+                document.getElementById("statusGeral").textContent = statusGeral;
+                document.getElementById("hotbox").textContent = hotbox;
+                document.getElementById("absolut").textContent = absolut;
+                document.getElementById("axles").textContent = axles;
+                document.getElementById("alarms").textContent = alarms;
+
+                const listaVeiculos = jsonData.fichaTrem.trem.listaVeiculosFerroviarios.veiculosLidos;
+
+                // Configuração do gráfico de dispersão
+                const scatterData = {
+                    datasets: [{
+                        label: 'CH1',
+                        data: [],
+                        pointBackgroundColor: 'blue', // Cor dos pontos CH1
+                        showLine: false,
+                        pointRadius: 5
+                    },
+                    {
+                        label: 'CH2',
+                        data: [],
+                        pointBackgroundColor: 'red', // Cor dos pontos CH2
+                        showLine: false,
+                        pointRadius: 5
+                    }]
+                };
+
+                listaVeiculos.forEach((veiculo) => {
+                    const numeroVeiculo = veiculo.number;
+                    const listaAxles = veiculo.axle;
+
+                    listaAxles.forEach((axle, index) => {
+                        const numeroEixo = axle.axleNum;
+                        const ch1 = axle.ch1 !== 'N/A' ? parseFloat(axle.ch1) : 0;
+                        const ch2 = axle.ch2 !== 'N/A' ? parseFloat(axle.ch2) : 0;
+
+                        scatterData.datasets[0].data.push({ x: numeroEixo, y: ch1 });
+                        scatterData.datasets[1].data.push({ x: numeroEixo, y: ch2 });
+
+                        // Preencha a tabela com os valores
+                        const axlesTable = document.getElementById("axlesTable");
+                        const newRow = document.createElement("tr");
+                        newRow.innerHTML = `
+                            <td>${numeroVeiculo}</td>
+                            <td>${numeroEixo}</td>
+                            <td>${ch1}</td>
+                            <td>${ch2}</td>
+                        `;
+                        axlesTable.querySelector("tbody").appendChild(newRow);
+                    });
+                });
+
+                // Habilitar o botão para exibir a tabela dos eixos
+                toggleTableButton.disabled = false;
+
+                // Configuração do gráfico de dispersão
+                const ctx = document.getElementById('scatterChart').getContext('2d');
+                const scatterChart = new Chart(ctx, {
+                    type: 'scatter',
+                    data: scatterData,
+                    options: {
+                        scales: {
+                            x: {
+                                type: 'linear',
+                                position: 'bottom',
+                                title: {
+                                    display: true,
+                                    text: 'Número do Eixo'
+                                }
+                            },
+                            y: {
+                                type: 'linear',
+                                title: {
+                                    display: true,
+                                    text: 'Valor'
+                                }
+                            }
+                        },
+                        plugins: {
+                            tooltip: {
+                                callbacks: {
+                                    label: (context) => {
+                                        return `Veículo: ${listaVeiculos[context.datasetIndex].number}, Eixo: ${context.parsed.x}, Valor: ${context.parsed.y}`;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            } catch (error) {
+                alert("Erro ao analisar o JSON. Certifique-se de inserir um JSON válido.");
+            }
+        });
+    </script>
+</body>
+</html>
