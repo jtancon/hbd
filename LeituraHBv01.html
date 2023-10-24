@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Gráfico de Dispersão</title>
+    <!-- Inclua as bibliotecas necessárias, como o Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-annotation/0.5.7/chartjs-plugin-annotation.js"></script>
+
+
+    <style>
+        /* Defina um tamanho máximo para o canvas */
+        canvas#scatterChart {
+            max-height: 400px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Gráfico de Dispersão</h1>
+
+    <label for="jsonInput">Insira o JSON:</label>
+    <textarea id="jsonInput" rows="10" cols="50"></textarea>
+    <button id="generateButton">Gerar Tabela e Gráfico</button>
+    
+    <!-- Adicione um botão para alternar a visualização da tabela dos eixos -->
+    <button id="toggleTableButton" disabled>Exibir Tabela dos Eixos</button>
+
+    <!-- Adiciona um botão para copiar a tabela no formato json -->
+    <button id="copyTableToJsonButton">Copiar Tabela para JSON</button>
+
+    <!-- Adicione um elemento para exibir o resumo das informações -->
+    <div id="summary">
+        <p>Status Geral (Inf. Do LOG): <span id="statusGeral"></span></p>
+        <p>HOTBOX: <span id="hotbox"></span></p>
+        <p>Absoluto (Low Limit): <span id="absolut"></span></p>
+        <p>Número de Eixos: <span id="axles"></span></p>
+        <p>Número de Alarmes: <span id="alarms"></span></p>
+    </div>
+    
+    
+    <table border="2" id="dataTable">
+        <thead>
+            <tr>
+                <th>Análise</th>
+                <th>CH1</th>
+                <th>CH2</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Temperatura Média</td>
+                <td id="ch1Media"></td>
+                <td id="ch2Media"></td>
+            </tr>
+            <tr>
+                <td>Desvio Padrão (DP)</td>
+                <td id="ch1DesvioPadrao"></td>
+                <td id="ch2DesvioPadrao"></td>
+            </tr>
+            <tr>
+                <td>Temperatura Crítica (N1)</td>
+                <td id="ch1CriticaN1"></td>
+                <td id="ch2CriticaN1"></td>
+            </tr>
+            <tr>
+                <td>Low Limit (N1)</td>
+                <td id="ch1LowLimitN1"></td>
+                <td id="ch2LowLimitN1"></td>
+            </tr>
+            <tr>
+                <td>Temperatura Crítica (N2)</td>
+                <td id="ch1CriticaN2"></td>
+                <td id="ch2CriticaN2"></td>
+            </tr>
+            <tr>
+                <td>Low Limit (N2)</td>
+                <td id="ch1LowLimitN2"></td>
+                <td id="ch2LowLimitN2"></td>
+            </tr>
+            <tr>
+                <td>Maior Temperatura</td>
+                <td id="ch1MaiorTemp"></td>
+                <td id="ch2MaiorTemp"></td>
+            </tr>
+            <tr>
+                <td>Nível SIGMA</td>
+                <td id="ch1NivelSigma"></td>
+                <td id="ch2NivelSigma"></td>
+            </tr>
+        </tbody>
+    </table>
+    
+
+    <table border="1" id="axlesTable" style="display: none;">
+        <thead>
+            <tr>
+                <th>Número do Veículo</th>
+                <th>Número do Eixo</th>
+                <th>CH1</th>
+                <th>CH2</th>
+            </tr>
+        </thead>
+        <tbody id="tableBody">
+        </tbody>
+    </table>
+
+    <canvas id="scatterChart"></canvas>
+
+    <script>
+        // Função para alternar a exibição da tabela dos eixos
+        document.getElementById("toggleTableButton").addEventListener("click", function () {
+            const axlesTable = document.getElementById("axlesTable");
+            const scatterChart = document.getElementById("scatterChart");
+
+            if (axlesTable.style.display === "none") {
+                axlesTable.style.display = "table";
+                scatterChart.style.display = "none";
+                this.textContent = "Ocultar Tabela dos Eixos";
+            } else {
+                axlesTable.style.display = "none";
+                scatterChart.style.display = "block";
+                this.textContent = "Exibir Tabela dos Eixos";
+            }
+        });
+
+        // Função para gerar a tabela e o gráfico com base no JSON inserido
+        document.getElementById("generateButton").addEventListener("click", function () {
+            const jsonInput = document.getElementById("jsonInput").value;
+            const toggleTableButton = document.getElementById("toggleTableButton");
+
+            try {
+                const jsonData = JSON.parse(jsonInput);
+
+                // Extrair informações do cabeçalho
+                const statusGeral = jsonData.fichaTrem.trem.infDoLOG;
+                const hotbox = jsonData.cabecalhoLeitura.state.reported.siteName;
+                const absolut = jsonData.thing.attributes.absolut;
+                const axles = jsonData.cabecalhoLeitura.state.reported.axles;
+                const alarms = jsonData.cabecalhoLeitura.state.reported.Alarms;
+                const siteName = jsonData.cabecalhoLeitura.state.reported.siteName;
+
+                // Preencher o resumo das informações
+                document.getElementById("statusGeral").textContent = statusGeral;
+                document.getElementById("hotbox").textContent = hotbox;
+                document.getElementById("absolut").textContent = absolut;
+                document.getElementById("axles").textContent = axles;
+                document.getElementById("alarms").textContent = alarms;
+
+                const listaVeiculos = jsonData.fichaTrem.trem.listaVeiculosFerroviarios.veiculosLidos;
+
+                // Configuração do gráfico de dispersão
+                const scatterData = {
+                    datasets: [{
+                        label: 'CH1',
+                        data: [],
+                        pointBackgroundColor: 'blue', // Cor dos pontos CH1
+                        showLine: false,
+                        pointRadius: 5
+                    },
+                    {
+                        label: 'CH2',
+                        data: [],
+                        pointBackgroundColor: 'red', // Cor dos pontos CH2
+                        showLine: false,
+                        pointRadius: 5
+                    }]
+                };
+
+                listaVeiculos.forEach((veiculo) => {
+                    const numeroVeiculo = veiculo.number;
+                    const listaAxles = veiculo.axle;
+
+                    listaAxles.forEach((axle, index) => {
+                        const numeroEixo = axle.axleNum;
+                        const ch1 = axle.ch1 !== 'N/A' ? parseFloat(axle.ch1) : 0;
+                        const ch2 = axle.ch2 !== 'N/A' ? parseFloat(axle.ch2) : 0;
+
+                        scatterData.datasets[0].data.push({ x: numeroEixo, y: ch1 });
+                        scatterData.datasets[1].data.push({ x: numeroEixo, y: ch2 });
+                        
+
+                        // Preencha a tabela com os valores
+                        const axlesTable = document.getElementById("axlesTable");
+                        const newRow = document.createElement("tr");
+                        newRow.innerHTML = `
+                            <td>${numeroVeiculo}</td>
+                            <td>${numeroEixo}</td>
+                            <td>${ch1}</td>
+                            <td>${ch2}</td>
+                        `;
+                        axlesTable.querySelector("tbody").appendChild(newRow);
+                    });
+                });
+
+                // Habilitar o botão para exibir a tabela dos eixos
+                toggleTableButton.disabled = false;
+
+
+                 // Preencher a tabela de análise
+                const dataTable = document.getElementById("dataTable");
+                const ch1MediaCell = document.getElementById("ch1Media");
+                const ch2MediaCell = document.getElementById("ch2Media");
+                const ch1DesvioPadraoCell = document.getElementById("ch1DesvioPadrao");
+                const ch2DesvioPadraoCell = document.getElementById("ch2DesvioPadrao");
+                const ch1CriticaN1Cell = document.getElementById("ch1CriticaN1");
+                const ch2CriticaN1Cell = document.getElementById("ch2CriticaN1");
+                const ch1LowLimitN1Cell = document.getElementById("ch1LowLimitN1");
+                const ch2LowLimitN1Cell = document.getElementById("ch2LowLimitN1");
+                const ch1CriticaN2Cell = document.getElementById("ch1CriticaN2");
+                const ch2CriticaN2Cell = document.getElementById("ch2CriticaN2");
+                const ch1LowLimitN2Cell = document.getElementById("ch1LowLimitN2");
+                const ch2LowLimitN2Cell = document.getElementById("ch2LowLimitN2");
+                const ch1MaiorTempCell = document.getElementById("ch1MaiorTemp");
+                const ch2MaiorTempCell = document.getElementById("ch2MaiorTemp");
+                const ch1NivelSigmaCell = document.getElementById("ch1NivelSigma");
+                const ch2NivelSigmaCell = document.getElementById("ch2NivelSigma");
+
+                // Função para calcular a média e desvio padrão
+                function calculateStats(data) {
+                    const dataFiltered = data.filter(val => !isNaN(val));
+                    const mean = dataFiltered.length > 0 ? dataFiltered.reduce((acc, val) => acc + val, 0) / dataFiltered.length : 0;
+                    const standardDeviation = calculateStandardDeviation(dataFiltered, mean);
+                    return { mean, standardDeviation };
+                }
+
+                // Função para calcular o desvio padrão
+                function calculateStandardDeviation(data, mean) {
+                    const squaredDifferences = data.map(val => Math.pow(val - mean, 2));
+                    const averageOfSquaredDifferences = squaredDifferences.reduce((acc, val) => acc + val, 0) / squaredDifferences.length;
+                    const standardDeviation = Math.sqrt(averageOfSquaredDifferences);
+                    return isNaN(standardDeviation) ? 0 : standardDeviation;
+                }
+
+                // Função para calcular N1 e N2
+                function calculateN1N2(hotbox, mean, standardDeviation) {
+                    const lowLimitN1 = (hotbox === "LAR" || hotbox === "LPJ" || hotbox === "LRF" || hotbox === "LUV" || hotbox === "LVZ" || hotbox === "NCY") ? 33 : 35;
+                    const criticalN1 = (mean + 6 * standardDeviation > lowLimitN1) ? mean + 6 * standardDeviation : lowLimitN1;
+                    const lowLimitN2 = (hotbox === "LAR" || hotbox === "LPJ" || hotbox === "LRF" || hotbox === "LUV" || hotbox === "LVZ" || hotbox === "NCY") ? 33 : 38;
+                    const criticalN2 = (mean + 7 * standardDeviation > lowLimitN2) ? mean + 7 * standardDeviation : lowLimitN2;
+                    return { lowLimitN1, criticalN1, lowLimitN2, criticalN2 };
+                }
+
+                // Função para calcular o Nível SIGMA
+                function calculateSigmaLevel(maiorTemp, mean, standardDeviation) {
+                    const sigmaLevel = (parseFloat(maiorTemp) - mean) / standardDeviation;
+                    return isNaN(sigmaLevel) ? 0 : sigmaLevel;
+                }
+
+                // Agora, você pode chamar essas funções e atualizar os elementos da tabela:
+                const ch1Data = scatterData.datasets[0].data.map(point => (typeof point.y === 'number') ? parseFloat(point.y) : 0);
+                const ch2Data = scatterData.datasets[1].data.map(point => (typeof point.y === 'number') ? parseFloat(point.y) : 0);
+
+                const { mean: ch1Media, standardDeviation: ch1DesvioPadrao } = calculateStats(ch1Data);
+                ch1MediaCell.textContent = ch1Media.toFixed(2);
+                ch1DesvioPadraoCell.textContent = ch1DesvioPadrao.toFixed(2);
+
+                const { mean: ch2Media, standardDeviation: ch2DesvioPadrao } = calculateStats(ch2Data);
+                ch2MediaCell.textContent = ch2Media.toFixed(2);
+                ch2DesvioPadraoCell.textContent = ch2DesvioPadrao.toFixed(2);
+
+                const { lowLimitN1: ch1LowLimitN1, criticalN1: ch1CriticaN1, lowLimitN2: ch1LowLimitN2, criticalN2: ch1CriticaN2 } = calculateN1N2(hotbox, ch1Media, ch1DesvioPadrao);
+                ch1LowLimitN1Cell.textContent = ch1LowLimitN1.toFixed(2);
+                ch1CriticaN1Cell.textContent = ch1CriticaN1.toFixed(2);
+                ch1LowLimitN2Cell.textContent = ch1LowLimitN2.toFixed(2);
+                ch1CriticaN2Cell.textContent = ch1CriticaN2.toFixed(2);
+
+                const { lowLimitN1: ch2LowLimitN1, criticalN1: ch2CriticaN1, lowLimitN2: ch2LowLimitN2, criticalN2: ch2CriticaN2 } = calculateN1N2(hotbox, ch2Media, ch2DesvioPadrao);
+                ch2LowLimitN1Cell.textContent = ch2LowLimitN1.toFixed(2);
+                ch2CriticaN1Cell.textContent = ch2CriticaN1.toFixed(2);
+                ch2LowLimitN2Cell.textContent = ch2LowLimitN2.toFixed(2);
+                ch2CriticaN2Cell.textContent = ch2CriticaN2.toFixed(2);
+
+                // Função para calcular a "Maior Temperatura"
+                function calculateMaxTemperature(data) {
+                    const dataFiltered = data.filter(val => !isNaN(val));
+                    return dataFiltered.length > 0 ? Math.max(...dataFiltered) : 0;
+                }
+
+                // Função para calcular o Nível SIGMA
+                function calculateSigmaLevel(maiorTemp, mean, standardDeviation) {
+                    if (!isNaN(maiorTemp) && !isNaN(mean) && !isNaN(standardDeviation)) {
+                        return (maiorTemp - mean) / standardDeviation;
+                    }
+                    return 0;
+                }
+
+                // Atualização das partes do código que chamam essas funções
+                const ch1MaiorTemp = calculateMaxTemperature(ch1Data);
+                ch1MaiorTempCell.textContent = ch1MaiorTemp.toFixed(2);
+
+                const ch2MaiorTemp = calculateMaxTemperature(ch2Data);
+                ch2MaiorTempCell.textContent = ch2MaiorTemp.toFixed(2);
+
+                const ch1NivelSigma = calculateSigmaLevel(ch1MaiorTemp, ch1Media, ch1DesvioPadrao);
+                ch1NivelSigmaCell.textContent = ch1NivelSigma.toFixed(2);
+
+                const ch2NivelSigma = calculateSigmaLevel(ch2MaiorTemp, ch2Media, ch2DesvioPadrao);
+                ch2NivelSigmaCell.textContent = ch2NivelSigma.toFixed(2);
+
+                
+                // Configuração do gráfico de dispersão
+                
+                // Configuração do gráfico de dispersão
+                const ctx = document.getElementById('scatterChart').getContext('2d');
+                const scatterChart = new Chart(ctx, {
+                    type: 'scatter',
+                    data: scatterData,
+                    options: {
+                        scales: {
+                            x: {
+                                type: 'linear',
+                                position: 'bottom',
+                                title: {
+                                    display: true,
+                                    text: 'Número do Eixo'
+                                }
+                            },
+                            y: {
+                                type: 'linear',
+                                max: parseFloat(absolut)+10,
+                                title: {
+                                    display: true,
+                                    text: 'Valor'
+                                }
+                            }
+                        },
+                        plugins: {
+                            tooltip: {
+                                callbacks: {
+                                    label: (context) => {
+                                        return `CH ${listaVeiculos[context.datasetIndex].number}, Eixo: ${context.parsed.x}, Temp: ${context.parsed.y}ºC`;
+                                    }
+                                }
+                            },
+                            annotation: {
+                                annotations: [
+                                    {
+                                        type: 'line',
+                                        mode: 'horizontal',
+                                        scaleID: 'y',
+                                        value: parseFloat(absolut), // Valor da linha vermelha
+                                        borderColor: 'red',
+                                        borderWidth: 2,
+                                        label: {
+                                            content: 'Absolut',
+                                            enabled: true,
+                                        },
+                                        onClick: function(e) {
+                                            // Ação ao clicar na linha de anotação
+                                            console.log('Absolut Clicked');
+                                        }
+                                    },
+                                    {
+                                        type: 'line',
+                                        mode: 'horizontal',
+                                        scaleID: 'y',
+                                        value: parseFloat(ch1CriticaN1), // Valor da linha amarela (CH1 Critica N1)
+                                        borderColor: 'yellow',
+                                        borderWidth: 2,
+                                        label: {
+                                            content: 'CH1 Critica N1',
+                                            enabled: true,
+                                        },
+                                        onClick: function(e) {
+                                            // Ação ao clicar na linha de anotação
+                                            console.log('CH1 Critica N1 Clicked');
+                                        }
+                                    },
+                                    {
+                                        type: 'line',
+                                        mode: 'horizontal',
+                                        scaleID: 'y',
+                                        value: parseFloat(ch2CriticaN2), // Valor da linha laranja (CH2 Critica N2)
+                                        borderColor: 'orange',
+                                        borderWidth: 2,
+                                        label: {
+                                            content: 'CH2 Critica N2',
+                                            enabled: true,
+                                        },
+                                        onClick: function(e) {
+                                            // Ação ao clicar na linha de anotação
+                                            console.log('CH2 Critica N2 Clicked');
+                                        }
+                                    }
+                                ],
+                            },
+                        },
+                    }
+                });
+
+
+                // Função para adicionar linhas de anotação
+                function addAnnotation(chart, xAxisValue, color, label) {
+                    chart.options.plugins.annotation.annotations.push({
+                        type: 'line',
+                        mode: 'horizontal',
+                        scaleID: 'y',
+                        value: xAxisValue,
+                        borderColor: color,
+                        borderWidth: 2,
+                        label: {
+                            content: label,
+                            enabled: true
+                        }
+                    });
+                }
+
+                // Adicionar linhas de anotação
+                addAnnotation(scatterChart, parseFloat(ch1CriticaN1), 'yellow', 'CH1 Critica N1');
+                addAnnotation(scatterChart, parseFloat(ch2CriticaN1), 'orange', 'CH2 Critica N1');
+                addAnnotation(scatterChart, parseFloat(absolut), 'red', 'Absoluto');
+
+
+                // Atualizar o gráfico
+                scatterChart.update();
+
+                // Função para copiar a tabela de eixos e os dados tratados para JSON
+                function copyDataAndAxlesTableToJson() {
+                    // Criar o objeto com os dados tratados
+                    const data = {
+                        "Análise": "Valores Analisados",
+                        "Temperatura Média (CH1)": parseFloat(document.getElementById("ch1Media").textContent),
+                        "Temperatura Média (CH2)": parseFloat(document.getElementById("ch2Media").textContent),
+                        "Desvio Padrão (DP) (CH1)": parseFloat(document.getElementById("ch1DesvioPadrao").textContent),
+                        "Desvio Padrão (DP) (CH2)": parseFloat(document.getElementById("ch2DesvioPadrao").textContent),
+                        "Temperatura Crítica (N1) (CH1)": parseFloat(document.getElementById("ch1CriticaN1").textContent),
+                        "Temperatura Crítica (N1) (CH2)": parseFloat(document.getElementById("ch2CriticaN1").textContent),
+                        "Low Limit (N1) (CH1)": parseFloat(document.getElementById("ch1LowLimitN1").textContent),
+                        "Low Limit (N1) (CH2)": parseFloat(document.getElementById("ch2LowLimitN1").textContent),
+                        "Temperatura Crítica (N2) (CH1)": parseFloat(document.getElementById("ch1CriticaN2").textContent),
+                        "Temperatura Crítica (N2) (CH2)": parseFloat(document.getElementById("ch2CriticaN2").textContent),
+                        "Low Limit (N2) (CH1)": parseFloat(document.getElementById("ch1LowLimitN2").textContent),
+                        "Low Limit (N2) (CH2)": parseFloat(document.getElementById("ch2LowLimitN2").textContent),
+                        "Maior Temperatura (CH1)": parseFloat(document.getElementById("ch1MaiorTemp").textContent),
+                        "Maior Temperatura (CH2)": parseFloat(document.getElementById("ch2MaiorTemp").textContent),
+                        "Nível SIGMA (CH1)": parseFloat(document.getElementById("ch1NivelSigma").textContent),
+                        "Nível SIGMA (CH2)": parseFloat(document.getElementById("ch2NivelSigma").textContent)
+                    };
+
+                    // Converter o objeto para JSON
+                    const jsonData = JSON.stringify(data, null, 2);
+
+                    // Criar a tabela de eixos a partir dos dados na tabela
+                    const axlesTable = document.getElementById("axlesTable");
+                    const axleData = [];
+                    for (let i = 1; i < axlesTable.rows.length; i++) {
+                        const row = axlesTable.rows[i];
+                        const numeroVeiculo = row.cells[0].textContent;
+                        const numeroEixo = row.cells[1].textContent;
+                        const ch1 = parseFloat(row.cells[2].textContent);
+                        const ch2 = parseFloat(row.cells[3].textContent);
+                        axleData.push({ "Número do Veículo": numeroVeiculo, "Número do Eixo": numeroEixo, "CH1": ch1, "CH2": ch2 });
+                    }
+
+                    // Converter a tabela de eixos para JSON
+                    const axleJsonData = JSON.stringify(axleData, null, 2);
+
+                    // Copiar os dados tratados e a tabela de eixos para a área de transferência
+                    const combinedJsonData = `{
+                        "Dados Tratados": ${jsonData},
+                        "Tabela de Eixos": ${axleJsonData}
+                    }`;
+                    
+                    // Copiar o JSON combinado para a área de transferência
+                    const copyText = document.createElement("textarea");
+                    copyText.value = combinedJsonData;
+                    document.body.appendChild(copyText);
+                    copyText.select();
+                    document.execCommand("copy");
+                    document.body.removeChild(copyText);
+
+                    // Exibir uma mensagem de sucesso
+                    alert("Dados copiados para a área de transferência.");
+                }
+
+                // Obtenha o botão "Copiar Tabela para JSON" pelo ID
+                const copyTableToJsonButton = document.getElementById("copyTableToJsonButton");
+
+                // Associe a função "copyDataAndAxlesTableToJson" ao evento de clique do botão
+                copyTableToJsonButton.addEventListener("click", copyDataAndAxlesTableToJson);
+
+                
+                //fim do script
+            } catch (error) {
+                alert("Erro ao analisar o JSON. Certifique-se de inserir um JSON válido.");
+            }
+        });
+    </script>
+</body>
+</html>
