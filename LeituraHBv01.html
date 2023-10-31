@@ -2,7 +2,7 @@
 <html>
 <head>
     <title>Gráfico de Dispersão</title>
-    <!-- Inclua as bibliotecas necessárias, como o Chart.js -->
+    <!-- Bibliotecas -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-annotation/0.5.7/chartjs-plugin-annotation.js"></script>
@@ -22,13 +22,13 @@
     <textarea id="jsonInput" rows="10" cols="50"></textarea>
     <button id="generateButton">Gerar Tabela e Gráfico</button>
     
-    <!-- Adicione um botão para alternar a visualização da tabela dos eixos -->
+    <!--botão para alternar a visualização da tabela dos eixos -->
     <button id="toggleTableButton" disabled>Exibir Tabela dos Eixos</button>
 
-    <!-- Adiciona um botão para copiar a tabela no formato json -->
+    <!-- botão para copiar a tabela no formato json -->
     <button id="copyTableToJsonButton">Copiar Tabela para JSON</button>
 
-    <!-- Adicione um elemento para exibir o resumo das informações -->
+    <!-- elemento para exibir o resumo das informações -->
     <div id="summary">
         <p>Status Geral (Inf. Do LOG): <span id="statusGeral"></span></p>
         <p>HOTBOX: <span id="hotbox"></span></p>
@@ -129,6 +129,7 @@
             const toggleTableButton = document.getElementById("toggleTableButton");
 
             try {
+                //Trata o JSON
                 const jsonData = JSON.parse(jsonInput);
 
                 // Extrair informações do cabeçalho
