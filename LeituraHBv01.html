@@ -3,6 +3,8 @@
 <head>
     <title>Gráfico de Dispersão</title>
     <!-- Bibliotecas -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-annotation/0.5.7/chartjs-plugin-annotation.js"></script>
@@ -18,9 +20,11 @@
 <body>
     <h1>Gráfico de Dispersão</h1>
 
-    <label for="jsonInput">Insira o JSON:</label>
+    <!-- elemento para inserir o JSON -->
+    <div id="div_input">
     <textarea id="jsonInput" rows="10" cols="50"></textarea>
     <button id="generateButton">Gerar Tabela e Gráfico</button>
+    </div>
     
     <!--botão para alternar a visualização da tabela dos eixos -->
     <button id="toggleTableButton" disabled>Exibir Tabela dos Eixos</button>
@@ -415,7 +419,7 @@
                 // Atualizar o gráfico
                 scatterChart.update();
 
-                // Função para copiar a tabela de eixos e os dados tratados para JSON
+                // Inicio da função para copiar a tabela de eixos e os dados tratados para JSON
                 function copyDataAndAxlesTableToJson() {
                     // Criar o objeto com os dados tratados
                     const data = {
@@ -479,7 +483,8 @@
 
                 // Associe a função "copyDataAndAxlesTableToJson" ao evento de clique do botão
                 copyTableToJsonButton.addEventListener("click", copyDataAndAxlesTableToJson);
-
+                
+                //fim do script de copiar dados para o clipboard
                 
                 //fim do script
             } catch (error) {

@@ -2,7 +2,9 @@
 <html>
 <head>
     <title>Gráfico de Dispersão</title>
-    <!-- Inclua as bibliotecas necessárias, como o Chart.js -->
+    <!-- Bibliotecas -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-annotation/0.5.7/chartjs-plugin-annotation.js"></script>
@@ -22,10 +24,13 @@
     <textarea id="jsonInput" rows="10" cols="50"></textarea>
     <button id="generateButton">Gerar Tabela e Gráfico</button>
     
-    <!-- Adicione um botão para alternar a visualização da tabela dos eixos -->
+    <!--botão para alternar a visualização da tabela dos eixos -->
     <button id="toggleTableButton" disabled>Exibir Tabela dos Eixos</button>
 
-    <!-- Adicione um elemento para exibir o resumo das informações -->
+    <!-- botão para copiar a tabela no formato json -->
+    <button id="copyTableToJsonButton">Copiar Tabela para JSON</button>
+
+    <!-- elemento para exibir o resumo das informações -->
     <div id="summary">
         <p>Status Geral (Inf. Do LOG): <span id="statusGeral"></span></p>
         <p>HOTBOX: <span id="hotbox"></span></p>
@@ -103,6 +108,8 @@
 
     <canvas id="scatterChart"></canvas>
 
+
+
     <script>
         // Função para alternar a exibição da tabela dos eixos
         document.getElementById("toggleTableButton").addEventListener("click", function () {
@@ -126,6 +133,7 @@
             const toggleTableButton = document.getElementById("toggleTableButton");
 
             try {
+                //Trata o JSON
                 const jsonData = JSON.parse(jsonInput);
 
                 // Extrair informações do cabeçalho
@@ -403,15 +411,82 @@
                 }
 
                 // Adicionar linhas de anotação
-                addAnnotation(scatterChart, parseFloat(ch1CriticaN1Cell), 'yellow', 'CH1 Critica N1');
-                addAnnotation(scatterChart, parseFloat(ch2CriticaN1Cell), 'orange', 'CH2 Critica N2');
-                addAnnotation(scatterChart, parseFloat(absolut), 'red', 'Absolut');
+                addAnnotation(scatterChart, parseFloat(ch1CriticaN1), 'yellow', 'CH1 Critica N1');
+                addAnnotation(scatterChart, parseFloat(ch2CriticaN1), 'orange', 'CH2 Critica N1');
+                addAnnotation(scatterChart, parseFloat(absolut), 'red', 'Absoluto');
 
 
                 // Atualizar o gráfico
                 scatterChart.update();
-                
 
+                // Inicio da função para copiar a tabela de eixos e os dados tratados para JSON
+                function copyDataAndAxlesTableToJson() {
+                    // Criar o objeto com os dados tratados
+                    const data = {
+                        "Análise": "Valores Analisados",
+                        "Temperatura Média (CH1)": parseFloat(document.getElementById("ch1Media").textContent),
+                        "Temperatura Média (CH2)": parseFloat(document.getElementById("ch2Media").textContent),
+                        "Desvio Padrão (DP) (CH1)": parseFloat(document.getElementById("ch1DesvioPadrao").textContent),
+                        "Desvio Padrão (DP) (CH2)": parseFloat(document.getElementById("ch2DesvioPadrao").textContent),
+                        "Temperatura Crítica (N1) (CH1)": parseFloat(document.getElementById("ch1CriticaN1").textContent),
+                        "Temperatura Crítica (N1) (CH2)": parseFloat(document.getElementById("ch2CriticaN1").textContent),
+                        "Low Limit (N1) (CH1)": parseFloat(document.getElementById("ch1LowLimitN1").textContent),
+                        "Low Limit (N1) (CH2)": parseFloat(document.getElementById("ch2LowLimitN1").textContent),
+                        "Temperatura Crítica (N2) (CH1)": parseFloat(document.getElementById("ch1CriticaN2").textContent),
+                        "Temperatura Crítica (N2) (CH2)": parseFloat(document.getElementById("ch2CriticaN2").textContent),
+                        "Low Limit (N2) (CH1)": parseFloat(document.getElementById("ch1LowLimitN2").textContent),
+                        "Low Limit (N2) (CH2)": parseFloat(document.getElementById("ch2LowLimitN2").textContent),
+                        "Maior Temperatura (CH1)": parseFloat(document.getElementById("ch1MaiorTemp").textContent),
+                        "Maior Temperatura (CH2)": parseFloat(document.getElementById("ch2MaiorTemp").textContent),
+                        "Nível SIGMA (CH1)": parseFloat(document.getElementById("ch1NivelSigma").textContent),
+                        "Nível SIGMA (CH2)": parseFloat(document.getElementById("ch2NivelSigma").textContent)
+                    };
+
+                    // Converter o objeto para JSON
+                    const jsonData = JSON.stringify(data, null, 2);
+
+                    // Criar a tabela de eixos a partir dos dados na tabela
+                    const axlesTable = document.getElementById("axlesTable");
+                    const axleData = [];
+                    for (let i = 1; i < axlesTable.rows.length; i++) {
+                        const row = axlesTable.rows[i];
+                        const numeroVeiculo = row.cells[0].textContent;
+                        const numeroEixo = row.cells[1].textContent;
+                        const ch1 = parseFloat(row.cells[2].textContent);
+                        const ch2 = parseFloat(row.cells[3].textContent);
+                        axleData.push({ "Número do Veículo": numeroVeiculo, "Número do Eixo": numeroEixo, "CH1": ch1, "CH2": ch2 });
+                    }
+
+                    // Converter a tabela de eixos para JSON
+                    const axleJsonData = JSON.stringify(axleData, null, 2);
+
+                    // Copiar os dados tratados e a tabela de eixos para a área de transferência
+                    const combinedJsonData = `{
+                        "Dados Tratados": ${jsonData},
+                        "Tabela de Eixos": ${axleJsonData}
+                    }`;
+                    
+                    // Copiar o JSON combinado para a área de transferência
+                    const copyText = document.createElement("textarea");
+                    copyText.value = combinedJsonData;
+                    document.body.appendChild(copyText);
+                    copyText.select();
+                    document.execCommand("copy");
+                    document.body.removeChild(copyText);
+
+                    // Exibir uma mensagem de sucesso
+                    alert("Dados copiados para a área de transferência.");
+                }
+
+                // Obtenha o botão "Copiar Tabela para JSON" pelo ID
+                const copyTableToJsonButton = document.getElementById("copyTableToJsonButton");
+
+                // Associe a função "copyDataAndAxlesTableToJson" ao evento de clique do botão
+                copyTableToJsonButton.addEventListener("click", copyDataAndAxlesTableToJson);
+                
+                //fim do script de copiar dados para o clipboard
+                
+                //fim do script
             } catch (error) {
                 alert("Erro ao analisar o JSON. Certifique-se de inserir um JSON válido.");
             }
