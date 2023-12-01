@@ -3,14 +3,25 @@ function getParsedFileFromURL() {
     const parsedFile = hash.substring(1); // remove o caractere '#'
     return parsedFile;
 }
+
 console.log(getParsedFileFromURL());
 const parsedFile = getParsedFileFromURL();
 
-
 document.addEventListener('DOMContentLoaded', (event) => {
-    fetchElasticsearchData().then(data => {
-        loadDadosHB(data);
-    });
+    const url = 'https://vpc-rumo-elastic-bnuz2l5d67om2pql6wzb2bz4oy.us-east-1.es.amazonaws.com/';
+
+    fetch(url, { method: 'HEAD' })
+        .then(response => {
+            if (response.ok) {
+                return fetchElasticsearchData();
+            } else {
+                throw new Error('Não foi possível acessar o site');
+            }
+        })
+        .then(data => {
+            loadDadosHB(data);
+        })
+        .catch(error => console.error('Erro:', error));
 });
 
 function fetchElasticsearchData() {
@@ -42,3 +53,10 @@ function loadDadosHB(data) {
             console.error('Erro ao carregar dadoshb.js:', error);
         });
 }
+
+
+document.addEventListener('DOMContentLoaded', (event) => {
+
+    let footerDiv = document.getElementById('dataFooter');
+    footerDiv.textContent = "Abrindo log: " + parsedFile;
+});
