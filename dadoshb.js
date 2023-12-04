@@ -1,8 +1,12 @@
-import { Chart } from 'chart.js';
-
 export function displayData(extractedData) {
     const container = document.getElementById('dataContainer');
-    let pontos = [];
+    let pontosCh1 = [];
+    let pontosCh2 = [];
+
+    if (!Array.isArray(extractedData)) {
+        console.error('extractedData deve ser um array');
+        return;
+    }
 
     extractedData.forEach(item => {
         const div = document.createElement('div');
@@ -12,17 +16,30 @@ export function displayData(extractedData) {
         div.textContent = `Arrival: ${arrival}, Site Name: ${sitename}, Absoluto: ${absoluto}`;
         container.appendChild(div);
 
-        const number = item.number;
-        item.axle.forEach(axle => {
-            pontos.push({
-                x: axle.axleNum,
-                y: axle.ch1,
-                veiculo: number
-            });
-            pontos.push({
-                x: axle.axleNum,
-                y: axle.ch2,
-                veiculo: number
+        if (!Array.isArray(item.veiculosLidos)) {
+            console.error('item.veiculosLidos deve ser um array');
+            return;
+        }
+
+        item.veiculosLidos.forEach(veiculo => {
+            const number = veiculo.number;
+
+            if (!Array.isArray(veiculo.axle)) {
+                console.error('veiculo.axle deve ser um array');
+                return;
+            }
+
+            veiculo.axle.forEach(axle => {
+                pontosCh1.push({
+                    x: axle.axleNum,
+                    y: axle.ch1,
+                    veiculo: number
+                });
+                pontosCh2.push({
+                    x: axle.axleNum,
+                    y: axle.ch2,
+                    veiculo: number
+                });
             });
         });
     });
@@ -33,12 +50,20 @@ export function displayData(extractedData) {
         type: 'scatter',
         data: {
             datasets: [{
-                label: 'Veículos Lidos',
-                data: pontos,
-                pointBackgroundColor: 'rgba(75, 192, 192, 0.6)',
-                pointBorderColor: 'rgba(75, 192, 192, 1)',
-                pointHoverBackgroundColor: 'rgba(75, 192, 192, 1)',
-                pointHoverBorderColor: 'rgba(220, 220, 220, 1)'
+                label: 'Veículos Lidos - ch1',
+                data: pontosCh1,
+                pointBackgroundColor: 'blue',
+                pointBorderColor: 'blue',
+                pointHoverBackgroundColor: 'blue',
+                pointHoverBorderColor: 'blue'
+            },
+            {
+                label: 'Veículos Lidos - ch2',
+                data: pontosCh2,
+                pointBackgroundColor: 'red',
+                pointBorderColor: 'red',
+                pointHoverBackgroundColor: 'red',
+                pointHoverBorderColor: 'red'
             }]
         },
         options: {
@@ -53,6 +78,20 @@ export function displayData(extractedData) {
                     title: {
                         display: true,
                         text: 'Temperatura'
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    position: 'bottom'
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const ch1Value = pontosCh1.find(p => p.x === context.raw.x)?.y;
+                            const ch2Value = pontosCh2.find(p => p.x === context.raw.x)?.y;
+                            return `axleNum: ${context.raw.x}, ch1: ${ch1Value}, ch2: ${ch2Value}`;
+                        }
                     }
                 }
             }
