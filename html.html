@@ -1,31 +1,28 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Analises HB</title>
+    <title>Teste de Fetch</title>
 </head>
 <body>
-    <input type="text" id="url" placeholder="Digite a URL aqui">
-    <button onclick="fetchData()">Buscar dados</button>
     <div id="data"></div>
 
     <script>
-        //função para buscar dados
-        function fetchData() {
+        window.onload = function() {
+            const url = 'http://10.30.41.38:7000/device/data/hotboxMicroHBD/ZED/202312/04/?key=device/data/hotboxMicroHBD/ZED/202312/04/ZED_20231204_030400_105N';
             const username = 'arvore';
             const password = 'n1tur3z1Verde45$%';
-            let url = document.getElementById('url').value;
-    
-            // Inclui o nome de usuário e a senha na URL
-            url = url.replace('https://', `https://${username}:${password}@`);
-    
-            fetch(url)
+            const headers = new Headers({
+                'Authorization': 'Basic ' + btoa(username + ":" + password),
+            });
+
+            fetch(url, {
+                mode: 'no-cors', // Adicione esta linha
+                headers: headers
+            })
                 .then(response => response.json())
                 .then(data => {
-                    // Agora 'data' é um objeto JavaScript que você pode manipular
                     const p = document.createElement('p');
-                    p.textContent = JSON.stringify(data, null, 2); // Converte o objeto JSON em uma string formatada
+                    p.textContent = JSON.stringify(data, null, 2);
                     document.getElementById('data').appendChild(p);
                 })
                 .catch(error => console.error('Erro:', error));

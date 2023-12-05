@@ -44,7 +44,6 @@ function fetchElasticsearchData() {
         });
 }
 
-
 function loadDadosHB(data) {
     import('./dadoshb.js')
         .then(module => {

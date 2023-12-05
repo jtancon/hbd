@@ -17,6 +17,12 @@ h1 {
     font-family: Verdana, sans-serif;
 }
 
+h2 {
+    color: #333;
+    font-size: 14px;
+    font-family: Verdana, sans-serif;
+}
+
 footer {
     margin-top: auto;
     text-align: center;
@@ -24,21 +30,57 @@ footer {
     font-size: 9px;
 }
 
-#dataContainer {
-    padding: 20px;
-    background-color: #f9f9f9;
-    border: 1px solid #ccc;
-    margin: 10px 0;
-}
-
 #meuGrafico {
     max-height: 400px;
-    width: 98%;
+    width: 100%;
     margin: 0 auto;
-    box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.75);
     border-radius: 5px;
+    border: 1px solid #ccc;
+    margin-top: auto; /* Move o gráfico para a parte inferior */
+}
+
+#dataContainer {
+    display: flex;
+    flex-direction: column-reverse;
+    padding: 5px;
+}
+
+#divStatusGeral {
+    width: 400px;
+    text-align: left;
+    background-color: #f9f9f9;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    margin-right: 10px; 
+    margin-bottom: 10px; 
 }
 
 .linha {
     margin-bottom: -5px; /* Ajuste este valor para o espaçamento desejado */
+}
+
+.tabela-analise {
+    background-color: #f9f9f9;
+    border-collapse: collapse;
+    border-radius: 5px;
+    overflow: hidden;
+    margin-bottom: 10px; 
+}
+
+.tabela-analise th {
+    background-color: #003865;
+    color: white;
+    font-weight: bold;
+    padding: 10px;
+    border: 1px solid #ccc;
+}
+
+.tabela-analise td {
+    padding: 5px;
+    border: 1px solid #ccc;
+}
+
+.tabela-analise td:nth-child(5), .tabela-analise td:nth-child(6) {
+    background-color: white;
 }
