@@ -44,6 +44,7 @@ function fetchElasticsearchData() {
         });
 }
 
+
 function loadDadosHB(data) {
     import('./dadoshb.js')
         .then(module => {
@@ -53,7 +54,6 @@ function loadDadosHB(data) {
             console.error('Erro ao carregar dadoshb.js:', error);
         });
 }
-
 
 document.addEventListener('DOMContentLoaded', (event) => {
 
