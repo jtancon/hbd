@@ -114,10 +114,12 @@ export function displayData(extractedData) {
         //desvio padrao ch2
         let somaDesvioCh2 = tbVeiculoslidosResumo.reduce((soma, linha) => linha.ch2 !== "n/a" ? soma + Math.pow(linha.ch2 - mediaCh2, 2) : soma, 0);
         let desvioCh2 = parseFloat(Math.sqrt(somaDesvioCh2 / countCh2).toFixed(2));
+        
         //temperatura critica n1 e low limit n1
         let { lowLimitN1: ch1LowLimitN1, criticalN1: ch1CriticaN1, lowLimitN2: ch1LowLimitN2, criticalN2: ch1CriticaN2 } = calculateN1N2(sitename, mediaCh1, desvioCh1);
         //temperatura critica n2 e low limit n2
         let { lowLimitN1: ch2LowLimitN1, criticalN1: ch2CriticaN1, lowLimitN2: ch2LowLimitN2, criticalN2: ch2CriticaN2 } = calculateN1N2(sitename, mediaCh2, desvioCh2);
+        
         //maior temperatura ch1
         let maiorCh1 = tbVeiculoslidosResumo.reduce((maior, linha) => linha.ch1 !== "n/a" ? linha.ch1 > maior ? linha.ch1 : maior : maior, 0);
         //maior temperatura ch2
@@ -126,7 +128,6 @@ export function displayData(extractedData) {
         let sigmaCh1 = parseFloat(((maiorCh1 - mediaCh1) / desvioCh1).toFixed(2));
         //nivel sigma ch2
         let sigmaCh2 = parseFloat(((maiorCh2 - mediaCh2) / desvioCh2).toFixed(2));
-
 
         let div = document.createElement('div');
         div.id = 'divStatusGeral'; // Adicione esta linha
@@ -178,10 +179,10 @@ export function displayData(extractedData) {
         let rows = [
             ['Temperatura Média', mediaCh1, mediaCh2],
             ['Desvio Padrão (DP)', desvioCh1, desvioCh2],
-            ['Temperatura Crítica (N1)', ch1CriticaN1, ch2CriticaN1],
-            ['Low Limit (N1)', ch1LowLimitN1, ch2LowLimitN1],
-            ['Temperatura Crítica (N2)', ch1CriticaN2, ch2CriticaN2],
-            ['Low Limit (N2)', ch1LowLimitN2, ch2LowLimitN2],
+            ['Temperatura Crítica (N1)', parseFloat(ch1CriticaN1).toFixed(2), parseFloat(ch2CriticaN1).toFixed(2)],
+            ['Low Limit (N1)', parseFloat(ch1LowLimitN1).toFixed(2), parseFloat(ch2LowLimitN1).toFixed(2)],
+            ['Temperatura Crítica (N2)', parseFloat(ch1CriticaN2).toFixed(2), parseFloat(ch2CriticaN2).toFixed(2)],
+            ['Low Limit (N2)', parseFloat(ch1LowLimitN2).toFixed(2), parseFloat(ch2LowLimitN2).toFixed(2)],
             ['Maior Temperatura', maiorCh1, maiorCh2,],
             ['Nível SIGMA', sigmaCh1, sigmaCh2]
         ];
