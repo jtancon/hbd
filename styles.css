@@ -37,6 +37,7 @@ footer {
     border-radius: 5px;
     border: 1px solid #ccc;
     margin-top: auto; /* Move o gráfico para a parte inferior */
+    background-color: #f9f9f9;
 }
 
 #dataContainer {
@@ -56,11 +57,24 @@ footer {
     margin-bottom: 10px; 
 }
 
+.DIVAlarmes {
+    width: 100%;
+    text-align: left;
+    background-color: #f9f9f9;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    margin-left: 10px; 
+    margin-bottom: 10px; 
+}
+
+
 .linha {
     margin-bottom: -5px; /* Ajuste este valor para o espaçamento desejado */
 }
 
 .tabela-analise {
+    width: 400px;
     background-color: #f9f9f9;
     border-collapse: collapse;
     border-radius: 5px;

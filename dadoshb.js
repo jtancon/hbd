@@ -60,6 +60,10 @@ export function displayData(extractedData) {
     flexContainer.style.justifyContent = 'flex-start';
     dataContainer.appendChild(flexContainer);
 
+    let absoluto;
+    let ch1LowLimitN1, ch1CriticaN1, ch1LowLimitN2, ch1CriticaN2;
+    let ch2LowLimitN1, ch2CriticaN1, ch2LowLimitN2, ch2CriticaN2;
+
     extractedData.forEach(item => {
         //organizar dados para tabela resumo (todos os veiculos lidos olhando number axle e ch1 e ch2 e ainda tipo de veiculo e veiculo que seria o numero do vagão ou prefixo do trem)
         let tbVeiculoslidosResumo = [];
@@ -79,16 +83,17 @@ export function displayData(extractedData) {
             }
         });
 
-        //console.log(tbVeiculoslidosResumo); //teste
-
         //cria as variaveis para usar na div status geral
         const arrival = item.cabecalhoLeitura.state.reported.arrival;
         const sitename = item.cabecalhoLeitura.state.reported.siteName;
-        const absoluto = item.fichaTrem.trem.absolut;
+        absoluto = item.fichaTrem.trem.absolut;
         const checkAxle = item.cabecalhoLeitura.state.reported.divergence.checkAxle;
-        const fichaAxles = item.cabecalhoLeitura.state.reported.divergence.fichaAxles;
+        const fichaAxles = item.cabecalhoLeitura.state.reported.divergence.fichaAxles || 0;
         const qtdalarme = item.cabecalhoLeitura.state.reported.systemWarning;
         const direction = item.cabecalhoLeitura.state.reported.direction;
+        const checkVehicles = item.cabecalhoLeitura.state.reported.divergence.checkVehicles;
+        const fichaTrem = item.cabecalhoLeitura.state.reported.divergence.fichaVehicles || 0;
+        
 
         //funcao de verificar antes de calcular N1 e N2 (low limit e temperatura critica)
         function calculateN1N2(sitename, mean, standardDeviation) {
@@ -108,6 +113,10 @@ export function displayData(extractedData) {
         let somaCh2 = tbVeiculoslidosResumo.reduce((soma, linha) => linha.ch2 !== "n/a" ? soma + linha.ch2 : soma, 0);
         let countCh2 = tbVeiculoslidosResumo.reduce((count, linha) => linha.ch2 !== "n/a" ? count + 1 : count, 0);
         let mediaCh2 = parseFloat((somaCh2 / countCh2).toFixed(2));
+
+        //diferença entre ch1 e ch2
+        let diffCh1Ch2 = Math.abs(mediaCh1 - mediaCh2);
+
         //desvio padrao ch1
         let somaDesvioCh1 = tbVeiculoslidosResumo.reduce((soma, linha) => linha.ch1 !== "n/a" ? soma + Math.pow(linha.ch1 - mediaCh1, 2) : soma, 0);
         let desvioCh1 = parseFloat(Math.sqrt(somaDesvioCh1 / countCh1).toFixed(2));
@@ -115,10 +124,9 @@ export function displayData(extractedData) {
         let somaDesvioCh2 = tbVeiculoslidosResumo.reduce((soma, linha) => linha.ch2 !== "n/a" ? soma + Math.pow(linha.ch2 - mediaCh2, 2) : soma, 0);
         let desvioCh2 = parseFloat(Math.sqrt(somaDesvioCh2 / countCh2).toFixed(2));
         
-        //temperatura critica n1 e low limit n1
-        let { lowLimitN1: ch1LowLimitN1, criticalN1: ch1CriticaN1, lowLimitN2: ch1LowLimitN2, criticalN2: ch1CriticaN2 } = calculateN1N2(sitename, mediaCh1, desvioCh1);
-        //temperatura critica n2 e low limit n2
-        let { lowLimitN1: ch2LowLimitN1, criticalN1: ch2CriticaN1, lowLimitN2: ch2LowLimitN2, criticalN2: ch2CriticaN2 } = calculateN1N2(sitename, mediaCh2, desvioCh2);
+        // Atribua valores a elas dentro do escopo atual
+        ({ lowLimitN1: ch1LowLimitN1, criticalN1: ch1CriticaN1, lowLimitN2: ch1LowLimitN2, criticalN2: ch1CriticaN2 } = calculateN1N2(sitename, mediaCh1, desvioCh1));
+        ({ lowLimitN1: ch2LowLimitN1, criticalN1: ch2CriticaN1, lowLimitN2: ch2LowLimitN2, criticalN2: ch2CriticaN2 } = calculateN1N2(sitename, mediaCh2, desvioCh2));  
         
         //maior temperatura ch1
         let maiorCh1 = tbVeiculoslidosResumo.reduce((maior, linha) => linha.ch1 !== "n/a" ? linha.ch1 > maior ? linha.ch1 : maior : maior, 0);
@@ -128,6 +136,16 @@ export function displayData(extractedData) {
         let sigmaCh1 = parseFloat(((maiorCh1 - mediaCh1) / desvioCh1).toFixed(2));
         //nivel sigma ch2
         let sigmaCh2 = parseFloat(((maiorCh2 - mediaCh2) / desvioCh2).toFixed(2));
+
+        if (maiorCh1 > 23) {
+            let count = 0;
+            for (let i = 0; i < tbVeiculoslidosResumo.length; i++) {
+                if (tbVeiculoslidosResumo[i].ch1 > 23) {
+                    count++;
+                }
+            }
+            console.log("Número de ocorrências de ch1 maior que 23: " + count);
+        }
 
         let div = document.createElement('div');
         div.id = 'divStatusGeral'; // Adicione esta linha
@@ -154,19 +172,24 @@ export function displayData(extractedData) {
         
         let p5 = document.createElement('p');
         p5.className = 'linha';
-        p5.innerHTML = '<strong>Numero de eixos:</strong> Contados ' + checkAxle + ' - Ficha ' + fichaAxles; // Substitua por valor real
+        p5.innerHTML = '<strong>Numero de veiculos:</strong> Contados ' + checkVehicles + ' - Ficha ' + fichaTrem; // Substitua por valor real
         div.appendChild(p5);
-        
+
         let p6 = document.createElement('p');
         p6.className = 'linha';
-        p6.innerHTML = '<strong>Numero de alarmes:</strong> ' + qtdalarme; // Substitua por valor real
+        p6.innerHTML = '<strong>Numero de eixos:</strong> Contados ' + checkAxle + ' - Ficha ' + fichaAxles; // Substitua por valor real
         div.appendChild(p6);
         
-        let directionValue = tbproxhb[sitename][direction];
         let p7 = document.createElement('p');
         p7.className = 'linha';
-        p7.innerHTML = '<strong>Proximo HB:</strong> ' + directionValue;
+        p7.innerHTML = '<strong>Numero de alarmes:</strong> ' + qtdalarme; // Substitua por valor real
         div.appendChild(p7);
+        
+        let directionValue = tbproxhb[sitename][direction];
+        let p8 = document.createElement('p');
+        p8.className = 'linha';
+        p8.innerHTML = '<strong>Proximo HB:</strong> ' + directionValue;
+        div.appendChild(p8);
         
         // Adicione o div ao DOM
         flexContainer.appendChild(div);
@@ -216,7 +239,9 @@ export function displayData(extractedData) {
 
         // Adicione o div ao DOM
         flexContainer.appendChild(tbanalise);
-        
+
+
+       
         //montar tabela veiculos
         if (!Array.isArray(item.veiculosLidos)) {
             console.error('item.veiculosLidos deve ser um array');
@@ -244,10 +269,61 @@ export function displayData(extractedData) {
                 });
             });
         });
+                // DIV para os alarmes
+                let divAlarmes = document.createElement('div');
+                divAlarmes.className = 'DIVAlarmes';
+        
+                // Título da div
+                let titulo = document.createElement('h2');
+                titulo.textContent = 'Alarmes';
+                divAlarmes.appendChild(titulo);
+        
+        
+                //linha alarme de diferença entre ch1 e ch2
+                let diffalarme = diffCh1Ch2 > 2.4 ? "<span style='color: red;'><strong>Diferença entre CH1 e CH2:</strong> " + parseFloat(diffCh1Ch2).toFixed(2) + "- Alta diferença entre CH1 e CH2.</span>" : "<span style='color: green;'><strong>Diferença entre CH1 e CH2:</strong> " + parseFloat(diffCh1Ch2).toFixed(2) + " - Diferença ok.</span>";
+        
+                let linha = document.createElement('p');
+                linha.className = 'linha';
+                linha.innerHTML = diffalarme;
+                divAlarmes.appendChild(linha);
+        
+                let diffVehicles = Math.abs(fichaTrem - checkVehicles);
+                let diffVehiclesAlarme = diffVehicles > 2.4 ? "<span style='color: red;'><strong>Diferença entre veiculos contados e ficha:</strong> " + parseFloat(diffVehicles).toFixed(0) + " - Existe diferença.</span>" : "<span style='color: green;'><strong>Diferença entre veiculos contados e ficha:</strong> " + parseFloat(diffVehicles).toFixed(0) + " - Diferença ok.</span>";
+        
+                let linhaVehicles = document.createElement('p');
+                linhaVehicles.className = 'linha';
+                linhaVehicles.innerHTML = diffVehiclesAlarme;
+                divAlarmes.appendChild(linhaVehicles);
+        
+                let diffAxles = Math.abs(checkAxle - fichaAxles);
+                let diffAxlesAlarme = diffAxles > 2.4 ? "<span style='color: red;'><strong>Diferença entre eixos contatos e ficha:</strong> " + parseFloat(diffAxles).toFixed(0) + " - Existe diferença.</span>" : "<span style='color: green;'><strong>Diferença entre eixos contatos e ficha:</strong> " + parseFloat(diffAxles).toFixed(0) + " - Diferença ok.</span>";
+        
+                let linhaAxles = document.createElement('p');
+                linhaAxles.className = 'linha';
+                linhaAxles.innerHTML = diffAxlesAlarme;
+                divAlarmes.appendChild(linhaAxles);
+        
+                // Adicione a div ao DOM
+                flexContainer.appendChild(divAlarmes);
     });
     
+    let pontoSelecionado;  // Variável para armazenar o valor do ponto selecionado
+
     // Cria uma instância do gráfico
     const ctx = document.getElementById('meuGrafico').getContext('2d');
+    // Encontre o maior valor de axleNum em pontosCh1 e pontosCh2
+    let maxAxleNum = Math.max(
+        Math.max(...pontosCh1.map(p => p.x)),
+        Math.max(...pontosCh2.map(p => p.x))
+    );
+    const maxCh1 = Math.max(...pontosCh1.map(p => p.y));
+    const maxCh2 = Math.max(...pontosCh2.map(p => p.y));
+    const maxValue = Math.max(maxCh1, maxCh2);
+
+    function isWithinRange(value, maxValue) {
+        return value.y >= maxValue - 5 && value.y <= maxValue;
+    }
+    
     new Chart(ctx, {
         type: 'scatter',
         data: {
@@ -257,7 +333,16 @@ export function displayData(extractedData) {
                 pointBackgroundColor: 'blue',
                 pointBorderColor: 'blue',
                 pointHoverBackgroundColor: 'blue',
-                pointHoverBorderColor: 'blue'
+                pointHoverBorderColor: 'blue',
+                datalabels: {
+                    color: 'black',
+                    font: {
+                        weight: 'bold'
+                    },
+                    formatter: function(value, context) {
+                        return value.y;
+                    }
+                }
             },
             {
                 label: 'Veículos Lidos - ch2',
@@ -265,16 +350,35 @@ export function displayData(extractedData) {
                 pointBackgroundColor: 'red',
                 pointBorderColor: 'red',
                 pointHoverBackgroundColor: 'red',
-                pointHoverBorderColor: 'red'
+                pointHoverBorderColor: 'red',
+                datalabels: {
+                    color: 'black',
+                    font: {
+                        weight: 'bold'
+                    },
+                    formatter: function(value, context) {
+                        return value.y;
+                    }
+                }
             }]
         },
         options: {
+            onClick: function(evt) {
+                const points = this.getElementsAtEventForMode(evt, 'nearest', { intersect: true }, true);
+                if (points.length) {
+                    const firstPoint = points[0];
+                    const axleNum = this.data.datasets[firstPoint.datasetIndex].data[firstPoint.index].x;
+                    pontoSelecionado = axleNum;  // Atualiza a variável com o valor de axleNum do ponto selecionado
+                    console.log(pontoSelecionado);
+                }
+            },
             scales: {
                 x: {
                     title: {
                         display: true,
                         text: 'Número do Eixo'
-                    }
+                    },
+                    max: maxAxleNum,  // Defina o valor máximo para o eixo X
                 },
                 y: {
                     title: {
@@ -294,6 +398,43 @@ export function displayData(extractedData) {
                             const ch2Value = pontosCh2.find(p => p.x === context.raw.x)?.y;
                             return `axleNum: ${context.raw.x}, ch1: ${ch1Value}, ch2: ${ch2Value}`;
                         }
+                    }
+                },
+                annotation: {
+                    annotations: {
+                        Absoluto: {
+                            type: 'line',
+                            yMin: absoluto,
+                            yMax: absoluto,
+                            borderColor: 'rgb(255, 99, 132)',
+                            borderWidth: 2
+                        },
+                        N1: {
+                            type: 'line',
+                            yMin: ch1CriticaN1,
+                            yMax: ch1CriticaN1,
+                            borderColor: 'rgb(255, 255, 0)',
+                            borderWidth: 2
+                        },
+                        N2: {
+                            type: 'line',
+                            yMin: ch2CriticaN2,
+                            yMax: ch2CriticaN2,
+                            borderColor: 'rgb(255, 165, 0)',
+                            borderWidth: 2
+                        }
+                    }
+                },
+                datalabels: {
+                    display: function(context) {
+                        return isWithinRange(context.dataset.data[context.dataIndex], maxValue);
+                    },
+                    color: 'black',
+                    font: {
+                        weight: 'bold'
+                    },
+                    formatter: function(value, context) {
+                        return value.y;
                     }
                 }
             }
