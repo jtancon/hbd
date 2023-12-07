@@ -35,8 +35,8 @@ export function displayData(extractedData) {
         'ZVI': { 'South': '38 km (ZVI-ZQX)', 'North': '85 km (ZVI-ZTO)' },
         'ZQX': { 'South': '62 km (ZQX-ZAC)', 'North': '38 km (ZQX-ZVI)' },
         'ZAC': { 'South': '75 km (ZAC-ZXI)', 'North': '62 km (ZAC-ZQX)' },
-        'ZXI': { 'South': '58 km (ZXI-ZKE)', 'North': '58 km (ZXI-ZKE)' },
-        'ZKE': { 'South': '-', 'North': '133 km(ZKE-ZAC)' },
+        'Phoenix MB -Pimenta': { 'Sul': '58 km (ZXI-ZKE)', 'Norte': '58 km (ZXI-ZKE)' },
+        'PHOENIX MB Canguera': { 'Sul': '-', 'Norte': '133 km(ZKE-ZAC)' },
         'ZXW': { 'South': '-', 'North': '-' },
         'POA': { 'South': '60 km (POA-PQI)', 'North': '-' },
         'PQI': { 'South': '43 km (PQI-PPR)', 'North': '45 km (PQI-POA)' },
@@ -64,6 +64,9 @@ export function displayData(extractedData) {
     let ch1LowLimitN1, ch1CriticaN1, ch1LowLimitN2, ch1CriticaN2;
     let ch2LowLimitN1, ch2CriticaN1, ch2LowLimitN2, ch2CriticaN2;
 
+
+
+
     extractedData.forEach(item => {
         //organizar dados para tabela resumo (todos os veiculos lidos olhando number axle e ch1 e ch2 e ainda tipo de veiculo e veiculo que seria o numero do vagão ou prefixo do trem)
         let tbVeiculoslidosResumo = [];
@@ -83,13 +86,31 @@ export function displayData(extractedData) {
             }
         });
 
+        //quantidade de locomotivas e vagões
+        let countLocomotiva = 0;
+        let countVagao = 0;
+        let countedNumbers = {};
+        let posicoesLocomotivas = [];
+        
+        for (let i = 0; i < tbVeiculoslidosResumo.length; i++) {
+            if (!countedNumbers[tbVeiculoslidosResumo[i].number]) {
+                if (tbVeiculoslidosResumo[i].tipo === "Locomotiva") {
+                    countLocomotiva++;
+                    posicoesLocomotivas.push(tbVeiculoslidosResumo[i].number);
+                } else if (tbVeiculoslidosResumo[i].tipo === "Vagão") {
+                    countVagao++;
+                }
+                countedNumbers[tbVeiculoslidosResumo[i].number] = true;
+            }
+        }
+
         //cria as variaveis para usar na div status geral
         const arrival = item.cabecalhoLeitura.state.reported.arrival;
         const sitename = item.cabecalhoLeitura.state.reported.siteName;
         absoluto = item.fichaTrem.trem.absolut;
         const checkAxle = item.cabecalhoLeitura.state.reported.divergence.checkAxle;
         const fichaAxles = item.cabecalhoLeitura.state.reported.divergence.fichaAxles || 0;
-        const qtdalarme = item.cabecalhoLeitura.state.reported.systemWarning;
+        const qtdalarme = item.cabecalhoLeitura.state.reported.systemWarning || 0;
         const direction = item.cabecalhoLeitura.state.reported.direction;
         const checkVehicles = item.cabecalhoLeitura.state.reported.divergence.checkVehicles;
         const fichaTrem = item.cabecalhoLeitura.state.reported.divergence.fichaVehicles || 0;
@@ -137,16 +158,81 @@ export function displayData(extractedData) {
         //nivel sigma ch2
         let sigmaCh2 = parseFloat(((maiorCh2 - mediaCh2) / desvioCh2).toFixed(2));
 
-        if (maiorCh1 > 23) {
-            let count = 0;
-            for (let i = 0; i < tbVeiculoslidosResumo.length; i++) {
-                if (tbVeiculoslidosResumo[i].ch1 > 23) {
-                    count++;
+        //teste de freio agarrado
+        let alarmesFreioAgarrado = [];
+        let veiculosVerificados = {};
+
+        for (let i = 0; i < tbVeiculoslidosResumo.length; i++) {
+            if (!veiculosVerificados[tbVeiculoslidosResumo[i].number]) {
+                if (tbVeiculoslidosResumo[i].ch1 > 23 && tbVeiculoslidosResumo[i].ch2 > 23) {
+                    alarmesFreioAgarrado.push(tbVeiculoslidosResumo[i].number);
                 }
+                veiculosVerificados[tbVeiculoslidosResumo[i].number] = true;
             }
-            console.log("Número de ocorrências de ch1 maior que 23: " + count);
         }
 
+        if (alarmesFreioAgarrado.length > 0) {
+            console.log("Alarme de freio agarrado nos veículos: " + alarmesFreioAgarrado.join(", "));
+        } else {
+            console.log("Nenhum alarme de freio agarrado.");
+        }
+        
+        console.log(alarmesFreioAgarrado);
+
+        //teste de temperatura alta no mesmo canal
+        let contagemCh1 = tbVeiculoslidosResumo.filter(veiculo => veiculo.ch2 > maiorCh1).length;
+        let contagemCh2 = tbVeiculoslidosResumo.filter(veiculo => veiculo.ch1 > maiorCh2).length;
+        let alarmeTemperaturaAlta = "<span style='color: green;'><strong>Sem temperaturas altas em unico canal.</strong></span>";
+
+        console.log(contagemCh1);
+        console.log(contagemCh2);
+
+        if (maiorCh1 > 23 && contagemCh2 >= 3) {
+            alarmeTemperaturaAlta = "<span style='color: red;'><strong>Temperaturas altas no mesmo canal: CH1.</strong></span>";
+        }
+        
+        if (maiorCh2 > 23 && contagemCh1 >= 3) {
+            alarmeTemperaturaAlta = "<span style='color: red;'><strong>Temperaturas altas no mesmo canal: CH2.</strong></span>";
+        }
+
+        //monta tabela de veiculos com alarme de freio agarrado
+        let veiculosComAlarmeFA = tbVeiculoslidosResumo.filter(veiculo => alarmesFreioAgarrado.includes(veiculo.number));
+
+        veiculosComAlarmeFA = veiculosComAlarmeFA.map(veiculo => {
+            return {...veiculo, alarme: "Freio agarrado"};
+        });
+
+        console.log(veiculosComAlarmeFA);
+
+        //montar tabela veiculos com alarme de freio agarrado
+        let tbalarmesContainer = document.getElementById("alarmesContainer");
+
+        let tbalarmesTable = document.createElement("table");
+        tbalarmesTable.className = "tbalarmesTable"; // Adicionando a classe aqui
+        
+        let tbalarmesHeaderRow = document.createElement("tr");
+        ["Veículo", "Eixo", "Tipo", "Série", "CH1", "CH2", "Alarme"].forEach(text => {
+            let tbalarmesHeader = document.createElement("th");
+            tbalarmesHeader.textContent = text;
+            tbalarmesHeaderRow.appendChild(tbalarmesHeader);
+        });
+        tbalarmesTable.appendChild(tbalarmesHeaderRow);
+        
+        veiculosComAlarmeFA.forEach(veiculo => {
+            let tbalarmesRow = document.createElement("tr");
+            [veiculo.number, veiculo.axle, veiculo.tipo, veiculo.veiculo, veiculo.ch1, veiculo.ch2, veiculo.alarme].forEach(text => {
+                let tbalarmesCell = document.createElement("td");
+                tbalarmesCell.textContent = text;
+                tbalarmesRow.appendChild(tbalarmesCell);
+            });
+            tbalarmesTable.appendChild(tbalarmesRow);
+        });
+        
+        tbalarmesContainer.appendChild(tbalarmesTable);
+
+
+ 
+        // DIV para o status geral
         let div = document.createElement('div');
         div.id = 'divStatusGeral'; // Adicione esta linha
 
@@ -190,6 +276,12 @@ export function displayData(extractedData) {
         p8.className = 'linha';
         p8.innerHTML = '<strong>Proximo HB:</strong> ' + directionValue;
         div.appendChild(p8);
+
+        //posição das locomotivas
+        let p9 = document.createElement('p');
+        p9.className = 'linha';
+        p9.innerHTML = '<strong>Posição das locomotivas:</strong> ' + posicoesLocomotivas.join(", ");
+        div.appendChild(p9);
         
         // Adicione o div ao DOM
         flexContainer.appendChild(div);
@@ -302,7 +394,26 @@ export function displayData(extractedData) {
                 linhaAxles.className = 'linha';
                 linhaAxles.innerHTML = diffAxlesAlarme;
                 divAlarmes.appendChild(linhaAxles);
-        
+
+                //alarme de freio agarrado
+                let linhaAlarmeFA = document.createElement('p');
+                linhaAlarmeFA.className = 'linha';
+                
+                if (alarmesFreioAgarrado.length > 0) {
+                    linhaAlarmeFA.innerHTML = "<span style='color: red;'><strong>Alarme de freio agarrado:</strong> " + alarmesFreioAgarrado.join(", ") + "</span>" ;
+                } else {
+                    linhaAlarmeFA.innerHTML = "<span style='color: green;'><strong>Sem freio agarrado.</strong></span>" ;
+                }
+
+                divAlarmes.appendChild(linhaAlarmeFA);
+
+                //temp alta no mesmo canal
+                let linhaAlarmeTA = document.createElement('p');
+                linhaAlarmeTA.className = 'linha';
+                linhaAlarmeTA.innerHTML = alarmeTemperaturaAlta;
+
+                divAlarmes.appendChild(linhaAlarmeTA);
+                
                 // Adicione a div ao DOM
                 flexContainer.appendChild(divAlarmes);
     });
@@ -323,6 +434,10 @@ export function displayData(extractedData) {
     function isWithinRange(value, maxValue) {
         return value.y >= maxValue - 5 && value.y <= maxValue;
     }
+
+     //menor valor de criticalN1 e criticalN2
+     let menorCriticaN1 = Math.min(ch1CriticaN1, ch2CriticaN1);
+     let menorCriticaN2 = Math.min(ch1CriticaN2, ch2CriticaN2);
     
     new Chart(ctx, {
         type: 'scatter',
@@ -411,15 +526,15 @@ export function displayData(extractedData) {
                         },
                         N1: {
                             type: 'line',
-                            yMin: ch1CriticaN1,
-                            yMax: ch1CriticaN1,
+                            yMin: menorCriticaN1,
+                            yMax: menorCriticaN1,
                             borderColor: 'rgb(255, 255, 0)',
                             borderWidth: 2
                         },
                         N2: {
                             type: 'line',
-                            yMin: ch2CriticaN2,
-                            yMax: ch2CriticaN2,
+                            yMin: menorCriticaN2,
+                            yMax: menorCriticaN2,
                             borderColor: 'rgb(255, 165, 0)',
                             borderWidth: 2
                         }

@@ -33,11 +33,21 @@ footer {
 #meuGrafico {
     max-height: 400px;
     width: 100%;
-    margin: 0 auto;
     border-radius: 5px;
     border: 1px solid #ccc;
     margin-top: auto; /* Move o gráfico para a parte inferior */
     background-color: #f9f9f9;
+    margin-bottom: 10px; 
+}
+
+#alarmes {
+    max-height: 400px;
+    width: 100%;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    margin-top: auto; /* Move o gráfico para a parte inferior */
+    background-color: #f9f9f9;
+    padding: 5px;
 }
 
 #dataContainer {
@@ -96,5 +106,57 @@ footer {
 }
 
 .tabela-analise td:nth-child(5), .tabela-analise td:nth-child(6) {
+    background-color: white;
+}
+
+#supervisorioButton {
+    background-color: white;
+    color: #003865;
+    border: 2px solid #003865;
+    padding: 5px 5px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 13px;
+    transition: background-color 0.5s ease, color 0.5s ease;
+    font-weight: bold;
+    margin-bottom: 10px; 
+}
+
+#supervisorioButton:hover, #supervisorioButton:active {
+    background-color: #003865;
+    color: white;
+    font-weight: bold;
+}
+
+#supervisorioButton:active {
+    background-color: #bbb;
+    color: #003865;
+}
+
+#alarmesContainer .tbalarmesTable {
+    width: 100%;
+    background-color: #f9f9f9;
+    border-collapse: collapse;
+    border-radius: 5px;
+    overflow: hidden;
+    margin-bottom: 10px; 
+}
+
+#alarmesContainer .tbalarmesTable th {
+    background-color: #003865;
+    color: white;
+    font-weight: bold;
+    padding: 10px;
+    border: 1px solid #ccc;
+}
+
+#alarmesContainer .tbalarmesTable td {
+    padding: 5px;
+    border: 1px solid #ccc;
+    text-align: center;
+}
+
+#alarmesContainer .tbalarmesTable td:nth-child(5), #alarmesContainer .tbalarmesTable td:nth-child(6) {
     background-color: white;
 }
