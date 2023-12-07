@@ -158,13 +158,14 @@ export function displayData(extractedData) {
         //nivel sigma ch2
         let sigmaCh2 = parseFloat(((maiorCh2 - mediaCh2) / desvioCh2).toFixed(2));
 
-        //teste de freio agarrado
+        // Teste de freio agarrado
         let alarmesFreioAgarrado = [];
         let veiculosVerificados = {};
 
         for (let i = 0; i < tbVeiculoslidosResumo.length; i++) {
             if (!veiculosVerificados[tbVeiculoslidosResumo[i].number]) {
-                if (tbVeiculoslidosResumo[i].ch1 > 23 && tbVeiculoslidosResumo[i].ch2 > 23) {
+                if ((tbVeiculoslidosResumo[i].ch1 === maiorCh1 && maiorCh1 > 23) || 
+                    (tbVeiculoslidosResumo[i].ch2 === maiorCh2 && maiorCh2 > 23)) {
                     alarmesFreioAgarrado.push(tbVeiculoslidosResumo[i].number);
                 }
                 veiculosVerificados[tbVeiculoslidosResumo[i].number] = true;
@@ -176,16 +177,11 @@ export function displayData(extractedData) {
         } else {
             console.log("Nenhum alarme de freio agarrado.");
         }
-        
-        console.log(alarmesFreioAgarrado);
 
         //teste de temperatura alta no mesmo canal
         let contagemCh1 = tbVeiculoslidosResumo.filter(veiculo => veiculo.ch2 > maiorCh1).length;
         let contagemCh2 = tbVeiculoslidosResumo.filter(veiculo => veiculo.ch1 > maiorCh2).length;
         let alarmeTemperaturaAlta = "<span style='color: green;'><strong>Sem temperaturas altas em unico canal.</strong></span>";
-
-        console.log(contagemCh1);
-        console.log(contagemCh2);
 
         if (maiorCh1 > 23 && contagemCh2 >= 3) {
             alarmeTemperaturaAlta = "<span style='color: red;'><strong>Temperaturas altas no mesmo canal: CH1.</strong></span>";
@@ -195,43 +191,6 @@ export function displayData(extractedData) {
             alarmeTemperaturaAlta = "<span style='color: red;'><strong>Temperaturas altas no mesmo canal: CH2.</strong></span>";
         }
 
-        //monta tabela de veiculos com alarme de freio agarrado
-        let veiculosComAlarmeFA = tbVeiculoslidosResumo.filter(veiculo => alarmesFreioAgarrado.includes(veiculo.number));
-
-        veiculosComAlarmeFA = veiculosComAlarmeFA.map(veiculo => {
-            return {...veiculo, alarme: "Freio agarrado"};
-        });
-
-        console.log(veiculosComAlarmeFA);
-
-        //montar tabela veiculos com alarme de freio agarrado
-        let tbalarmesContainer = document.getElementById("alarmesContainer");
-
-        let tbalarmesTable = document.createElement("table");
-        tbalarmesTable.className = "tbalarmesTable"; // Adicionando a classe aqui
-        
-        let tbalarmesHeaderRow = document.createElement("tr");
-        ["Veículo", "Eixo", "Tipo", "Série", "CH1", "CH2", "Alarme"].forEach(text => {
-            let tbalarmesHeader = document.createElement("th");
-            tbalarmesHeader.textContent = text;
-            tbalarmesHeaderRow.appendChild(tbalarmesHeader);
-        });
-        tbalarmesTable.appendChild(tbalarmesHeaderRow);
-        
-        veiculosComAlarmeFA.forEach(veiculo => {
-            let tbalarmesRow = document.createElement("tr");
-            [veiculo.number, veiculo.axle, veiculo.tipo, veiculo.veiculo, veiculo.ch1, veiculo.ch2, veiculo.alarme].forEach(text => {
-                let tbalarmesCell = document.createElement("td");
-                tbalarmesCell.textContent = text;
-                tbalarmesRow.appendChild(tbalarmesCell);
-            });
-            tbalarmesTable.appendChild(tbalarmesRow);
-        });
-        
-        tbalarmesContainer.appendChild(tbalarmesTable);
-
-
- 
         // DIV para o status geral
         let div = document.createElement('div');
         div.id = 'divStatusGeral'; // Adicione esta linha
@@ -361,6 +320,101 @@ export function displayData(extractedData) {
                 });
             });
         });
+
+        //menor valor de criticalN1 e criticalN2
+        let menorCriticaN1 = Math.min(ch1CriticaN1, ch2CriticaN1);
+        let menorCriticaN2 = Math.min(ch1CriticaN2, ch2CriticaN2);
+
+        console.log("menorCriticaN1: " + menorCriticaN1);
+
+        // Teste de Tendência preventiva de rolamento
+        let alarmesTendenciaPreventivan1 = [];
+        let veiculosVerificados2 = {};
+
+        for (let i = 0; i < tbVeiculoslidosResumo.length; i++) {
+            if (!veiculosVerificados2[tbVeiculoslidosResumo[i].axle]) {
+                if (((tbVeiculoslidosResumo[i].ch1 > menorCriticaN1) && (tbVeiculoslidosResumo[i].ch1 < menorCriticaN2)) || 
+                ((tbVeiculoslidosResumo[i].ch2 > menorCriticaN1) && (tbVeiculoslidosResumo[i].ch2 < menorCriticaN2))) {
+                    alarmesTendenciaPreventivan1.push(tbVeiculoslidosResumo[i].axle);
+                }
+                veiculosVerificados2[tbVeiculoslidosResumo[i].axle] = true;
+            }
+        }
+
+        console.log(alarmesTendenciaPreventivan1);
+
+        // Teste de Tendência preventiva de rolamento para N2
+        let alarmesTendenciaPreventivan2 = [];
+        let veiculosVerificados3 = {};
+
+        for (let i = 0; i < tbVeiculoslidosResumo.length; i++) {
+            if (!veiculosVerificados3[tbVeiculoslidosResumo[i].axle]) {
+                if ((tbVeiculoslidosResumo[i].ch1 > menorCriticaN2) || 
+                    (tbVeiculoslidosResumo[i].ch2 > menorCriticaN2)) {
+                    alarmesTendenciaPreventivan2.push(tbVeiculoslidosResumo[i].axle);
+                }
+                veiculosVerificados3[tbVeiculoslidosResumo[i].axle] = true;
+            }
+        }
+
+        console.log(alarmesTendenciaPreventivan2);
+
+
+
+        // Monta tabela de veículos com alarme de freio agarrado
+        let veiculosComAlarmeFA = tbVeiculoslidosResumo.filter(veiculo => alarmesFreioAgarrado.includes(veiculo.number));
+
+        veiculosComAlarmeFA = veiculosComAlarmeFA.map(veiculo => {
+            return {...veiculo, alarme: "Freio agarrado"};
+        });
+
+        // Monta tabela de veículos com alarme de Tendência preventiva de rolamento N1
+        let veiculosComAlarmeTPN1 = tbVeiculoslidosResumo.filter(veiculo => alarmesTendenciaPreventivan1.includes(veiculo.axle));
+
+        veiculosComAlarmeTPN1 = veiculosComAlarmeTPN1.map(veiculo => {
+            return {...veiculo, alarme: "Tendência preventiva de rolamento N1"};
+        });
+
+        // Monta tabela de veículos com alarme de Tendência preventiva de rolamento N2
+        let veiculosComAlarmeTPN2 = tbVeiculoslidosResumo.filter(veiculo => alarmesTendenciaPreventivan2.includes(veiculo.axle));
+
+        veiculosComAlarmeTPN2 = veiculosComAlarmeTPN2.map(veiculo => {
+            return {...veiculo, alarme: "Tendência preventiva de rolamento N2"};
+        });
+
+        // Combina todas as listas de veículos com alarmes
+        let veiculosComAlarmes = [...veiculosComAlarmeFA, ...veiculosComAlarmeTPN1, ...veiculosComAlarmeTPN2];
+
+        // Montar tabela de veículos com alarmes
+        let tbalarmesContainer = document.getElementById("alarmesContainer");
+
+        let tbalarmesTable = document.createElement("table");
+        tbalarmesTable.className = "tbalarmesTable"; // Adicionando a classe aqui
+
+        let tbalarmesHeaderRow = document.createElement("tr");
+        ["Veículo", "Eixo", "Tipo", "Série", "CH1", "CH2", "Alarme"].forEach(text => {
+            let tbalarmesHeader = document.createElement("th");
+            tbalarmesHeader.textContent = text;
+            tbalarmesHeaderRow.appendChild(tbalarmesHeader);
+        });
+        tbalarmesTable.appendChild(tbalarmesHeaderRow);
+        veiculosComAlarmes.forEach(veiculo => {
+            let tbalarmesRow = document.createElement("tr");
+            [veiculo.number, veiculo.axle, veiculo.tipo, veiculo.veiculo, veiculo.ch1, veiculo.ch2, veiculo.alarme].forEach(text => {
+                let tbalarmesCell = document.createElement("td");
+                tbalarmesCell.textContent = text;
+                tbalarmesRow.appendChild(tbalarmesCell);
+            });
+            tbalarmesTable.appendChild(tbalarmesRow);
+        });
+
+        tbalarmesContainer.appendChild(tbalarmesTable);
+
+        // Verifica se a tabela está vazia
+        if (tbalarmesTable.children.length === 1) {
+            document.getElementById("alarmes").style.display = "none";
+        }
+
                 // DIV para os alarmes
                 let divAlarmes = document.createElement('div');
                 divAlarmes.className = 'DIVAlarmes';
@@ -406,6 +460,30 @@ export function displayData(extractedData) {
                 }
 
                 divAlarmes.appendChild(linhaAlarmeFA);
+
+                //alarme de tendencia preventiva de rolamento N1
+                let linhaAlarmeTPN1 = document.createElement('p');
+                linhaAlarmeTPN1.className = 'linha';
+
+                if (alarmesTendenciaPreventivan1.length > 0) {
+                    linhaAlarmeTPN1.innerHTML = "<span style='color: red;'><strong>Tendência critica de rolamento N1:</strong> " + alarmesTendenciaPreventivan1.join(", ") + "</span>" ;
+                } else {
+                    linhaAlarmeTPN1.innerHTML = "<span style='color: green;'><strong>Sem tendência de rolamento N1.</strong></span>" ;
+                }
+
+                divAlarmes.appendChild(linhaAlarmeTPN1);
+
+                //alarme de tendencia preventiva de rolamento N2
+                let linhaAlarmeTPN2 = document.createElement('p');
+                linhaAlarmeTPN2.className = 'linha';
+
+                if (alarmesTendenciaPreventivan2.length > 0) {
+                    linhaAlarmeTPN2.innerHTML = "<span style='color: red;'><strong>Tendência critica de rolamento N2:</strong> " + alarmesTendenciaPreventivan2.join(", ") + "</span>" ;
+                } else {
+                    linhaAlarmeTPN2.innerHTML = "<span style='color: green;'><strong>Sem tendência de rolamento N2.</strong></span>" ;
+                }
+
+                divAlarmes.appendChild(linhaAlarmeTPN2);
 
                 //temp alta no mesmo canal
                 let linhaAlarmeTA = document.createElement('p');

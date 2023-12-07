@@ -57,9 +57,3 @@ function loadDadosHB(data) {
             console.error('Erro ao carregar dadoshb.js:', error);
         });
 }
-
-document.addEventListener('DOMContentLoaded', (event) => {
-
-    let footerDiv = document.getElementById('dataFooter');
-    footerDiv.textContent = "Abrindo log: " + parsedFile;
-});
