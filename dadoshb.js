@@ -79,7 +79,9 @@ export function displayData(extractedData) {
                         veiculo: veiculoLido.veiculo || "n/a",
                         axle: a.axleNum || "n/a",
                         ch1: a.ch1 || "n/a",
-                        ch2: a.ch2 || "n/a"
+                        ch2: a.ch2 || "n/a",
+                        ch3: a.ch3 || "n/a",
+                        ch4: a.ch4 || "n/a"
                     };
                     tbVeiculoslidosResumo.push(linha);
                 });
@@ -163,15 +165,17 @@ export function displayData(extractedData) {
         let veiculosVerificados = {};
 
         for (let i = 0; i < tbVeiculoslidosResumo.length; i++) {
-            if (!veiculosVerificados[tbVeiculoslidosResumo[i].number]) {
-                if ((tbVeiculoslidosResumo[i].ch1 === maiorCh1 && maiorCh1 > 23) || 
-                    (tbVeiculoslidosResumo[i].ch2 === maiorCh2 && maiorCh2 > 23)) {
+            if (!veiculosVerificados[tbVeiculoslidosResumo[i].axle]) {
+                let ch1 = +(+tbVeiculoslidosResumo[i].ch1).toFixed(2);
+                let ch2 = +(+tbVeiculoslidosResumo[i].ch2).toFixed(2);
+                if ((ch1 === +maiorCh1.toFixed(2) && ch1 > 23) || 
+                    (ch2 === +maiorCh2.toFixed(2) && ch2 > 23)) {
                     alarmesFreioAgarrado.push(tbVeiculoslidosResumo[i].number);
                 }
-                veiculosVerificados[tbVeiculoslidosResumo[i].number] = true;
+                veiculosVerificados[tbVeiculoslidosResumo[i].axle] = true;
             }
         }
-
+        
         if (alarmesFreioAgarrado.length > 0) {
             console.log("Alarme de freio agarrado nos veículos: " + alarmesFreioAgarrado.join(", "));
         } else {
@@ -516,7 +520,8 @@ export function displayData(extractedData) {
      //menor valor de criticalN1 e criticalN2
      let menorCriticaN1 = Math.min(ch1CriticaN1, ch2CriticaN1);
      let menorCriticaN2 = Math.min(ch1CriticaN2, ch2CriticaN2);
-    
+
+     //criação do grafico
     new Chart(ctx, {
         type: 'scatter',
         data: {
@@ -635,4 +640,3 @@ export function displayData(extractedData) {
     });
     
 }
-

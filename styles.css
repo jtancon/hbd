@@ -40,6 +40,19 @@ footer {
     margin-bottom: 10px; 
 }
 
+.GraficoPerfil{
+    min-height: 300px;
+    min-width: 450px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    margin-top: auto; /* Move o gráfico para a parte inferior */
+    background-color: #f9f9f9;
+    margin-bottom: 10px; 
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+
 #alarmes {
     max-height: 400px;
     width: 100%;
@@ -130,6 +143,32 @@ footer {
 }
 
 #supervisorioButton:active {
+    background-color: #bbb;
+    color: #003865;
+}
+
+#BTNPerfil {
+    background-color: white;
+    color: #003865;
+    border: 2px solid #003865;
+    padding: 5px 15px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 13px;
+    transition: background-color 0.5s ease, color 0.5s ease;
+    font-weight: bold;
+    margin-bottom: 10px; 
+    margin-left: 5px;
+}
+
+#BTNPerfil:hover, #supervisorioButton:active {
+    background-color: #003865;
+    color: white;
+    font-weight: bold;
+}
+
+#BTNPerfil:active {
     background-color: #bbb;
     color: #003865;
 }
