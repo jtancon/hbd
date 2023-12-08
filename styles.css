@@ -80,6 +80,18 @@ footer {
     margin-bottom: 10px; 
 }
 
+#alarmesCabecalho {
+    text-align: left;
+    background-color: #f9f9f9;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    margin-right: 10px; 
+    margin-top: 10px; 
+}
+
+
+
 .DIVAlarmes {
     width: 100%;
     text-align: left;
@@ -169,6 +181,32 @@ footer {
 }
 
 #BTNPerfil:active {
+    background-color: #bbb;
+    color: #003865;
+}
+
+#BTNImprimir {
+    background-color: white;
+    color: #003865;
+    border: 2px solid #003865;
+    padding: 5px 15px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 13px;
+    transition: background-color 0.5s ease, color 0.5s ease;
+    font-weight: bold;
+    margin-bottom: 10px; 
+    margin-left: 5px;
+}
+
+#BTNImprimir:hover, #supervisorioButton:active {
+    background-color: #003865;
+    color: white;
+    font-weight: bold;
+}
+
+#BTNImprimir:active {
     background-color: #bbb;
     color: #003865;
 }

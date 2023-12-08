@@ -111,3 +111,13 @@ function loadDadosHB(data) {
             console.error('Erro ao carregar dadoshb.js:', error);
         });
 }
+
+//salvar pdf da analise
+document.getElementById('BTNImprimir').addEventListener('click', function() {
+    html2canvas(document.body).then(function(canvas) {
+        var imgData = canvas.toDataURL('image/png');
+        var doc = new jsPDF('p', 'mm');
+        doc.addImage(imgData, 'PNG', 10, 10);
+        doc.save(parsedFile + '.pdf');
+    });
+});

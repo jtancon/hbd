@@ -6,7 +6,135 @@ export function displayData(extractedData) {
         console.error('extractedData deve ser um array');
         return;
     }
-
+    const tbfalhas = [
+        {
+            problemaOriginal: "failTransducerSignalMiscount",
+            traducaoFalha: "Falha na Contagem de Sinal do Transdutor",
+            possivelCausa: "- Limalha de metal acumulado sobre transdutores\n- Pedra ou metal sob os transdutores\n- Transdutor solto ou fora de alinhamento\n- Fios do transdutor com polaridade invertida\n- Transdutor danificado\n- Impedância do Transdutor fora da faixa de tolerância\n- Mau contato nas conexões internas à case\n- Tensão de saída do transdutor fora da faixa de tolerância",
+            acaoNecessaria: "- Remover o excesso de metal\n- Verificar objetos sob os transdutores\n- Fixar e alinhar o transdutor\n- Verificar polaridade dos fios\n- Substituir transdutor\n- Testar e substituir cabos e conexões\n- Verificar e corrigir a tensão de saída do transdutor."
+        },
+        {
+            problemaOriginal: "failCalibrationNotComplete",
+            traducaoFalha: "Falha na Calibração não Concluída",
+            possivelCausa: "- Scanners não calibrados\n- Calibradores mal posicionados ou configurados\n- Scanner sujo ou obstruído\n- Calibrador ligado por um longo período\n- Temperatura Ambiente informada incorretamente\n- Scanner desalinhado\n- Placa de interface dos scanners ou Placa Analógica com defeito\n- Proteções ruins ou mau contato na fiação interna\n- Cabo ou Scanner com defeito",
+            acaoNecessaria: "- Realizar a calibração\n- Verificar posição e configuração do calibrador\n- Limpar scanners\n- Desligar calibrador por 15 minutos\n- Corrigir informação de temperatura ambiente\n- Alinhar scanners\n- Substituir placas com defeito\n- Verificar e corrigir proteções e fiação interna\n- Testar e substituir cabo ou scanner."
+        },
+        {
+            problemaOriginal: "failPowerRest",
+            traducaoFalha: "Falha no Restabelecimento de Energia",
+            possivelCausa: "- Inversor não conectado\n- Inversor desligado ou necessitando reset\n- Inversor não fornece a tensão necessária",
+            acaoNecessaria: "- Conectar o inversor\n- Ligar ou resetar o inversor\n- Verificar a tensão de saída do inversor e substituir se necessário."
+        },
+        {
+            problemaOriginal: "failBadSensor1",
+            traducaoFalha: "Falha no Sensor 1",
+            possivelCausa: "- Scanner desconectado\n- Alimentação +/- 5Vdc ausente\n- Tempo de alimentação do Aquecedor de Integridade muito curto\n- Máxima temperatura para o Teste de Integridade muito elevada\n- Lentes ou Espelhos sujos\n- Fiação interna ao scanner rompida ou com mau contato\n- Aquecedor de Integridade com defeito\n- Obturador emperrado ou entreaberto",
+            acaoNecessaria: "- Verificar conexões do scanner\n- Verificar 5 Vdc no pirômetro\n- Verificar tempo de alimentação\n- Verificar parâmetro Max Heat for Scanner Test\n- Limpar lentes e espelhos\n- Refazer conexões ou substituir o scanner\n- Medir impedância do Integrity Heater\n- Verificar obturador e substituir se necessário."
+        },
+        {
+            problemaOriginal: "failBadSensor2",
+            traducaoFalha: "Falha no Sensor 2",
+            possivelCausa: "- Scanner desconectado\n- Alimentação +/- 5Vdc ausente\n- Tempo de alimentação do Aquecedor de Integridade muito curto\n- Máxima temperatura para o Teste de Integridade muito elevada\n- Lentes ou Espelhos sujos\n- Fiação interna ao scanner rompida ou com mau contato\n- Aquecedor de Integridade com defeito\n- Obturador emperrado ou entreaberto",
+            acaoNecessaria: "- Verificar conexões do scanner\n- Verificar 5 Vdc no pirômetro\n- Verificar tempo de alimentação\n- Verificar parâmetro Max Heat for Scanner Test\n- Limpar lentes e espelhos\n- Refazer conexões ou substituir o scanner\n- Medir impedância do Integrity Heater\n- Verificar obturador e substituir se necessário."
+        },
+        {
+            problemaOriginal: "failScannerMalfunctionCh1",
+            traducaoFalha: "Falha no Scanner - Malfuncionamento CH1",
+            possivelCausa: "Perfil de rolamento atípico detectado",
+            acaoNecessaria: "- Manutenção necessária\n- Trocar Pirômetro\n- Cabo do Scanner ou Scanner."
+        },
+        {
+            problemaOriginal: "failScannerMalfunctionCh2",
+            traducaoFalha: "Falha no Scanner - Malfuncionamento CH2",
+            possivelCausa: "Perfil de rolamento atípico detectado",
+            acaoNecessaria: "- Manutenção necessária\n- Trocar Pirômetro\n- Cabo do Scanner ou Scanner."
+        },
+        {
+            problemaOriginal: "sysWarnTransducerSignalMiscount",
+            traducaoFalha: "Aviso do Sistema - Falha na Contagem de Sinal do Transdutor",
+            possivelCausa: "- Limalha de metal acumulado sobre transdutores\n- Pedra ou metal sob os transdutores\n- Transdutor solto ou fora de alinhamento\n- Fios do transdutor com polaridade invertida\n- Transdutor danificado\n- Impedância do Transdutor fora da faixa de tolerância\n- Mau contato nas conexões internas à case\n- Tensão de saída do transdutor fora da faixa de tolerância",
+            acaoNecessaria: "- Remover o excesso de metal\n- Verificar objetos sob os transdutores\n- Fixar e alinhar o transdutor\n- Verificar polaridade dos fios\n- Substituir transdutor\n- Testar e substituir cabos e conexões\n- Verificar e corrigir a tensão de saída do transdutor."
+        },
+        {
+            problemaOriginal: "sysWarnPowerReset",
+            traducaoFalha: "Aviso do Sistema - Restabelecimento de Energia",
+            possivelCausa: "- Inversor não conectado\n- Inversor desligado ou necessitando reset\n- Inversor não fornece a tensão necessária",
+            acaoNecessaria: "- Conectar o inversor\n- Ligar ou resetar o inversor\n- Verificar a tensão de saída do inversor e substituir se necessário."
+        },
+        {
+            problemaOriginal: "sysWarnLowVoltage",
+            traducaoFalha: "Aviso do Sistema - Baixa Tensão",
+            possivelCausa: "- Fonte de alimentação externa não conectada\n- Bateria descarregada\n- Conexões soltas ou corroídas",
+            acaoNecessaria: "- Conectar fonte de alimentação\n- Carregar ou substituir bateria\n- Verificar e fixar conexões."
+        },
+        {
+            problemaOriginal: "sysWarnAcPowerFailure",
+            traducaoFalha: "Aviso do Sistema - Falha de Energia AC",
+            possivelCausa: "- Falha na rede elétrica AC\n- Disjuntor desligado\n- Conexões soltas ou corroídas",
+            acaoNecessaria: "- Verificar fornecimento de energia AC\n- Ligar disjuntor\n- Verificar e fixar conexões."
+        },
+        {
+            problemaOriginal: "sysWarnScannerMalfunctionCh1",
+            traducaoFalha: "Aviso do Sistema - Malfuncionamento do Scanner CH1",
+            possivelCausa: "Perfil de rolamento atípico detectado",
+            acaoNecessaria: "- Manutenção necessária\n- Trocar Pirômetro\n- Cabo do Scanner ou Scanner."
+        },
+        {
+            problemaOriginal: "sysWarnScannerMalfunctionCh2",
+            traducaoFalha: "Aviso do Sistema - Malfuncionamento do Scanner CH2",
+            possivelCausa: "Perfil de rolamento atípico detectado",
+            acaoNecessaria: "- Manutenção necessária\n- Trocar Pirômetro\n- Cabo do Scanner ou Scanner."
+        },
+        {
+            problemaOriginal: "sysWarnScannerMalfunctionChe",
+            traducaoFalha: "Aviso do Sistema - Malfuncionamento do Scanner Che",
+            possivelCausa: "Perfil de rolamento atípico detectado",
+            acaoNecessaria: "- Manutenção necessária\n- Trocar Pirômetro\n- Cabo do Scanner ou Scanner."
+        },
+        {
+            problemaOriginal: "sysWarnScannerMalfunctionChd",
+            traducaoFalha: "Aviso do Sistema - Malfuncionamento do Scanner Chd",
+            possivelCausa: "Perfil de rolamento atípico detectado",
+            acaoNecessaria: "- Manutenção necessária\n- Trocar Pirômetro\n- Cabo do Scanner ou Scanner."
+        },
+        {
+            problemaOriginal: "failScannerMalfunctionChe",
+            traducaoFalha: "Falha no Scanner - Malfuncionamento Che",
+            possivelCausa: "Perfil de rolamento atípico detectado",
+            acaoNecessaria: "- Manutenção necessária\n- Trocar Pirômetro\n- Cabo do Scanner ou Scanner."
+        },
+        {
+            problemaOriginal: "failScannerMalfunctionChd",
+            traducaoFalha: "Falha no Scanner - Malfuncionamento Chd",
+            possivelCausa: "Perfil de rolamento atípico detectado",
+            acaoNecessaria: "- Manutenção necessária\n- Trocar Pirômetro\n- Cabo do Scanner ou Scanner."
+        },
+        {
+            problemaOriginal: "criticalTendanceAlarm",
+            traducaoFalha: "Alarme de Tendência Crítica",
+            possivelCausa: "Variação anormal na tendência detectada",
+            acaoNecessaria: "- Investigar a causa raiz da variação\n- Corrigir o problema subjacente."
+        },
+        {
+            problemaOriginal: "axleDivergence",
+            traducaoFalha: "Divergência de Eixo",
+            possivelCausa: "Divergência excessiva entre os eixos",
+            acaoNecessaria: "- Realizar alinhamento adequado\n- Verificar condição dos eixos."
+        },
+        {
+            problemaOriginal: "axleGroupError",
+            traducaoFalha: "Erro no Grupo de Eixos",
+            possivelCausa: "- Falha na comunicação entre os sensores de eixos\n- Configuração de grupo incorreta",
+            acaoNecessaria: "- Verificar cabos e conexões\n- Corrigir configuração de grupo."
+        },
+        {
+            problemaOriginal: "mergeTrainRecordError",
+            traducaoFalha: "Erro ao Mesclar Registro de Trem",
+            possivelCausa: "Falha ao mesclar registros de trens",
+            acaoNecessaria: "- Verificar integridade dos dados\n- Corrigir falhas no processo de mesclagem."
+        }
+    ];
+    
     const tbproxhb = {
         'TSF': { 'South': '45 km (TSF-TBS)', 'North': '-' },
         'TBS': { 'South': '52 km (TBS-TIQ)', 'North': '45 km (TBS-TSF)' },
@@ -88,6 +216,8 @@ export function displayData(extractedData) {
             }
         });
 
+
+
         //quantidade de locomotivas e vagões
         let countLocomotiva = 0;
         let countVagao = 0;
@@ -117,6 +247,58 @@ export function displayData(extractedData) {
         const checkVehicles = item.cabecalhoLeitura.state.reported.divergence.checkVehicles;
         const fichaTrem = item.cabecalhoLeitura.state.reported.divergence.fichaVehicles || 0;
         
+        
+        let alarmesCabecalho = document.getElementById('alarmesCabecalho');
+        
+
+        //verifica as falhas e mostra na div alarmesCabecalho
+        let falhas = [
+            'failTransducerSignalMiscount',
+            'failCalibrationNotComplete',
+            'failPowerRest',
+            'failBadSensor1',
+            'failBadSensor2',
+            'failScannerMalfunctionCh1',
+            'failScannerMalfunctionCh2',
+            'sysWarnTransducerSignalMiscount',
+            'sysWarnPowerReset',
+            'sysWarnLowVoltage',
+            'sysWarnAcPowerFailure',
+            'sysWarnScannerMalfunctionCh1',
+            'sysWarnScannerMalfunctionCh2',
+            'sysWarnScannerMalfunctionChe',
+            'sysWarnScannerMalfunctionChd',
+            'failScannerMalfunctionChe',
+            'failScannerMalfunctionChd',
+            'criticalTendanceAlarm',
+            'axleDivergence',
+            'axleGroupError',
+            'mergeTrainRecordError'
+        ];
+        
+        console.log(`Array de falhas: ${JSON.stringify(falhas)}`);
+        console.log(`Item reportado: ${JSON.stringify(item.cabecalhoLeitura.state.reported)}`);
+        console.log(`Item:`);
+
+
+        falhas.forEach(falha => {
+            console.log(`Verificando: ${falha}`);
+            console.log(`Valor observado: ${item.cabecalhoLeitura.state.reported[falha]}`);
+            if (item.cabecalhoLeitura.state.reported[falha] === true) {
+                console.log(`A falha ${falha} é verdadeira.`);
+                let falhaInfo = tbfalhas.find(f => f.problemaOriginal === falha);
+                if (falhaInfo) {
+                    console.log(`Encontrado na tabela de falhas: ${JSON.stringify(falhaInfo)}`);
+                    let p = document.createElement('p');
+                    p.innerHTML = `<strong style='color: red; font-size: 13px;'> ${falhaInfo.traducaoFalha}</strong><br><strong>Possível Causa:</strong><br> ${falhaInfo.possivelCausa.replace(/\n/g, '<br>')}<br><br><strong>Ação Necessária:</strong><br> ${falhaInfo.acaoNecessaria.replace(/\n/g, '<br>')}<br>`;
+                    alarmesCabecalho.appendChild(p);
+                } else {
+                    console.log(`Não encontrado na tabela de falhas.`);
+                }
+            } else {
+                console.log(`A falha ${falha} não é verdadeira.`);
+            }
+        });
 
         //funcao de verificar antes de calcular N1 e N2 (low limit e temperatura critica)
         function calculateN1N2(sitename, mean, standardDeviation) {
@@ -164,17 +346,27 @@ export function displayData(extractedData) {
         let alarmesFreioAgarrado = [];
         let veiculosVerificados = {};
 
+        // Agrupa os dados por 'number'
+        let grupos = {};
         for (let i = 0; i < tbVeiculoslidosResumo.length; i++) {
-            if (!veiculosVerificados[tbVeiculoslidosResumo[i].axle]) {
-                let ch1 = +(+tbVeiculoslidosResumo[i].ch1).toFixed(2);
-                let ch2 = +(+tbVeiculoslidosResumo[i].ch2).toFixed(2);
-                if ((ch1 === +maiorCh1.toFixed(2) && ch1 > 23) || 
-                    (ch2 === +maiorCh2.toFixed(2) && ch2 > 23)) {
-                    alarmesFreioAgarrado.push(tbVeiculoslidosResumo[i].number);
-                }
-                veiculosVerificados[tbVeiculoslidosResumo[i].axle] = true;
+            let number = tbVeiculoslidosResumo[i].number;
+            if (!grupos[number]) {
+                grupos[number] = [];
+            }
+            grupos[number].push(tbVeiculoslidosResumo[i]);
+        }
+
+        // Verifica se o maior 'ch1' e 'ch2' estão no mesmo 'number'
+        for (let number in grupos) {
+            let maiorCh1NoGrupo = Math.max(...grupos[number].map(item => typeof item.ch1 === 'number' ? +item.ch1.toFixed(2) : -Infinity));
+            let maiorCh2NoGrupo = Math.max(...grupos[number].map(item => typeof item.ch2 === 'number' ? +item.ch2.toFixed(2) : -Infinity));
+
+            if ((maiorCh1NoGrupo === +maiorCh1.toFixed(2) && maiorCh1NoGrupo > 23) &&
+                (maiorCh2NoGrupo === +maiorCh2.toFixed(2) && maiorCh2NoGrupo > 23)) {
+                alarmesFreioAgarrado.push(number);
             }
         }
+        console.log(alarmesFreioAgarrado);
         
         if (alarmesFreioAgarrado.length > 0) {
             console.log("Alarme de freio agarrado nos veículos: " + alarmesFreioAgarrado.join(", "));
@@ -366,11 +558,13 @@ export function displayData(extractedData) {
 
 
         // Monta tabela de veículos com alarme de freio agarrado
-        let veiculosComAlarmeFA = tbVeiculoslidosResumo.filter(veiculo => alarmesFreioAgarrado.includes(veiculo.number));
+        let veiculosComAlarmeFA = tbVeiculoslidosResumo.filter(veiculo => alarmesFreioAgarrado.includes(veiculo.number.toString()));
 
         veiculosComAlarmeFA = veiculosComAlarmeFA.map(veiculo => {
             return {...veiculo, alarme: "Freio agarrado"};
         });
+
+        console.log(veiculosComAlarmeFA);
 
         // Monta tabela de veículos com alarme de Tendência preventiva de rolamento N1
         let veiculosComAlarmeTPN1 = tbVeiculoslidosResumo.filter(veiculo => alarmesTendenciaPreventivan1.includes(veiculo.axle));
