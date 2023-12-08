@@ -30,7 +30,7 @@ document.getElementById("supervisorioButton").onclick = function() {
 
 let botao = document.getElementById('BTNPerfil');
 botao.onclick = function() {
-    let texto = prompt('Por favor, insira o texto:');
+    let texto = prompt('Por favor, insira o texto do arquivo de perfil p_raw:');
     if (texto) {
         let linhas = texto.split('\n');
         let tabela = [];

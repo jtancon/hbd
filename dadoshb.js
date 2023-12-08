@@ -276,27 +276,14 @@ export function displayData(extractedData) {
             'mergeTrainRecordError'
         ];
         
-        console.log(`Array de falhas: ${JSON.stringify(falhas)}`);
-        console.log(`Item reportado: ${JSON.stringify(item.cabecalhoLeitura.state.reported)}`);
-        console.log(`Item:`);
-
-
         falhas.forEach(falha => {
-            console.log(`Verificando: ${falha}`);
-            console.log(`Valor observado: ${item.cabecalhoLeitura.state.reported[falha]}`);
             if (item.cabecalhoLeitura.state.reported[falha] === true) {
-                console.log(`A falha ${falha} é verdadeira.`);
                 let falhaInfo = tbfalhas.find(f => f.problemaOriginal === falha);
                 if (falhaInfo) {
-                    console.log(`Encontrado na tabela de falhas: ${JSON.stringify(falhaInfo)}`);
                     let p = document.createElement('p');
                     p.innerHTML = `<strong style='color: red; font-size: 13px;'> ${falhaInfo.traducaoFalha}</strong><br><strong>Possível Causa:</strong><br> ${falhaInfo.possivelCausa.replace(/\n/g, '<br>')}<br><br><strong>Ação Necessária:</strong><br> ${falhaInfo.acaoNecessaria.replace(/\n/g, '<br>')}<br>`;
                     alarmesCabecalho.appendChild(p);
-                } else {
-                    console.log(`Não encontrado na tabela de falhas.`);
-                }
-            } else {
-                console.log(`A falha ${falha} não é verdadeira.`);
+                } 
             }
         });
 
@@ -365,13 +352,6 @@ export function displayData(extractedData) {
                 (maiorCh2NoGrupo === +maiorCh2.toFixed(2) && maiorCh2NoGrupo > 23)) {
                 alarmesFreioAgarrado.push(number);
             }
-        }
-        console.log(alarmesFreioAgarrado);
-        
-        if (alarmesFreioAgarrado.length > 0) {
-            console.log("Alarme de freio agarrado nos veículos: " + alarmesFreioAgarrado.join(", "));
-        } else {
-            console.log("Nenhum alarme de freio agarrado.");
         }
 
         //teste de temperatura alta no mesmo canal
@@ -521,8 +501,6 @@ export function displayData(extractedData) {
         let menorCriticaN1 = Math.min(ch1CriticaN1, ch2CriticaN1);
         let menorCriticaN2 = Math.min(ch1CriticaN2, ch2CriticaN2);
 
-        console.log("menorCriticaN1: " + menorCriticaN1);
-
         // Teste de Tendência preventiva de rolamento
         let alarmesTendenciaPreventivan1 = [];
         let veiculosVerificados2 = {};
@@ -536,8 +514,6 @@ export function displayData(extractedData) {
                 veiculosVerificados2[tbVeiculoslidosResumo[i].axle] = true;
             }
         }
-
-        console.log(alarmesTendenciaPreventivan1);
 
         // Teste de Tendência preventiva de rolamento para N2
         let alarmesTendenciaPreventivan2 = [];
@@ -553,18 +529,12 @@ export function displayData(extractedData) {
             }
         }
 
-        console.log(alarmesTendenciaPreventivan2);
-
-
-
         // Monta tabela de veículos com alarme de freio agarrado
         let veiculosComAlarmeFA = tbVeiculoslidosResumo.filter(veiculo => alarmesFreioAgarrado.includes(veiculo.number.toString()));
 
         veiculosComAlarmeFA = veiculosComAlarmeFA.map(veiculo => {
             return {...veiculo, alarme: "Freio agarrado"};
         });
-
-        console.log(veiculosComAlarmeFA);
 
         // Monta tabela de veículos com alarme de Tendência preventiva de rolamento N1
         let veiculosComAlarmeTPN1 = tbVeiculoslidosResumo.filter(veiculo => alarmesTendenciaPreventivan1.includes(veiculo.axle));
@@ -761,7 +731,6 @@ export function displayData(extractedData) {
                     const firstPoint = points[0];
                     const axleNum = this.data.datasets[firstPoint.datasetIndex].data[firstPoint.index].x;
                     pontoSelecionado = axleNum;  // Atualiza a variável com o valor de axleNum do ponto selecionado
-                    console.log(pontoSelecionado);
                 }
             },
             scales: {

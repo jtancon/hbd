@@ -1,4 +1,5 @@
 export function displayData(tabela) {
+    console.log(tabela);
     let contagemTitulos = {};
     let divs = {};
 
