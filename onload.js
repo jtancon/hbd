@@ -28,6 +28,10 @@ document.getElementById("supervisorioButton").onclick = function() {
     window.open("http://10.30.41.38:7000/"+parsedFile, '_blank');
 };
 
+document.getElementById("ArquivodePerfil").onclick = function() {
+    window.open("http://10.30.41.38:7000/"+parsedFile+"?key="+parsedFile+"_p_raw", '_blank');
+};
+
 let botao = document.getElementById('BTNPerfil');
 botao.onclick = function() {
     let texto = prompt('Por favor, insira o texto do arquivo de perfil p_raw:');
@@ -46,29 +50,28 @@ botao.onclick = function() {
             let celulas = linha.split(',');
 
             let temPerfil = false;
+            let axle = parseInt(celulas[0], 16);  // Converte o axle de hexadecimal para decimal
+            let temperatura = celulas[1] ? parseInt(celulas[1], 16) : null;  // Converte a temperatura de hexadecimal para decimal, se ela existir
             let valores = [];
-
-            celulas.forEach(celula => {
-                if (celula.includes('{')) {
-                    // Extrai o conteúdo entre {}
-                    let conteudo = celula.slice(celula.indexOf('{') + 1, celula.indexOf('}'));
-                    // Divide o conteúdo em pares de caracteres e converte cada par de hexadecimal para decimal
-                    for (let i = 0; i < conteudo.length; i += 2) {
-                        valores.push(parseInt(conteudo.slice(i, i + 2), 16));
-                    }
-                    temPerfil = true;
-                } else {
-                    valores.push(parseInt(celula, 16));  // Converte de hexadecimal para decimal
+            
+            if (celulas[1] && celulas[1].includes('{')) {
+                // Extrai o conteúdo entre {}
+                let conteudo = celulas[1].slice(celulas[1].indexOf('{') + 1, celulas[1].indexOf('}'));
+                // Divide o conteúdo em pares de caracteres e converte cada par de hexadecimal para decimal
+                for (let i = 0; i < conteudo.length; i += 2) {
+                    valores.push(parseInt(conteudo.slice(i, i + 2), 16));
                 }
-            });
-
-            // Adiciona a linha à tabela apenas se "perfil" for true
-            if (temPerfil) {
-                tabela.push({
-                    valor: valores,
-                    perfil: temPerfil
-                });
+                temPerfil = true;
             }
+            
+            // Adiciona a linha à tabela apenas se "perfil" for true
+if (temPerfil) {
+    tabela.push({
+        axle: axle,
+        temperatura: parseInt(temperatura * 5 / 9),  // Converte a temperatura para um inteiro depois de multiplicar por 5/9
+        perfil: valores.map(valor => parseInt(valor * 5 / 9))  // Converte cada valor de perfil para um inteiro depois de multiplicar por 5/9
+    });
+}
         }
 
         // Envia a tabela para perfil.js
@@ -114,10 +117,5 @@ function loadDadosHB(data) {
 
 //salvar pdf da analise
 document.getElementById('BTNImprimir').addEventListener('click', function() {
-    html2canvas(document.body).then(function(canvas) {
-        var imgData = canvas.toDataURL('image/png');
-        var doc = new jsPDF('p', 'mm');
-        doc.addImage(imgData, 'PNG', 10, 10);
-        doc.save(parsedFile + '.pdf');
-    });
+    window.print();
 });

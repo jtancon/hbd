@@ -240,12 +240,14 @@ export function displayData(extractedData) {
         const arrival = item.cabecalhoLeitura.state.reported.arrival;
         const sitename = item.cabecalhoLeitura.state.reported.siteName;
         absoluto = item.fichaTrem.trem.absolut;
+        localStorage.setItem('absoluto', absoluto);
         const checkAxle = item.cabecalhoLeitura.state.reported.divergence.checkAxle;
         const fichaAxles = item.cabecalhoLeitura.state.reported.divergence.fichaAxles || 0;
         const qtdalarme = item.cabecalhoLeitura.state.reported.systemWarning || 0;
         const direction = item.cabecalhoLeitura.state.reported.direction;
         const checkVehicles = item.cabecalhoLeitura.state.reported.divergence.checkVehicles;
         const fichaTrem = item.cabecalhoLeitura.state.reported.divergence.fichaVehicles || 0;
+        
         
         
         let alarmesCabecalho = document.getElementById('alarmesCabecalho');
