@@ -110,12 +110,6 @@ export function displayData(extractedData) {
             acaoNecessaria: "- Manutenção necessária\n- Trocar Pirômetro\n- Cabo do Scanner ou Scanner."
         },
         {
-            problemaOriginal: "criticalTendanceAlarm",
-            traducaoFalha: "Alarme de Tendência Crítica",
-            possivelCausa: "Variação anormal na tendência detectada",
-            acaoNecessaria: "- Investigar a causa raiz da variação\n- Corrigir o problema subjacente."
-        },
-        {
             problemaOriginal: "axleDivergence",
             traducaoFalha: "Divergência de Eixo",
             possivelCausa: "Divergência excessiva entre os eixos",
@@ -238,7 +232,7 @@ export function displayData(extractedData) {
 
         //cria as variaveis para usar na div status geral
         const arrival = item.cabecalhoLeitura.state.reported.arrival;
-        const sitename = item.cabecalhoLeitura.state.reported.siteName;
+        const sitename = item.cabecalhoLeitura.state.reported.siteName || item.thing.thingName;
         absoluto = item.fichaTrem.trem.absolut;
         localStorage.setItem('absoluto', absoluto);
         const checkAxle = item.cabecalhoLeitura.state.reported.divergence.checkAxle;
@@ -503,29 +497,29 @@ export function displayData(extractedData) {
         let menorCriticaN1 = Math.min(ch1CriticaN1, ch2CriticaN1);
         let menorCriticaN2 = Math.min(ch1CriticaN2, ch2CriticaN2);
 
-        // Teste de Tendência preventiva de rolamento
-        let alarmesTendenciaPreventivan1 = [];
+        // Teste de Tendência critica de rolamento
+        let alarmesTendenciacritican1 = [];
         let veiculosVerificados2 = {};
 
         for (let i = 0; i < tbVeiculoslidosResumo.length; i++) {
             if (!veiculosVerificados2[tbVeiculoslidosResumo[i].axle]) {
                 if (((tbVeiculoslidosResumo[i].ch1 > menorCriticaN1) && (tbVeiculoslidosResumo[i].ch1 < menorCriticaN2)) || 
                 ((tbVeiculoslidosResumo[i].ch2 > menorCriticaN1) && (tbVeiculoslidosResumo[i].ch2 < menorCriticaN2))) {
-                    alarmesTendenciaPreventivan1.push(tbVeiculoslidosResumo[i].axle);
+                    alarmesTendenciacritican1.push(tbVeiculoslidosResumo[i].axle);
                 }
                 veiculosVerificados2[tbVeiculoslidosResumo[i].axle] = true;
             }
         }
 
-        // Teste de Tendência preventiva de rolamento para N2
-        let alarmesTendenciaPreventivan2 = [];
+        // Teste de Tendência critica de rolamento para N2
+        let alarmesTendenciacritican2 = [];
         let veiculosVerificados3 = {};
 
         for (let i = 0; i < tbVeiculoslidosResumo.length; i++) {
             if (!veiculosVerificados3[tbVeiculoslidosResumo[i].axle]) {
                 if ((tbVeiculoslidosResumo[i].ch1 > menorCriticaN2) || 
                     (tbVeiculoslidosResumo[i].ch2 > menorCriticaN2)) {
-                    alarmesTendenciaPreventivan2.push(tbVeiculoslidosResumo[i].axle);
+                    alarmesTendenciacritican2.push(tbVeiculoslidosResumo[i].axle);
                 }
                 veiculosVerificados3[tbVeiculoslidosResumo[i].axle] = true;
             }
@@ -538,18 +532,18 @@ export function displayData(extractedData) {
             return {...veiculo, alarme: "Freio agarrado"};
         });
 
-        // Monta tabela de veículos com alarme de Tendência preventiva de rolamento N1
-        let veiculosComAlarmeTPN1 = tbVeiculoslidosResumo.filter(veiculo => alarmesTendenciaPreventivan1.includes(veiculo.axle));
+        // Monta tabela de veículos com alarme de Tendência critica de rolamento N1
+        let veiculosComAlarmeTPN1 = tbVeiculoslidosResumo.filter(veiculo => alarmesTendenciacritican1.includes(veiculo.axle));
 
         veiculosComAlarmeTPN1 = veiculosComAlarmeTPN1.map(veiculo => {
-            return {...veiculo, alarme: "Tendência preventiva de rolamento N1"};
+            return {...veiculo, alarme: "Tendência critica de rolamento N1"};
         });
 
-        // Monta tabela de veículos com alarme de Tendência preventiva de rolamento N2
-        let veiculosComAlarmeTPN2 = tbVeiculoslidosResumo.filter(veiculo => alarmesTendenciaPreventivan2.includes(veiculo.axle));
+        // Monta tabela de veículos com alarme de Tendência critica de rolamento N2
+        let veiculosComAlarmeTPN2 = tbVeiculoslidosResumo.filter(veiculo => alarmesTendenciacritican2.includes(veiculo.axle));
 
         veiculosComAlarmeTPN2 = veiculosComAlarmeTPN2.map(veiculo => {
-            return {...veiculo, alarme: "Tendência preventiva de rolamento N2"};
+            return {...veiculo, alarme: "Tendência critica de rolamento N2"};
         });
 
         // Combina todas as listas de veículos com alarmes
@@ -631,24 +625,24 @@ export function displayData(extractedData) {
 
                 divAlarmes.appendChild(linhaAlarmeFA);
 
-                //alarme de tendencia preventiva de rolamento N1
+                //alarme de tendencia critica de rolamento N1
                 let linhaAlarmeTPN1 = document.createElement('p');
                 linhaAlarmeTPN1.className = 'linha';
 
-                if (alarmesTendenciaPreventivan1.length > 0) {
-                    linhaAlarmeTPN1.innerHTML = "<span style='color: red;'><strong>Tendência critica de rolamento N1:</strong> " + alarmesTendenciaPreventivan1.join(", ") + "</span>" ;
+                if (alarmesTendenciacritican1.length > 0) {
+                    linhaAlarmeTPN1.innerHTML = "<span style='color: red;'><strong>Tendência critica de rolamento N1:</strong> " + alarmesTendenciacritican1.join(", ") + "</span>" ;
                 } else {
                     linhaAlarmeTPN1.innerHTML = "<span style='color: green;'><strong>Sem tendência de rolamento N1.</strong></span>" ;
                 }
 
                 divAlarmes.appendChild(linhaAlarmeTPN1);
 
-                //alarme de tendencia preventiva de rolamento N2
+                //alarme de tendencia critica de rolamento N2
                 let linhaAlarmeTPN2 = document.createElement('p');
                 linhaAlarmeTPN2.className = 'linha';
 
-                if (alarmesTendenciaPreventivan2.length > 0) {
-                    linhaAlarmeTPN2.innerHTML = "<span style='color: red;'><strong>Tendência critica de rolamento N2:</strong> " + alarmesTendenciaPreventivan2.join(", ") + "</span>" ;
+                if (alarmesTendenciacritican2.length > 0) {
+                    linhaAlarmeTPN2.innerHTML = "<span style='color: red;'><strong>Tendência critica de rolamento N2:</strong> " + alarmesTendenciacritican2.join(", ") + "</span>" ;
                 } else {
                     linhaAlarmeTPN2.innerHTML = "<span style='color: green;'><strong>Sem tendência de rolamento N2.</strong></span>" ;
                 }
@@ -687,8 +681,8 @@ export function displayData(extractedData) {
      let menorCriticaN1 = Math.min(ch1CriticaN1, ch2CriticaN1);
      let menorCriticaN2 = Math.min(ch1CriticaN2, ch2CriticaN2);
 
-     //criação do grafico
-    new Chart(ctx, {
+     new Chart(ctx, {
+        //criação do grafico
         type: 'scatter',
         data: {
             datasets: [{
@@ -741,7 +735,7 @@ export function displayData(extractedData) {
                         display: true,
                         text: 'Número do Eixo'
                     },
-                    max: maxAxleNum,  // Defina o valor máximo para o eixo X
+                    max: maxAxleNum+5,  // Defina o valor máximo para o eixo X
                 },
                 y: {
                     title: {
