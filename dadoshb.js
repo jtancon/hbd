@@ -199,6 +199,7 @@ export function displayData(extractedData) {
                         number: veiculoLido.number || "n/a",
                         tipo: veiculoLido.tipoVeiculo || "n/a",
                         veiculo: veiculoLido.veiculo || "n/a",
+                        carregado: veiculoLido.isLoad === true ? "Carregado" : veiculoLido.isLoad === false ? "Vazio" : "n/a",
                         axle: a.axleNum || "n/a",
                         ch1: a.ch1 || "n/a",
                         ch2: a.ch2 || "n/a",
@@ -291,6 +292,16 @@ export function displayData(extractedData) {
             const criticalN2 = (mean + 7 * standardDeviation > lowLimitN2) ? mean + 7 * standardDeviation : lowLimitN2;
             return { lowLimitN1, criticalN1, lowLimitN2, criticalN2 };
         }
+
+        //2 axle com maior temperatura ch1
+        let maiorCh1Axle = tbVeiculoslidosResumo.reduce((maior, linha) => linha.ch1 !== "n/a" ? linha.ch1 > maior ? linha.ch1 : maior : maior, 0);
+        let maiorCh1Axle2 = tbVeiculoslidosResumo.reduce((maior, linha) => linha.ch1 !== "n/a" && linha.ch1 < maiorCh1Axle ? linha.ch1 > maior ? linha.ch1 : maior : maior, 0);
+
+        //2 axle com maior temperatura ch2
+        let maiorCh2Axle = tbVeiculoslidosResumo.reduce((maior, linha) => linha.ch2 !== "n/a" ? linha.ch2 > maior ? linha.ch2 : maior : maior, 0);
+        let maiorCh2Axle2 = tbVeiculoslidosResumo.reduce((maior, linha) => linha.ch2 !== "n/a" && linha.ch2 < maiorCh2Axle ? linha.ch2 > maior ? linha.ch2 : maior : maior, 0);
+
+        console.log(maiorCh1Axle, maiorCh1Axle2, maiorCh2Axle, maiorCh2Axle2);
 
         //organizar dados para tabela analise (media ch1, desvio padrao, temperatura critica, low limit, maior temperatura, nivel sigma)
         //media ch1
@@ -593,7 +604,7 @@ export function displayData(extractedData) {
         tbalarmesTable.className = "tbalarmesTable"; // Adicionando a classe aqui
 
         let tbalarmesHeaderRow = document.createElement("tr");
-        ["Veículo", "Eixo", "Tipo", "Série", "CH1", "CH2", "Alarme"].forEach(text => {
+        ["Veículo", "Eixo", "Tipo", "Série", "CH1", "CH2", "Carregado","Alarme"].forEach(text => {
             let tbalarmesHeader = document.createElement("th");
             tbalarmesHeader.textContent = text;
             tbalarmesHeaderRow.appendChild(tbalarmesHeader);
@@ -601,7 +612,7 @@ export function displayData(extractedData) {
         tbalarmesTable.appendChild(tbalarmesHeaderRow);
         veiculosComAlarmes.forEach(veiculo => {
             let tbalarmesRow = document.createElement("tr");
-            [veiculo.number, veiculo.axle, veiculo.tipo, veiculo.veiculo, veiculo.ch1, veiculo.ch2, veiculo.alarme].forEach(text => {
+            [veiculo.number, veiculo.axle, veiculo.tipo, veiculo.veiculo, veiculo.ch1, veiculo.ch2, veiculo.carregado, veiculo.alarme].forEach(text => {
                 let tbalarmesCell = document.createElement("td");
                 tbalarmesCell.textContent = text;
                 tbalarmesRow.appendChild(tbalarmesCell);
@@ -836,15 +847,10 @@ export function displayData(extractedData) {
                     }
                 },
                 datalabels: {
-                    display: function(context) {
-                        return isWithinRange(context.dataset.data[context.dataIndex], maxValue);
-                    },
                     color: 'black',
-                    font: {
-                        weight: 'bold'
-                    },
+                    display: true,  // Sempre exibe data labels
                     formatter: function(value, context) {
-                        return value.y;
+                        return value;  // Retorna o valor y do ponto de dados
                     }
                 }
             }
