@@ -99,8 +99,35 @@ export function displayData(tabela) {
                 responsive: false,  // Desativa o redimensionamento automático
                 scales: {
                     y: {
+                        grid : {
+                            display: false
+                        },
                         beginAtZero: true,
                         max: 145,
+                    },
+                    x: {
+                        grid : {
+                            display: false
+                        }
+                    }
+                },
+                tooltips: {
+                    enabled: true,
+                    mode: 'index',
+                    intersect: false,
+                    callbacks: {
+                        label: function(tooltipItem, data) {
+                            return 'Valor: ' + tooltipItem.yLabel;
+                        }
+                    }
+                },
+                plugins: {
+                    datalabels: {
+                        color: 'black',
+                        display: true,  // Sempre exibe data labels
+                        formatter: function(value, context) {
+                            return value;  // Retorna o valor y do ponto de dados
+                        }
                     }
                 }
             }

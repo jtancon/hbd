@@ -235,14 +235,14 @@ export function displayData(extractedData) {
         const sitename = item.cabecalhoLeitura.state.reported.siteName || item.thing.thingName;
         absoluto = item.fichaTrem.trem.absolut;
         localStorage.setItem('absoluto', absoluto);
-        const checkAxle = item.cabecalhoLeitura.state.reported.divergence.checkAxle;
-        const fichaAxles = item.cabecalhoLeitura.state.reported.divergence.fichaAxles || 0;
+        const checkAxle = item.cabecalhoLeitura.state.reported.divergence?.checkAxle || 0;
+        const fichaAxles = item.cabecalhoLeitura.state.reported.divergence?.fichaAxles || 0;
         const qtdalarme = item.cabecalhoLeitura.state.reported.systemWarning || 0;
         const direction = item.cabecalhoLeitura.state.reported.direction;
-        const checkVehicles = item.cabecalhoLeitura.state.reported.divergence.checkVehicles;
-        const fichaTrem = item.cabecalhoLeitura.state.reported.divergence.fichaVehicles || 0;
-        
-        
+        const checkVehicles = item.cabecalhoLeitura.state.reported.divergence?.checkVehicles || 0;
+        const fichaTrem = item.cabecalhoLeitura.state.reported.divergence?.fichaVehicles || 0;
+        const speedInOut = item.cabecalhoLeitura.state.reported.speedInOut;
+          
         
         let alarmesCabecalho = document.getElementById('alarmesCabecalho');
         
@@ -382,37 +382,53 @@ export function displayData(extractedData) {
         p3.innerHTML = '<strong>Hotbox (Site Name):</strong> ' + sitename;
         div.appendChild(p3);
         
-        let p4 = document.createElement('p');
-        p4.className = 'linha';
-        p4.innerHTML = '<strong>Absoluto:</strong> ' + absoluto;
-        div.appendChild(p4);
-        
         let p5 = document.createElement('p');
         p5.className = 'linha';
-        p5.innerHTML = '<strong>Numero de veiculos:</strong> Contados ' + checkVehicles + ' - Ficha ' + fichaTrem; // Substitua por valor real
+        p5.innerHTML = '<strong>Velocidade:</strong> ' + speedInOut;
         div.appendChild(p5);
 
         let p6 = document.createElement('p');
         p6.className = 'linha';
-        p6.innerHTML = '<strong>Numero de eixos:</strong> Contados ' + checkAxle + ' - Ficha ' + fichaAxles; // Substitua por valor real
+        if (direction === 'South') {
+            p6.innerHTML = '<strong>Sentido:</strong> Sul';
+        } else if (direction === 'North') {
+            p6.innerHTML = '<strong>Sentido:</strong> Norte';
+        } else {
+            p6.innerHTML = '<strong>Sentido:</strong> ' + direction;
+        }
         div.appendChild(p6);
-        
+
         let p7 = document.createElement('p');
         p7.className = 'linha';
-        p7.innerHTML = '<strong>Numero de alarmes:</strong> ' + qtdalarme; // Substitua por valor real
+        p7.innerHTML = '<strong>Absoluto:</strong> ' + absoluto;
         div.appendChild(p7);
         
-        let directionValue = tbproxhb[sitename][direction];
         let p8 = document.createElement('p');
         p8.className = 'linha';
-        p8.innerHTML = '<strong>Proximo HB:</strong> ' + directionValue;
+        p8.innerHTML = '<strong>Numero de veiculos:</strong> Contados ' + checkVehicles + ' - Ficha ' + fichaTrem; // Substitua por valor real
         div.appendChild(p8);
 
-        //posição das locomotivas
         let p9 = document.createElement('p');
         p9.className = 'linha';
-        p9.innerHTML = '<strong>Posição das locomotivas:</strong> ' + posicoesLocomotivas.join(", ");
+        p9.innerHTML = '<strong>Numero de eixos:</strong> Contados ' + checkAxle + ' - Ficha ' + fichaAxles; // Substitua por valor real
         div.appendChild(p9);
+        
+        let p10 = document.createElement('p');
+        p10.className = 'linha';
+        p10.innerHTML = '<strong>Numero de alarmes:</strong> ' + qtdalarme; // Substitua por valor real
+        div.appendChild(p10);
+        
+        let directionValue = tbproxhb[sitename]?.[direction] ?? '';
+        let p11 = document.createElement('p');
+        p11.className = 'linha';
+        p11.innerHTML = '<strong>Proximo HB:</strong> ' + directionValue;
+        div.appendChild(p11);
+
+        //posição das locomotivas
+        let p12 = document.createElement('p');
+        p12.className = 'linha';
+        p12.innerHTML = '<strong>Posição das locomotivas:</strong> ' + posicoesLocomotivas.join(", ");
+        div.appendChild(p12);
         
         // Adicione o div ao DOM
         flexContainer.appendChild(div);
@@ -546,8 +562,29 @@ export function displayData(extractedData) {
             return {...veiculo, alarme: "Tendência critica de rolamento N2"};
         });
 
+        //alarmes absoluto
+        let alarmesAbsoluto = [];
+        let veiculosVerificados4 = {};
+
+        for (let i = 0; i < tbVeiculoslidosResumo.length; i++) {
+            if (!veiculosVerificados4[tbVeiculoslidosResumo[i].axle]) {
+                if ((tbVeiculoslidosResumo[i].ch1 > absoluto) ||
+                    (tbVeiculoslidosResumo[i].ch2 > absoluto)) {
+                    alarmesAbsoluto.push(tbVeiculoslidosResumo[i].axle);
+                }
+                veiculosVerificados4[tbVeiculoslidosResumo[i].axle] = true;
+            }
+        }
+
+        // Monta tabela de veículos com alarme de Absoluto
+        let veiculosComAlarmeAbsoluto = tbVeiculoslidosResumo.filter(veiculo => alarmesAbsoluto.includes(veiculo.axle));
+
+        veiculosComAlarmeAbsoluto = veiculosComAlarmeAbsoluto.map(veiculo => {
+            return {...veiculo, alarme: "Absoluto"};
+        });
+
         // Combina todas as listas de veículos com alarmes
-        let veiculosComAlarmes = [...veiculosComAlarmeFA, ...veiculosComAlarmeTPN1, ...veiculosComAlarmeTPN2];
+        let veiculosComAlarmes = [...veiculosComAlarmeFA, ...veiculosComAlarmeTPN1, ...veiculosComAlarmeTPN2, ...veiculosComAlarmeAbsoluto];
 
         // Montar tabela de veículos com alarmes
         let tbalarmesContainer = document.getElementById("alarmesContainer");
@@ -618,7 +655,7 @@ export function displayData(extractedData) {
                 linhaAlarmeFA.className = 'linha';
                 
                 if (alarmesFreioAgarrado.length > 0) {
-                    linhaAlarmeFA.innerHTML = "<span style='color: red;'><strong>Alarme de freio agarrado:</strong> " + alarmesFreioAgarrado.join(", ") + "</span>" ;
+                    linhaAlarmeFA.innerHTML = "<span style='color: red;'><strong>Alarme de freio agarrado no veiculo:</strong> " + alarmesFreioAgarrado.join(", ") + "</span>" ;
                 } else {
                     linhaAlarmeFA.innerHTML = "<span style='color: green;'><strong>Sem freio agarrado.</strong></span>" ;
                 }
@@ -630,7 +667,7 @@ export function displayData(extractedData) {
                 linhaAlarmeTPN1.className = 'linha';
 
                 if (alarmesTendenciacritican1.length > 0) {
-                    linhaAlarmeTPN1.innerHTML = "<span style='color: red;'><strong>Tendência critica de rolamento N1:</strong> " + alarmesTendenciacritican1.join(", ") + "</span>" ;
+                    linhaAlarmeTPN1.innerHTML = "<span style='color: red;'><strong>Tendência critica de rolamento N1 nos eixos:</strong> " + alarmesTendenciacritican1.join(", ") + "</span>" ;
                 } else {
                     linhaAlarmeTPN1.innerHTML = "<span style='color: green;'><strong>Sem tendência de rolamento N1.</strong></span>" ;
                 }
@@ -642,12 +679,22 @@ export function displayData(extractedData) {
                 linhaAlarmeTPN2.className = 'linha';
 
                 if (alarmesTendenciacritican2.length > 0) {
-                    linhaAlarmeTPN2.innerHTML = "<span style='color: red;'><strong>Tendência critica de rolamento N2:</strong> " + alarmesTendenciacritican2.join(", ") + "</span>" ;
+                    linhaAlarmeTPN2.innerHTML = "<span style='color: red;'><strong>Tendência critica de rolamento N2 nos eixos:</strong> " + alarmesTendenciacritican2.join(", ") + "</span>" ;
                 } else {
                     linhaAlarmeTPN2.innerHTML = "<span style='color: green;'><strong>Sem tendência de rolamento N2.</strong></span>" ;
                 }
 
                 divAlarmes.appendChild(linhaAlarmeTPN2);
+
+                //alarme de absoluto
+                let linhaAlarmeAbsoluto = document.createElement('p');
+                linhaAlarmeAbsoluto.className = 'linha';
+
+                if (alarmesAbsoluto.length > 0) {
+                    linhaAlarmeAbsoluto.innerHTML = "<span style='color: red;'><strong>Alarme de absoluto nos eixos:</strong> " + alarmesAbsoluto.join(", ") + "</span>" ;
+                }
+
+                divAlarmes.appendChild(linhaAlarmeAbsoluto);
 
                 //temp alta no mesmo canal
                 let linhaAlarmeTA = document.createElement('p');
@@ -681,7 +728,7 @@ export function displayData(extractedData) {
      let menorCriticaN1 = Math.min(ch1CriticaN1, ch2CriticaN1);
      let menorCriticaN2 = Math.min(ch1CriticaN2, ch2CriticaN2);
 
-     new Chart(ctx, {
+    new Chart(ctx, {
         //criação do grafico
         type: 'scatter',
         data: {
@@ -736,11 +783,17 @@ export function displayData(extractedData) {
                         text: 'Número do Eixo'
                     },
                     max: maxAxleNum+5,  // Defina o valor máximo para o eixo X
+                    grid: {
+                        display: false  // Remova as grades do eixo X
+                    }
                 },
                 y: {
                     title: {
                         display: true,
                         text: 'Temperatura'
+                    },
+                    grid: {
+                        display: false  // Remova as grades do eixo Y
                     }
                 }
             },
