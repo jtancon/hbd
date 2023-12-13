@@ -306,22 +306,45 @@ export function displayData(extractedData) {
         //organizar dados para tabela analise (media ch1, desvio padrao, temperatura critica, low limit, maior temperatura, nivel sigma)
         //media ch1
         let somaCh1 = tbVeiculoslidosResumo.reduce((soma, linha) => linha.ch1 !== "n/a" ? soma + linha.ch1 : soma, 0);
-        let countCh1 = tbVeiculoslidosResumo.reduce((count, linha) => linha.ch1 !== "n/a" ? count + 1 : count, 0);
-        let mediaCh1 = parseFloat((somaCh1 / countCh1).toFixed(2));
+        let countCh1 = tbVeiculoslidosResumo.reduce((count, linha) => linha.axle !== "n/a" ? count + 1 : count, 0);
+        //item.fichaTrem.trem.calculusSummary.averages.avgTemperatureCh1
+        let mediaCh1;
+        if (item.fichaTrem.trem.calculusSummary.averages.avgTemperatureCh1) {
+            mediaCh1 = parseFloat(item.fichaTrem.trem.calculusSummary.averages.avgTemperatureCh1).toFixed(2);
+        } else {
+            mediaCh1 = parseFloat((somaCh1 / countCh1).toFixed(2));
+        }
+        console.log(parseFloat((somaCh1 / countCh1).toFixed(2)));
         //média ch2
         let somaCh2 = tbVeiculoslidosResumo.reduce((soma, linha) => linha.ch2 !== "n/a" ? soma + linha.ch2 : soma, 0);
-        let countCh2 = tbVeiculoslidosResumo.reduce((count, linha) => linha.ch2 !== "n/a" ? count + 1 : count, 0);
-        let mediaCh2 = parseFloat((somaCh2 / countCh2).toFixed(2));
+        let countCh2 = tbVeiculoslidosResumo.reduce((count, linha) => linha.axle !== "n/a" ? count + 1 : count, 0);
+        let mediaCh2;
+        if (item.fichaTrem.trem.calculusSummary.averages.avgTemperatureCh2) {
+            mediaCh2 = parseFloat(item.fichaTrem.trem.calculusSummary.averages.avgTemperatureCh2).toFixed(2);
+        } else {
+            mediaCh2 = parseFloat((somaCh2 / countCh2).toFixed(2));
+        }
+        console.log(parseFloat((somaCh2 / countCh2).toFixed(2)));
 
         //diferença entre ch1 e ch2
         let diffCh1Ch2 = Math.abs(mediaCh1 - mediaCh2);
 
         //desvio padrao ch1
         let somaDesvioCh1 = tbVeiculoslidosResumo.reduce((soma, linha) => linha.ch1 !== "n/a" ? soma + Math.pow(linha.ch1 - mediaCh1, 2) : soma, 0);
-        let desvioCh1 = parseFloat(Math.sqrt(somaDesvioCh1 / countCh1).toFixed(2));
+        let desvioCh1;
+        if (item.fichaTrem.trem.calculusSummary.deviations.deviationTemperatureCh1) {
+            desvioCh1 = parseFloat(item.fichaTrem.trem.calculusSummary.deviations.deviationTemperatureCh1).toFixed(2);
+        } else {
+            desvioCh1 = parseFloat(Math.sqrt(somaDesvioCh1 / countCh1).toFixed(2));
+        }
         //desvio padrao ch2
         let somaDesvioCh2 = tbVeiculoslidosResumo.reduce((soma, linha) => linha.ch2 !== "n/a" ? soma + Math.pow(linha.ch2 - mediaCh2, 2) : soma, 0);
-        let desvioCh2 = parseFloat(Math.sqrt(somaDesvioCh2 / countCh2).toFixed(2));
+        let desvioCh2;
+        if (item.fichaTrem.trem.calculusSummary.deviations.deviationTemperatureCh2) {
+            desvioCh2 = parseFloat(item.fichaTrem.trem.calculusSummary.deviations.deviationTemperatureCh2).toFixed(2);
+        } else {
+            desvioCh2 = parseFloat(Math.sqrt(somaDesvioCh2 / countCh2).toFixed(2));
+        }
         
         // Atribua valores a elas dentro do escopo atual
         ({ lowLimitN1: ch1LowLimitN1, criticalN1: ch1CriticaN1, lowLimitN2: ch1LowLimitN2, criticalN2: ch1CriticaN2 } = calculateN1N2(sitename, mediaCh1, desvioCh1));
