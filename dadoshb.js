@@ -108,24 +108,6 @@ export function displayData(extractedData) {
             traducaoFalha: "Falha no Scanner - Malfuncionamento Chd",
             possivelCausa: "Perfil de rolamento atípico detectado",
             acaoNecessaria: "- Manutenção necessária\n- Trocar Pirômetro\n- Cabo do Scanner ou Scanner."
-        },
-        {
-            problemaOriginal: "axleDivergence",
-            traducaoFalha: "Divergência de Eixo",
-            possivelCausa: "Divergência excessiva entre os eixos",
-            acaoNecessaria: "- Realizar alinhamento adequado\n- Verificar condição dos eixos."
-        },
-        {
-            problemaOriginal: "axleGroupError",
-            traducaoFalha: "Erro no Grupo de Eixos",
-            possivelCausa: "- Falha na comunicação entre os sensores de eixos\n- Configuração de grupo incorreta",
-            acaoNecessaria: "- Verificar cabos e conexões\n- Corrigir configuração de grupo."
-        },
-        {
-            problemaOriginal: "mergeTrainRecordError",
-            traducaoFalha: "Erro ao Mesclar Registro de Trem",
-            possivelCausa: "Falha ao mesclar registros de trens",
-            acaoNecessaria: "- Verificar integridade dos dados\n- Corrigir falhas no processo de mesclagem."
         }
     ];
     
@@ -284,11 +266,12 @@ export function displayData(extractedData) {
             }
         });
 
-        //funcao de verificar antes de calcular N1 e N2 (low limit e temperatura critica)
         function calculateN1N2(sitename, mean, standardDeviation) {
-            const lowLimitN1 = (sitename === "LAR" || sitename === "LPJ" || sitename === "LRF" || sitename === "LUV" || sitename === "LVZ" || sitename === "NCY") ? 33 : 35;
+            const lowLimitN1 = (sitename === "LAR" || sitename === "LPJ" || sitename === "LRF" || sitename === "LUV" || sitename === "LVZ" || sitename === "NCY") ? 33 : 
+                                (sitename === "Phoenix MB -Pimenta" || sitename === "PHOENIX MB Canguera") ? 65 : 35;
             const criticalN1 = (mean + 6 * standardDeviation > lowLimitN1) ? mean + 6 * standardDeviation : lowLimitN1;
-            const lowLimitN2 = (sitename === "LAR" || sitename === "LPJ" || sitename === "LRF" || sitename === "LUV" || sitename === "LVZ" || sitename === "NCY") ? 33 : 38;
+            const lowLimitN2 = (sitename === "LAR" || sitename === "LPJ" || sitename === "LRF" || sitename === "LUV" || sitename === "LVZ" || sitename === "NCY") ? 33 : 
+                                (sitename === "Phoenix MB -Pimenta" || sitename === "PHOENIX MB Canguera") ? 65 : 38;
             const criticalN2 = (mean + 7 * standardDeviation > lowLimitN2) ? mean + 7 * standardDeviation : lowLimitN2;
             return { lowLimitN1, criticalN1, lowLimitN2, criticalN2 };
         }
@@ -350,6 +333,9 @@ export function displayData(extractedData) {
         ({ lowLimitN1: ch1LowLimitN1, criticalN1: ch1CriticaN1, lowLimitN2: ch1LowLimitN2, criticalN2: ch1CriticaN2 } = calculateN1N2(sitename, mediaCh1, desvioCh1));
         ({ lowLimitN1: ch2LowLimitN1, criticalN1: ch2CriticaN1, lowLimitN2: ch2LowLimitN2, criticalN2: ch2CriticaN2 } = calculateN1N2(sitename, mediaCh2, desvioCh2));  
         
+        console.log(ch1LowLimitN1, ch1CriticaN1, ch1LowLimitN2, ch1CriticaN2);
+        console.log(ch2LowLimitN1, ch2CriticaN1, ch2LowLimitN2, ch2CriticaN2);
+
         //maior temperatura ch1
         let maiorCh1 = tbVeiculoslidosResumo.reduce((maior, linha) => linha.ch1 !== "n/a" ? linha.ch1 > maior ? linha.ch1 : maior : maior, 0);
         //maior temperatura ch2
@@ -532,12 +518,12 @@ export function displayData(extractedData) {
             veiculo.axle.forEach(axle => {
                 pontosCh1.push({
                     x: axle.axleNum,
-                    y: axle.ch1,
+                    y: (sitename === "Phoenix MB -Pimenta" || sitename === "PHOENIX MB Canguera") ? axle.chd : axle.ch1,
                     veiculo: number
                 });
                 pontosCh2.push({
                     x: axle.axleNum,
-                    y: axle.ch2,
+                    y: (sitename === "Phoenix MB -Pimenta" || sitename === "PHOENIX MB Canguera") ? axle.che : axle.ch2,
                     veiculo: number
                 });
             });
