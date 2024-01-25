@@ -21,6 +21,7 @@ h2 {
     color: #333;
     font-size: 14px;
     font-family: Verdana, sans-serif;
+    padding-top: 5px;
 }
 
 footer {
@@ -96,6 +97,28 @@ footer {
 
 
 .DIVAlarmes {
+    width: 100%;
+    text-align: left;
+    background-color: #f9f9f9;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    margin-left: 10px; 
+    margin-bottom: 10px; 
+}
+
+.DIVAlertas {
+    width: 100%;
+    text-align: left;
+    background-color: #f9f9f9;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    margin-left: 10px; 
+    margin-bottom: 10px; 
+}
+
+.DIVDivergencias {
     width: 100%;
     text-align: left;
     background-color: #f9f9f9;

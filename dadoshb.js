@@ -358,11 +358,11 @@ export function displayData(extractedData) {
         let alarmeTemperaturaAlta = "<span style='color: green;'><strong>Sem temperaturas altas em unico canal.</strong></span>";
 
         if (maiorCh1 > 23 && contagemCh2 >= 3) {
-            alarmeTemperaturaAlta = "<span style='color: red;'><strong>Temperaturas altas no mesmo canal: CH1.</strong></span>";
+            alarmeTemperaturaAlta = "<span style='color: #FF5733;'><strong>Temperaturas altas no mesmo canal: CH1.</strong></span>";
         }
         
         if (maiorCh2 > 23 && contagemCh1 >= 3) {
-            alarmeTemperaturaAlta = "<span style='color: red;'><strong>Temperaturas altas no mesmo canal: CH2.</strong></span>";
+            alarmeTemperaturaAlta = "<span style='color: #FF5733;'><strong>Temperaturas altas no mesmo canal: CH2.</strong></span>";
         }
 
         // DIV para o status geral
@@ -621,36 +621,13 @@ export function displayData(extractedData) {
                 // DIV para os alarmes
                 let divAlarmes = document.createElement('div');
                 divAlarmes.className = 'DIVAlarmes';
+
+                
         
                 // Título da div
                 let titulo = document.createElement('h2');
                 titulo.textContent = 'Alarmes';
                 divAlarmes.appendChild(titulo);
-        
-        
-                //linha alarme de diferença entre ch1 e ch2
-                let diffalarme = diffCh1Ch2 > 2.4 ? "<span style='color: red;'><strong>Diferença entre CH1 e CH2:</strong> " + parseFloat(diffCh1Ch2).toFixed(2) + "- Alta diferença entre CH1 e CH2.</span>" : "<span style='color: green;'><strong>Diferença entre CH1 e CH2:</strong> " + parseFloat(diffCh1Ch2).toFixed(2) + " - Diferença ok.</span>";
-        
-                let linha = document.createElement('p');
-                linha.className = 'linha';
-                linha.innerHTML = diffalarme;
-                divAlarmes.appendChild(linha);
-        
-                let diffVehicles = Math.abs(fichaTrem - checkVehicles);
-                let diffVehiclesAlarme = diffVehicles > 2.4 ? "<span style='color: red;'><strong>Diferença entre veiculos contados e ficha:</strong> " + parseFloat(diffVehicles).toFixed(0) + " - Existe diferença.</span>" : "<span style='color: green;'><strong>Diferença entre veiculos contados e ficha:</strong> " + parseFloat(diffVehicles).toFixed(0) + " - Diferença ok.</span>";
-        
-                let linhaVehicles = document.createElement('p');
-                linhaVehicles.className = 'linha';
-                linhaVehicles.innerHTML = diffVehiclesAlarme;
-                divAlarmes.appendChild(linhaVehicles);
-        
-                let diffAxles = Math.abs(checkAxle - fichaAxles);
-                let diffAxlesAlarme = diffAxles > 2.4 ? "<span style='color: red;'><strong>Diferença entre eixos contatos e ficha:</strong> " + parseFloat(diffAxles).toFixed(0) + " - Existe diferença.</span>" : "<span style='color: green;'><strong>Diferença entre eixos contatos e ficha:</strong> " + parseFloat(diffAxles).toFixed(0) + " - Diferença ok.</span>";
-        
-                let linhaAxles = document.createElement('p');
-                linhaAxles.className = 'linha';
-                linhaAxles.innerHTML = diffAxlesAlarme;
-                divAlarmes.appendChild(linhaAxles);
 
                 //alarme de freio agarrado
                 let linhaAlarmeFA = document.createElement('p');
@@ -698,12 +675,48 @@ export function displayData(extractedData) {
 
                 divAlarmes.appendChild(linhaAlarmeAbsoluto);
 
+                // div alertas
+                let tituloAlertas = document.createElement('h2');
+                tituloAlertas.textContent = 'Alertas';
+                divAlarmes.appendChild(tituloAlertas);
+
+                //linha alarme de diferença entre ch1 e ch2
+                let diffalarme = diffCh1Ch2 > 2.4 ? "<span style='color: #FF5733;'><strong>Diferença entre CH1 e CH2:</strong> " + parseFloat(diffCh1Ch2).toFixed(2) + "- Alta diferença entre CH1 e CH2.</span>" : "<span style='color: green;'><strong>Diferença entre CH1 e CH2:</strong> " + parseFloat(diffCh1Ch2).toFixed(2) + " - Diferença ok.</span>";
+        
+                let linha = document.createElement('p');
+                linha.className = 'linha';
+                linha.innerHTML = diffalarme;
+                divAlarmes.appendChild(linha);    
+                
                 //temp alta no mesmo canal
                 let linhaAlarmeTA = document.createElement('p');
                 linhaAlarmeTA.className = 'linha';
                 linhaAlarmeTA.innerHTML = alarmeTemperaturaAlta;
 
-                divAlarmes.appendChild(linhaAlarmeTA);
+                divAlarmes.appendChild(linhaAlarmeTA);                
+
+                // div divergencias
+                let tituloDivergencias = document.createElement('h2');
+                tituloDivergencias.textContent = 'Divergências';
+                divAlarmes.appendChild(tituloDivergencias);
+                
+                // divergencia entre veiculos contados e veiculos na ficha
+                let diffVehicles = Math.abs(fichaTrem - checkVehicles);
+                let diffVehiclesAlarme = diffVehicles > 2.4 ? "<span style='color: #C89F54;'><strong>Diferença entre veiculos contados e ficha:</strong> " + parseFloat(diffVehicles).toFixed(0) + " - Existe diferença.</span>" : "<span style='color: green;'><strong>Diferença entre veiculos contados e ficha:</strong> " + parseFloat(diffVehicles).toFixed(0) + " - Diferença ok.</span>";
+        
+                let linhaVehicles = document.createElement('p');
+                linhaVehicles.className = 'linha';
+                linhaVehicles.innerHTML = diffVehiclesAlarme;
+                divAlarmes.appendChild(linhaVehicles);
+                
+                // divergencia entre eixos contatos e eixos na ficha
+                let diffAxles = Math.abs(checkAxle - fichaAxles);
+                let diffAxlesAlarme = diffAxles > 2.4 ? "<span style='color: #C89F54;'><strong>Diferença entre eixos contatos e ficha:</strong> " + parseFloat(diffAxles).toFixed(0) + " - Existe diferença.</span>" : "<span style='color: green;'><strong>Diferença entre eixos contatos e ficha:</strong> " + parseFloat(diffAxles).toFixed(0) + " - Diferença ok.</span>";
+        
+                let linhaAxles = document.createElement('p');
+                linhaAxles.className = 'linha';
+                linhaAxles.innerHTML = diffAxlesAlarme;
+                divAlarmes.appendChild(linhaAxles);                    
                 
                 // Adicione a div ao DOM
                 flexContainer.appendChild(divAlarmes);
