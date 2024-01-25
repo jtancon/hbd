@@ -9,7 +9,7 @@ export function displayData(extractedData) {
     const tbfalhas = [
         {
             problemaOriginal: "failTransducerSignalMiscount",
-            traducaoFalha: "Falha na Contagem de Sinal do Transdutor",
+            traducaoFalha: "Aviso do Sistema - Falha na Contagem de Sinal do Transdutor",
             possivelCausa: "- Limalha de metal acumulado sobre transdutores\n- Pedra ou metal sob os transdutores\n- Transdutor solto ou fora de alinhamento\n- Fios do transdutor com polaridade invertida\n- Transdutor danificado\n- Impedância do Transdutor fora da faixa de tolerância\n- Mau contato nas conexões internas à case\n- Tensão de saída do transdutor fora da faixa de tolerância",
             acaoNecessaria: "- Remover o excesso de metal\n- Verificar objetos sob os transdutores\n- Fixar e alinhar o transdutor\n- Verificar polaridade dos fios\n- Substituir transdutor\n- Testar e substituir cabos e conexões\n- Verificar e corrigir a tensão de saída do transdutor."
         },
@@ -20,94 +20,76 @@ export function displayData(extractedData) {
             acaoNecessaria: "- Realizar a calibração\n- Verificar posição e configuração do calibrador\n- Limpar scanners\n- Desligar calibrador por 15 minutos\n- Corrigir informação de temperatura ambiente\n- Alinhar scanners\n- Substituir placas com defeito\n- Verificar e corrigir proteções e fiação interna\n- Testar e substituir cabo ou scanner."
         },
         {
-            problemaOriginal: "failPowerRest",
-            traducaoFalha: "Falha no Restabelecimento de Energia",
-            possivelCausa: "- Inversor não conectado\n- Inversor desligado ou necessitando reset\n- Inversor não fornece a tensão necessária",
-            acaoNecessaria: "- Conectar o inversor\n- Ligar ou resetar o inversor\n- Verificar a tensão de saída do inversor e substituir se necessário."
-        },
-        {
             problemaOriginal: "failBadSensor1",
             traducaoFalha: "Falha no Sensor 1",
-            possivelCausa: "- Scanner desconectado\n- Alimentação +/- 5Vdc ausente\n- Tempo de alimentação do Aquecedor de Integridade muito curto\n- Máxima temperatura para o Teste de Integridade muito elevada\n- Lentes ou Espelhos sujos\n- Fiação interna ao scanner rompida ou com mau contato\n- Aquecedor de Integridade com defeito\n- Obturador emperrado ou entreaberto",
-            acaoNecessaria: "- Verificar conexões do scanner\n- Verificar 5 Vdc no pirômetro\n- Verificar tempo de alimentação\n- Verificar parâmetro Max Heat for Scanner Test\n- Limpar lentes e espelhos\n- Refazer conexões ou substituir o scanner\n- Medir impedância do Integrity Heater\n- Verificar obturador e substituir se necessário."
+            possivelCausa: "Pirômetro ruim\n• Scanner desconectado\n• Alimentação +/- 5Vdc ausente\n• Tempo de alimentação do Aquecedor de Integridade muito curto;\n• Máxima temperatura para o Teste de Integridade muito elevada;\n• Lentes ou Espelhos sujos;\n• Fiação interna ao scanner rompida ou com mau contato;\n• Aquecedor de Integridade com defeito (em aberto ou em curto);\n• Obturador (Shutter) emperrado ou entreaberto.\n• Pirômetro não realiza leitura (média de temperaturas zeradas);\n• Scanner danificado;\n• Placa SIB ou placa analógica danificada;",
+            acaoNecessaria: "• Verificar as conexões do scanner.\n• Verifique se há 5 Vdc chegando no pirômetro.\n• Verificar se o tempo de alimentação do Aquecedor de Integridade (Scanner Integrity Heater ON time) é de 4 SEGUNDOS. Utilize o comando SCAN do modo Configuração caso necessite alterar.\n• Verificar o parâmetro Max Heat for Scanner Test.\n• Limpar as lentes e espelhos com água e algodão.\n• Refazer as conexões ou substitua o scanner\n• Medir a impedância do “Integrity Heater” (220±7) e substituí-lo se necessário.\n• Verificar o funcionamento do obturador através do comando C no modo Display (teste de integridade).\n• Mudar o pirômetro de lado para verificar se o problema muda de canal. Se o problema mudou de lado, substitua o pirômetro.\n• Substituir o scanner e mandar para reparo.\n• Substituir a placa e mandar para repar"
         },
         {
             problemaOriginal: "failBadSensor2",
             traducaoFalha: "Falha no Sensor 2",
-            possivelCausa: "- Scanner desconectado\n- Alimentação +/- 5Vdc ausente\n- Tempo de alimentação do Aquecedor de Integridade muito curto\n- Máxima temperatura para o Teste de Integridade muito elevada\n- Lentes ou Espelhos sujos\n- Fiação interna ao scanner rompida ou com mau contato\n- Aquecedor de Integridade com defeito\n- Obturador emperrado ou entreaberto",
-            acaoNecessaria: "- Verificar conexões do scanner\n- Verificar 5 Vdc no pirômetro\n- Verificar tempo de alimentação\n- Verificar parâmetro Max Heat for Scanner Test\n- Limpar lentes e espelhos\n- Refazer conexões ou substituir o scanner\n- Medir impedância do Integrity Heater\n- Verificar obturador e substituir se necessário."
+            possivelCausa: "Pirômetro ruim\n• Scanner desconectado\n• Alimentação +/- 5Vdc ausente\n• Tempo de alimentação do Aquecedor de Integridade muito curto;\n• Máxima temperatura para o Teste de Integridade muito elevada;\n• Lentes ou Espelhos sujos;\n• Fiação interna ao scanner rompida ou com mau contato;\n• Aquecedor de Integridade com defeito (em aberto ou em curto);\n• Obturador (Shutter) emperrado ou entreaberto.\n• Pirômetro não realiza leitura (média de temperaturas zeradas);\n• Scanner danificado;\n• Placa SIB ou placa analógica danificada;",
+            acaoNecessaria: "• Verificar as conexões do scanner.\n• Verifique se há 5 Vdc chegando no pirômetro.\n• Verificar se o tempo de alimentação do Aquecedor de Integridade (Scanner Integrity Heater ON time) é de 4 SEGUNDOS. Utilize o comando SCAN do modo Configuração caso necessite alterar.\n• Verificar o parâmetro Max Heat for Scanner Test.\n• Limpar as lentes e espelhos com água e algodão.\n• Refazer as conexões ou substitua o scanner\n• Medir a impedância do “Integrity Heater” (220±7) e substituí-lo se necessário.\n• Verificar o funcionamento do obturador através do comando C no modo Display (teste de integridade).\n• Mudar o pirômetro de lado para verificar se o problema muda de canal. Se o problema mudou de lado, substitua o pirômetro.\n• Substituir o scanner e mandar para reparo.\n• Substituir a placa e mandar para repar"
         },
         {
             problemaOriginal: "failScannerMalfunctionCh1",
             traducaoFalha: "Falha no Scanner - Malfuncionamento CH1",
-            possivelCausa: "Perfil de rolamento atípico detectado",
-            acaoNecessaria: "- Manutenção necessária\n- Trocar Pirômetro\n- Cabo do Scanner ou Scanner."
+            possivelCausa: "Scanner Defeituoso\n• Isso ocorre se um perfil de rolamento atípico for detectado e impedir que um alarme ocorra.",
+            acaoNecessaria: "• Manutenção é necessária. Troque o Pirômetro, o Cabo do Scanner ou o Scanner."
         },
         {
             problemaOriginal: "failScannerMalfunctionCh2",
             traducaoFalha: "Falha no Scanner - Malfuncionamento CH2",
-            possivelCausa: "Perfil de rolamento atípico detectado",
-            acaoNecessaria: "- Manutenção necessária\n- Trocar Pirômetro\n- Cabo do Scanner ou Scanner."
+            possivelCausa: "Scanner Defeituoso\n• Isso ocorre se um perfil de rolamento atípico for detectado e impedir que um alarme ocorra.",
+            acaoNecessaria: "• Manutenção é necessária. Troque o Pirômetro, o Cabo do Scanner ou o Scanner."
         },
         {
             problemaOriginal: "sysWarnTransducerSignalMiscount",
             traducaoFalha: "Aviso do Sistema - Falha na Contagem de Sinal do Transdutor",
-            possivelCausa: "- Limalha de metal acumulado sobre transdutores\n- Pedra ou metal sob os transdutores\n- Transdutor solto ou fora de alinhamento\n- Fios do transdutor com polaridade invertida\n- Transdutor danificado\n- Impedância do Transdutor fora da faixa de tolerância\n- Mau contato nas conexões internas à case\n- Tensão de saída do transdutor fora da faixa de tolerância",
-            acaoNecessaria: "- Remover o excesso de metal\n- Verificar objetos sob os transdutores\n- Fixar e alinhar o transdutor\n- Verificar polaridade dos fios\n- Substituir transdutor\n- Testar e substituir cabos e conexões\n- Verificar e corrigir a tensão de saída do transdutor."
-        },
-        {
-            problemaOriginal: "sysWarnPowerReset",
-            traducaoFalha: "Aviso do Sistema - Restabelecimento de Energia",
-            possivelCausa: "- Inversor não conectado\n- Inversor desligado ou necessitando reset\n- Inversor não fornece a tensão necessária",
-            acaoNecessaria: "- Conectar o inversor\n- Ligar ou resetar o inversor\n- Verificar a tensão de saída do inversor e substituir se necessário."
-        },
-        {
-            problemaOriginal: "sysWarnLowVoltage",
-            traducaoFalha: "Aviso do Sistema - Baixa Tensão",
-            possivelCausa: "- Fonte de alimentação externa não conectada\n- Bateria descarregada\n- Conexões soltas ou corroídas",
-            acaoNecessaria: "- Conectar fonte de alimentação\n- Carregar ou substituir bateria\n- Verificar e fixar conexões."
+            possivelCausa: "Limalha de metal acumulado sobre os transdutores\n• Pedra ou metal localizado sob os transdutores\n• Veja também o item 2.4 – Slow Train\n• Transdutor solto ou fora de alinhamento\n• Fios do transdutor com polaridade invertida\n• Transdutor danificado\n• Impedância do Transdutor fora da faixa de tolerância (entre 670 a 760 Ohms);",
+            acaoNecessaria: "• Remover o excesso de metal\n• Se o trilho estiver escamando, solicitar a troca do trilho.\n• Remover objetos que estejam em baixo do scanner\n• Idem item 2.7.\n• Verificar o posicionamento e fixação do transdutor. O Torque deve ser de 80 lb.ft O mesmo deve manter uma distância de 1,75\" (+ 0,25\" de tolerância) do topo do transdutor até o topo de trilho;\n• Checar polaridade dos fios do transdutor (Preto = positivo, Branco = negativo)\n• Bater no transdutor com um objeto não metálico (ex: martelo de borracha). Se o scanner se abrir, substitua o transdutor;\n• Substituir o transdutor;\n• Testar a continuidade e a fixação dos cabos nas conexões (puxando um a um com a mão e verificando se todos os condutores estão devidamente conectados).\n• Verificar com um osciloscópio a amplitude da tensão de saída. Substituir o transdutor."
         },
         {
             problemaOriginal: "sysWarnAcPowerFailure",
             traducaoFalha: "Aviso do Sistema - Falha de Energia AC",
-            possivelCausa: "- Falha na rede elétrica AC\n- Disjuntor desligado\n- Conexões soltas ou corroídas",
-            acaoNecessaria: "- Verificar fornecimento de energia AC\n- Ligar disjuntor\n- Verificar e fixar conexões."
+            possivelCausa: "• Inversor não conectado ao MicroHBD;\n• Inversor desligado, necessitando RESET;\n• Inversor não fornece a tensão necessária para o teste de integridade;",
+            acaoNecessaria: "• Conectar o inversor ao Micro HBD\n• Ligar o resetar o inversor.\n• Verificar a tensão de saída do inversor (127 Vac). Substituir se necessário."
         },
         {
             problemaOriginal: "sysWarnScannerMalfunctionCh1",
             traducaoFalha: "Aviso do Sistema - Malfuncionamento do Scanner CH1",
-            possivelCausa: "Perfil de rolamento atípico detectado",
-            acaoNecessaria: "- Manutenção necessária\n- Trocar Pirômetro\n- Cabo do Scanner ou Scanner."
+            possivelCausa: "Scanner Defeituoso\n• Isso ocorre se um perfil de rolamento atípico for detectado e impedir que um alarme ocorra.",
+            acaoNecessaria: "• Manutenção é necessária. Troque o Pirômetro, o Cabo do Scanner ou o Scanner."
         },
         {
             problemaOriginal: "sysWarnScannerMalfunctionCh2",
             traducaoFalha: "Aviso do Sistema - Malfuncionamento do Scanner CH2",
-            possivelCausa: "Perfil de rolamento atípico detectado",
-            acaoNecessaria: "- Manutenção necessária\n- Trocar Pirômetro\n- Cabo do Scanner ou Scanner."
+            possivelCausa: "Scanner Defeituoso\n• Isso ocorre se um perfil de rolamento atípico for detectado e impedir que um alarme ocorra.",
+            acaoNecessaria: "• Manutenção é necessária. Troque o Pirômetro, o Cabo do Scanner ou o Scanner."
         },
         {
             problemaOriginal: "sysWarnScannerMalfunctionChe",
             traducaoFalha: "Aviso do Sistema - Malfuncionamento do Scanner Che",
-            possivelCausa: "Perfil de rolamento atípico detectado",
-            acaoNecessaria: "- Manutenção necessária\n- Trocar Pirômetro\n- Cabo do Scanner ou Scanner."
+            possivelCausa: "Scanner Defeituoso\n• Isso ocorre se um perfil de rolamento atípico for detectado e impedir que um alarme ocorra.",
+            acaoNecessaria: "• Manutenção é necessária. Troque o Pirômetro, o Cabo do Scanner ou o Scanner."
         },
         {
             problemaOriginal: "sysWarnScannerMalfunctionChd",
             traducaoFalha: "Aviso do Sistema - Malfuncionamento do Scanner Chd",
-            possivelCausa: "Perfil de rolamento atípico detectado",
-            acaoNecessaria: "- Manutenção necessária\n- Trocar Pirômetro\n- Cabo do Scanner ou Scanner."
+            possivelCausa: "Scanner Defeituoso\n• Isso ocorre se um perfil de rolamento atípico for detectado e impedir que um alarme ocorra.",
+            acaoNecessaria: "• Manutenção é necessária. Troque o Pirômetro, o Cabo do Scanner ou o Scanner."
         },
         {
             problemaOriginal: "failScannerMalfunctionChe",
             traducaoFalha: "Falha no Scanner - Malfuncionamento Che",
-            possivelCausa: "Perfil de rolamento atípico detectado",
-            acaoNecessaria: "- Manutenção necessária\n- Trocar Pirômetro\n- Cabo do Scanner ou Scanner."
+            possivelCausa: "Scanner Defeituoso\n• Isso ocorre se um perfil de rolamento atípico for detectado e impedir que um alarme ocorra.",
+            acaoNecessaria: "• Manutenção é necessária. Troque o Pirômetro, o Cabo do Scanner ou o Scanner."
         },
         {
             problemaOriginal: "failScannerMalfunctionChd",
             traducaoFalha: "Falha no Scanner - Malfuncionamento Chd",
-            possivelCausa: "Perfil de rolamento atípico detectado",
-            acaoNecessaria: "- Manutenção necessária\n- Trocar Pirômetro\n- Cabo do Scanner ou Scanner."
+            possivelCausa: "Scanner Defeituoso\n• Isso ocorre se um perfil de rolamento atípico for detectado e impedir que um alarme ocorra.",
+            acaoNecessaria: "• Manutenção é necessária. Troque o Pirômetro, o Cabo do Scanner ou o Scanner."
         }
     ];
     
