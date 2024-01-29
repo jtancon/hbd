@@ -529,6 +529,9 @@ export function displayData(extractedData) {
             }
         }
 
+        //muda titulo da pagina
+        document.title = 'Hotbox - ' + sitename +' - ' + arrival;
+
         // Teste de Tendência critica de rolamento para N2
         let alarmesTendenciacritican2 = [];
         let veiculosVerificados3 = {};
@@ -720,7 +723,100 @@ export function displayData(extractedData) {
                 
                 // Adicione a div ao DOM
                 flexContainer.appendChild(divAlarmes);
+
+    //colocar tudo no clipboard botão de copiar log para colar no e-mail.
+    //Status Geral (Inf. Do LOG)
+    //Tabela de análise
+    //Alames
+    //Alertas
+    //Divergências
+    //imagem do grafico de dispersão
+
+    BTNCopiaLOG.addEventListener('click', function() {
+        // Seleciona o conteúdo dos elementos
+        var hotbox = sitename;
+        var dataHora = arrival;
+        var prefixo = item.fichaTrem.trem.prefixo;
+        var os = item.fichaTrem.os;
+        var sentidoTrem = direction;
+        var posicaoLocomotivas = posicoesLocomotivas.join(", ");
+        var alarmes = document.querySelector('#alarmesContainer')?.innerText || '';
+        var linkdapagina = window.location.href;
+        
+        //comentar imagem do grafico de dispersão
+        var canvas = document.querySelector('#meuGrafico');
+        var dataUrl = canvas?.toDataURL() || '';
+
+        function getPlainText(htmlString) {
+            var tempElement = document.createElement('div');
+            tempElement.innerHTML = htmlString;
+            return tempElement.innerText;
+        }
+
+        // Cria uma string com todo o conteúdo
+        var conteudo = `Status Geral (Inf. Do LOG):
+Hotbox: ${hotbox.trim()}
+Data/Hora: ${dataHora.trim()}
+Prefixo: ${prefixo.trim()}
+OS: ${os}
+Sentido do Trem: ${sentidoTrem.trim()}
+Posição das locomotivas: ${posicaoLocomotivas.trim()}
+
+Alarmes: 
+${linhaAlarmeFA.innerText}
+${linhaAlarmeTPN1.innerText}
+${linhaAlarmeTPN2.innerText}
+${linhaAlarmeAbsoluto.innerText}
+
+Alertas:
+${getPlainText(diffalarme)}
+${getPlainText(alarmeTemperaturaAlta)}
+
+Divergências:
+${getPlainText(diffVehiclesAlarme)}
+${getPlainText(diffAxlesAlarme)}
+
+${alarmes.trim()}
+
+Análise disponivel para visualizar em: ${linkdapagina.trim()}`;
+
+        console.log(conteudo);
+
+        // Copia a string para a área de transferência
+        navigator.clipboard.writeText(conteudo);
+
+        //outra versão
+     //         // Cria uma string com todo o conteúdo
+     //         var conteudo = `
+     //         <p style="font-family: Verdana;"><strong>Status Geral (Inf. Do LOG):</strong></p>
+     //         <p style="font-family: Verdana;"><strong>Hotbox:</strong> ${hotbox.trim()}</p>
+     //         <p style="font-family: Verdana;"><strong>Data/Hora:</strong> ${dataHora.trim()}</p>
+     //         <p style="font-family: Verdana;"><strong>Prefixo:</strong> ${prefixo.trim()}</p>
+     //         <p style="font-family: Verdana;"><strong>OS:</strong> ${os}</p>
+     //         <p style="font-family: Verdana;"><strong>Sentido do Trem:</strong> ${sentidoTrem.trim()}</p>
+     //         <p style="font-family: Verdana;"><strong>Posição das locomotivas:</strong> ${posicaoLocomotivas.trim()}</p>
+     //         <p style="font-family: Verdana;"><strong>Alarmes:</strong> ${getPlainText(linhaAlarmeFA.innerText)}</p>
+     //         <p style="font-family: Verdana;"><strong>Alertas:</strong> ${getPlainText(diffalarme)}</p>
+     //         <p style="font-family: Verdana;"><strong>Divergências:</strong> ${getPlainText(diffVehiclesAlarme)}</p>
+     //         <p style="font-family: Verdana;"><strong>Análise disponivel para visualizar em:</strong> ${linkdapagina.trim()}</p>
+     //         <img src="${dataUrl}">
+     //     `;
+    
+     //     // Codifica o conteúdo para uso em uma URL
+     //     var conteudoCodificado = encodeURIComponent(conteudo);
+    
+     //     console.log(conteudo);
+    
+     //     // Copia a string para a área de transferência
+     //     //navigator.clipboard.writeText(conteudo);
+    
+     //     // Abre o cliente de e-mail com um rascunho de e-mail preenchido
+     //     window.location.href = `mailto:?subject=Assunto do e-mail&body=${conteudoCodificado}`;
+
     });
+
+    });
+
     
     let pontoSelecionado;  // Variável para armazenar o valor do ponto selecionado
 
@@ -860,5 +956,9 @@ export function displayData(extractedData) {
             }
         }
     });
+
+
+
+
     
 }
