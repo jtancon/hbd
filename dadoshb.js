@@ -355,7 +355,7 @@ export function displayData(extractedData) {
         //teste de temperatura alta no mesmo canal
         let contagemCh1 = tbVeiculoslidosResumo.filter(veiculo => veiculo.ch2 > maiorCh1).length;
         let contagemCh2 = tbVeiculoslidosResumo.filter(veiculo => veiculo.ch1 > maiorCh2).length;
-        let alarmeTemperaturaAlta = "<span style='color: green;'><strong>Sem temperaturas altas em unico canal.</strong></span>";
+        let alarmeTemperaturaAlta = "<span style='color: green;'><strong></strong></span>";
 
         if (maiorCh1 > 23 && contagemCh2 >= 3) {
             alarmeTemperaturaAlta = "<span style='color: #FF5733;'><strong>Temperaturas altas no mesmo canal: CH1.</strong></span>";
@@ -639,7 +639,7 @@ export function displayData(extractedData) {
                 if (alarmesFreioAgarrado.length > 0) {
                     linhaAlarmeFA.innerHTML = "<span style='color: red;'><strong>Alarme de freio agarrado no veiculo:</strong> " + alarmesFreioAgarrado.join(", ") + "</span>" ;
                 } else {
-                    linhaAlarmeFA.innerHTML = "<span style='color: green;'><strong>Sem freio agarrado.</strong></span>" ;
+                    linhaAlarmeFA.innerHTML = "<span style='color: green;'><strong></strong></span>" ;
                 }
 
                 divAlarmes.appendChild(linhaAlarmeFA);
@@ -651,7 +651,7 @@ export function displayData(extractedData) {
                 if (alarmesTendenciacritican1.length > 0) {
                     linhaAlarmeTPN1.innerHTML = "<span style='color: red;'><strong>Tendência critica de rolamento N1 nos eixos:</strong> " + alarmesTendenciacritican1.join(", ") + "</span>" ;
                 } else {
-                    linhaAlarmeTPN1.innerHTML = "<span style='color: green;'><strong>Sem tendência de rolamento N1.</strong></span>" ;
+                    linhaAlarmeTPN1.innerHTML = "<span style='color: green;'><strong></strong></span>" ;
                 }
 
                 divAlarmes.appendChild(linhaAlarmeTPN1);
@@ -663,7 +663,7 @@ export function displayData(extractedData) {
                 if (alarmesTendenciacritican2.length > 0) {
                     linhaAlarmeTPN2.innerHTML = "<span style='color: red;'><strong>Tendência critica de rolamento N2 nos eixos:</strong> " + alarmesTendenciacritican2.join(", ") + "</span>" ;
                 } else {
-                    linhaAlarmeTPN2.innerHTML = "<span style='color: green;'><strong>Sem tendência de rolamento N2.</strong></span>" ;
+                    linhaAlarmeTPN2.innerHTML = "<span style='color: green;'><strong></strong></span>" ;
                 }
 
                 divAlarmes.appendChild(linhaAlarmeTPN2);
@@ -705,8 +705,13 @@ export function displayData(extractedData) {
                 
                 // divergencia entre veiculos contados e veiculos na ficha
                 let diffVehicles = Math.abs(fichaTrem - checkVehicles);
-                let diffVehiclesAlarme = diffVehicles > 2.4 ? "<span style='color: #C89F54;'><strong>Diferença entre veiculos contados e ficha:</strong> " + parseFloat(diffVehicles).toFixed(0) + " - Existe diferença.</span>" : "<span style='color: green;'><strong>Diferença entre veiculos contados e ficha:</strong> " + parseFloat(diffVehicles).toFixed(0) + " - Diferença ok.</span>";
-        
+                let diffVehiclesAlarme;
+                if (checkVehicles === diffVehicles) {
+                    diffVehiclesAlarme = "<span style='color: #C89F54;'><strong>Não prefixou.</strong></span>";
+                } else {
+                    diffVehiclesAlarme = diffVehicles > 2.4 ? "<span style='color: #C89F54;'><strong>Diferença entre veiculos contados e ficha:</strong> " + parseFloat(diffVehicles).toFixed(0) + " - Existe diferença.</span>" : "<span style='color: green;'><strong>Diferença entre veiculos contados e ficha:</strong> " + parseFloat(diffVehicles).toFixed(0) + " - Diferença ok.</span>";
+                }
+                
                 let linhaVehicles = document.createElement('p');
                 linhaVehicles.className = 'linha';
                 linhaVehicles.innerHTML = diffVehiclesAlarme;
@@ -714,12 +719,17 @@ export function displayData(extractedData) {
                 
                 // divergencia entre eixos contatos e eixos na ficha
                 let diffAxles = Math.abs(checkAxle - fichaAxles);
-                let diffAxlesAlarme = diffAxles > 2.4 ? "<span style='color: #C89F54;'><strong>Diferença entre eixos contatos e ficha:</strong> " + parseFloat(diffAxles).toFixed(0) + " - Existe diferença.</span>" : "<span style='color: green;'><strong>Diferença entre eixos contatos e ficha:</strong> " + parseFloat(diffAxles).toFixed(0) + " - Diferença ok.</span>";
-        
+                let diffAxlesAlarme;
+                if (checkAxle === diffAxles) {
+                    diffAxlesAlarme = "<span style='color: #C89F54;'><strong>Não prefixou.</strong></span>";
+                } else {
+                    diffAxlesAlarme = diffAxles > 2.4 ? "<span style='color: #C89F54;'><strong>Diferença entre eixos contatos e ficha:</strong> " + parseFloat(diffAxles).toFixed(0) + " - Existe diferença.</span>" : "<span style='color: green;'><strong>Diferença entre eixos contatos e ficha:</strong> " + parseFloat(diffAxles).toFixed(0) + " - Diferença ok.</span>";
+                }
+
                 let linhaAxles = document.createElement('p');
                 linhaAxles.className = 'linha';
                 linhaAxles.innerHTML = diffAxlesAlarme;
-                divAlarmes.appendChild(linhaAxles);                    
+                divAlarmes.appendChild(linhaAxles);                
                 
                 // Adicione a div ao DOM
                 flexContainer.appendChild(divAlarmes);
@@ -753,6 +763,36 @@ export function displayData(extractedData) {
             return tempElement.innerText;
         }
 
+        let textAlarmesCopy = '';
+        if (linhaAlarmeFA.innerText.trim() !== '') {
+            textAlarmesCopy += `${linhaAlarmeFA.innerText}\n`;
+        }
+        if (linhaAlarmeTPN1.innerText.trim() !== '') {
+            textAlarmesCopy += `${linhaAlarmeTPN1.innerText}\n`;
+        }
+        if (linhaAlarmeTPN2.innerText.trim() !== '') {
+            textAlarmesCopy += `${linhaAlarmeTPN2.innerText}\n`;
+        }
+        if (linhaAlarmeAbsoluto.innerText.trim() !== '') {
+            textAlarmesCopy += `${linhaAlarmeAbsoluto.innerText}\n`;
+        }
+
+        let textalertas = '';
+        if (getPlainText(diffalarme).trim() !== '') {
+            textalertas += `${getPlainText(diffalarme)}\n`;
+        }
+        if (getPlainText(alarmeTemperaturaAlta).trim() !== '') {
+            textalertas += `${getPlainText(alarmeTemperaturaAlta)}\n`;
+        }
+
+        let textdivergencias = '';
+        if (getPlainText(diffVehiclesAlarme).trim() !== '') {
+            textdivergencias += `${getPlainText(diffVehiclesAlarme)}\n`;
+        }
+        if (getPlainText(diffAxlesAlarme).trim() !== '') {
+            textdivergencias += `${getPlainText(diffAxlesAlarme)}\n`;
+        }
+
         // Cria uma string com todo o conteúdo
         var conteudo = `Status Geral (Inf. Do LOG):
 Hotbox: ${hotbox.trim()}
@@ -763,19 +803,11 @@ Sentido do Trem: ${sentidoTrem.trim()}
 Posição das locomotivas: ${posicaoLocomotivas.trim()}
 
 Alarmes: 
-${linhaAlarmeFA.innerText}
-${linhaAlarmeTPN1.innerText}
-${linhaAlarmeTPN2.innerText}
-${linhaAlarmeAbsoluto.innerText}
-
+${textAlarmesCopy}
 Alertas:
-${getPlainText(diffalarme)}
-${getPlainText(alarmeTemperaturaAlta)}
-
+${textalertas}
 Divergências:
-${getPlainText(diffVehiclesAlarme)}
-${getPlainText(diffAxlesAlarme)}
-
+${textdivergencias}
 ${alarmes.trim()}
 
 Análise disponivel para visualizar em: ${linkdapagina.trim()}`;
