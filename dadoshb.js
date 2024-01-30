@@ -736,8 +736,8 @@ export function displayData(extractedData) {
         // Seleciona o conteúdo dos elementos
         var hotbox = sitename;
         var dataHora = arrival;
-        var prefixo = item.fichaTrem.trem.prefixo;
-        var os = item.fichaTrem.os;
+        var prefixo = item?.fichaTrem?.trem?.prefixo || "";
+        var os = item?.fichaTrem?.os || "";
         var sentidoTrem = direction;
         var posicaoLocomotivas = posicoesLocomotivas.join(", ");
         var alarmes = document.querySelector('#alarmesContainer')?.innerText || '';
