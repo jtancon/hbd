@@ -500,12 +500,12 @@ export function displayData(extractedData) {
             veiculo.axle.forEach(axle => {
                 pontosCh1.push({
                     x: axle.axleNum,
-                    y: (sitename === "Phoenix MB -Pimenta" || sitename === "PHOENIX MB Canguera") ? axle.chd : axle.ch1,
+                    y: (sitename === "Phoenix MB -Pimenta" || sitename === "PHOENIX MB Canguera") ? axle.che : axle.ch1,
                     veiculo: number
                 });
                 pontosCh2.push({
                     x: axle.axleNum,
-                    y: (sitename === "Phoenix MB -Pimenta" || sitename === "PHOENIX MB Canguera") ? axle.che : axle.ch2,
+                    y: (sitename === "Phoenix MB -Pimenta" || sitename === "PHOENIX MB Canguera") ? axle.chd : axle.ch2,
                     veiculo: number
                 });
             });
