@@ -209,15 +209,15 @@ export function displayData(extractedData) {
             return { lowLimitN1, criticalN1, lowLimitN2, criticalN2 };
         }
 
-        //2 axle com maior temperatura ch3
-        let maiorch3Axle = tbVeiculoslidosResumo.reduce((maior, linha) => linha.ch3 !== "n/a" ? linha.ch3 > maior ? linha.ch3 : maior : maior, 0);
-        let maiorch3Axle2 = tbVeiculoslidosResumo.reduce((maior, linha) => linha.ch3 !== "n/a" && linha.ch3 < maiorch3Axle ? linha.ch3 > maior ? linha.ch3 : maior : maior, 0);
+        // 2 axle com menor temperatura ch3
+        let menorch3Axle = tbVeiculoslidosResumo.reduce((menor, linha) => linha.ch3 !== "n/a" && linha.ch3 !== 0 ? linha.ch3 < menor ? linha.ch3 : menor : menor, Infinity);
+        let menorch3Axle2 = tbVeiculoslidosResumo.reduce((menor, linha) => linha.ch3 !== "n/a" && linha.ch3 !== 0 && linha.ch3 > menorch3Axle ? linha.ch3 < menor ? linha.ch3 : menor : menor, Infinity);
 
-        //2 axle com maior temperatura ch4
-        let maiorch4Axle = tbVeiculoslidosResumo.reduce((maior, linha) => linha.ch4 !== "n/a" ? linha.ch4 > maior ? linha.ch4 : maior : maior, 0);
-        let maiorch4Axle2 = tbVeiculoslidosResumo.reduce((maior, linha) => linha.ch4 !== "n/a" && linha.ch4 < maiorch4Axle ? linha.ch4 > maior ? linha.ch4 : maior : maior, 0);
+        // 2 axle com menor temperatura ch4
+        let menorch4Axle = tbVeiculoslidosResumo.reduce((menor, linha) => linha.ch4 !== "n/a" && linha.ch4 !== 0 ? linha.ch4 < menor ? linha.ch4 : menor : menor, Infinity);
+        let menorch4Axle2 = tbVeiculoslidosResumo.reduce((menor, linha) => linha.ch4 !== "n/a" && linha.ch4 !== 0 && linha.ch4 > menorch4Axle ? linha.ch4 < menor ? linha.ch4 : menor : menor, Infinity);
 
-        console.log(maiorch3Axle, maiorch3Axle2, maiorch4Axle, maiorch4Axle2);
+        console.log(menorch3Axle, menorch3Axle2, menorch4Axle, menorch4Axle2);
 
         //organizar dados para tabela analise (media ch3, desvio padrao, temperatura critica, low limit, maior temperatura, nivel sigma)
         //media ch3
@@ -273,10 +273,17 @@ export function displayData(extractedData) {
         let maiorch3 = tbVeiculoslidosResumo.reduce((maior, linha) => linha.ch3 !== "n/a" ? linha.ch3 > maior ? linha.ch3 : maior : maior, 0);
         //maior temperatura ch4
         let maiorch4 = tbVeiculoslidosResumo.reduce((maior, linha) => linha.ch4 !== "n/a" ? linha.ch4 > maior ? linha.ch4 : maior : maior, 0);
-        //nivel sigma ch3
-        let sigmach3 = parseFloat(((maiorch3 - mediach3) / desvioch3).toFixed(2));
+             
+
+        //menor ch3 que não é 0
+        let menorch3 = tbVeiculoslidosResumo.reduce((menor, linha) => linha.ch3 !== "n/a" && linha.ch3 !== 0 ? linha.ch3 < menor ? linha.ch3 : menor : menor, Infinity);
+        //menor ch4 que não é 0
+        let menorch4 = tbVeiculoslidosResumo.reduce((menor, linha) => linha.ch4 !== "n/a" && linha.ch4 !== 0 ? linha.ch4 < menor ? linha.ch4 : menor : menor, Infinity);
+
+         //nivel sigma ch3
+        let sigmach3 = parseFloat(((menorch3 - mediach3) / desvioch3).toFixed(2));
         //nivel sigma ch4
-        let sigmach4 = parseFloat(((maiorch4 - mediach4) / desvioch4).toFixed(2));
+        let sigmach4 = parseFloat(((menorch4 - mediach4) / desvioch4).toFixed(2));
 
         // Teste de freio agarrado
         let alarmesFreioAgarrado = [];
@@ -394,7 +401,7 @@ export function displayData(extractedData) {
             ['Low Limit (N1)', parseFloat(ch3LowLimitN1).toFixed(2), parseFloat(ch4LowLimitN1).toFixed(2)],
             ['Temperatura Crítica (N2)', parseFloat(ch3CriticaN2).toFixed(2), parseFloat(ch4CriticaN2).toFixed(2)],
             ['Low Limit (N2)', parseFloat(ch3LowLimitN2).toFixed(2), parseFloat(ch4LowLimitN2).toFixed(2)],
-            ['Maior Temperatura', maiorch3, maiorch4,],
+            ['Menor Temperatura', menorch3, menorch4],
             ['Nível SIGMA', sigmach3, sigmach4]
         ];
 
@@ -756,14 +763,24 @@ Análise disponivel para visualizar em: ${linkdapagina.trim()}`;
 
     
     let pontoSelecionado;  // Variável para armazenar o valor do ponto selecionado
-
+    
     // Cria uma instância do gráfico
     const ctx = document.getElementById('meuGrafico').getContext('2d');
+    
     // Encontre o maior valor de axleNum em pontosch3 e pontosch4
     let maxAxleNum = Math.max(
         Math.max(...pontosch3.map(p => p.x)),
         Math.max(...pontosch4.map(p => p.x))
     );
+
+    // Encontre o maior valor de temperatura em pontosch3 e pontosch4
+    let maxTemp = Math.max(
+        Math.max(...pontosch3.map(p => p.y)),
+        Math.max(...pontosch4.map(p => p.y))
+    );
+
+
+
     const maxch3 = Math.max(...pontosch3.map(p => p.y));
     const maxch4 = Math.max(...pontosch4.map(p => p.y));
     const maxValue = Math.max(maxch3, maxch4);
@@ -771,10 +788,6 @@ Análise disponivel para visualizar em: ${linkdapagina.trim()}`;
     function isWithinRange(value, maxValue) {
         return value.y >= maxValue - 5 && value.y <= maxValue;
     }
-
-     //menor valor de criticalN1 e criticalN2
-     let menorCriticaN1 = Math.min(ch3CriticaN1, ch4CriticaN1);
-     let menorCriticaN2 = Math.min(ch3CriticaN2, ch4CriticaN2);
 
     new Chart(ctx, {
         //criação do grafico
@@ -788,13 +801,7 @@ Análise disponivel para visualizar em: ${linkdapagina.trim()}`;
                 pointHoverBackgroundColor:  'green',
                 pointHoverBorderColor:      'green',
                 datalabels: {
-                    color: 'black',
-                    font: {
-                        weight: 'bold'
-                    },
-                    formatter: function(value, context) {
-                        return value.y;
-                    }
+                    color: 'black'
                 }
             },
             {
@@ -805,13 +812,7 @@ Análise disponivel para visualizar em: ${linkdapagina.trim()}`;
                 pointHoverBackgroundColor:      'orange',
                 pointHoverBorderColor:          'orange',
                 datalabels: {
-                    color: 'black',
-                    font: {
-                        weight: 'bold'
-                    },
-                    formatter: function(value, context) {
-                        return value.y;
-                    }
+                    color: 'black'
                 }
             }]
         },
@@ -822,6 +823,7 @@ Análise disponivel para visualizar em: ${linkdapagina.trim()}`;
                     const firstPoint = points[0];
                     const axleNum = this.data.datasets[firstPoint.datasetIndex].data[firstPoint.index].x;
                     pontoSelecionado = axleNum;  // Atualiza a variável com o valor de axleNum do ponto selecionado
+                    console.log(pontoSelecionado);
                 }
             },
             scales: {
@@ -840,11 +842,13 @@ Análise disponivel para visualizar em: ${linkdapagina.trim()}`;
                         display: true,
                         text: 'Temperatura'
                     },
+                    max: maxTemp+((maxTemp/100)*20),  // Defina o valor máximo para o eixo X
                     grid: {
                         display: false  // Remova as grades do eixo Y
                     }
                 }
             },
+
             plugins: {
                 legend: {
                     position: 'bottom'
@@ -867,29 +871,9 @@ Análise disponivel para visualizar em: ${linkdapagina.trim()}`;
                             borderColor: 'rgb(255, 99, 132)',
                             borderWidth: 2
                         }
-                    //    N1: {
-                    //        type: 'line',
-                    //        yMin: menorCriticaN1,
-                    //        yMax: menorCriticaN1,
-                    //        borderColor: 'rgb(255, 255, 0)',
-                    //        borderWidth: 2
-                    //    },
-                    //    N2: {
-                    //        type: 'line',
-                    //        yMin: menorCriticaN2,
-                    //        yMax: menorCriticaN2,
-                    //        borderColor: 'rgb(255, 165, 0)',
-                    //        borderWidth: 2
-                    //    }
-                    }
-                },
-                datalabels: {
-                    color: 'black',
-                    display: true,  // Sempre exibe data labels
-                    formatter: function(value, context) {
-                        return value;  // Retorna o valor y do ponto de dados
                     }
                 }
+
             }
         }
     });

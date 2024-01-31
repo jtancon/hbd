@@ -861,7 +861,7 @@ Análise disponivel para visualizar em: ${linkdapagina.trim()}`;
     );
     const maxCh1 = Math.max(...pontosCh1.map(p => p.y));
     const maxCh2 = Math.max(...pontosCh2.map(p => p.y));
-    const maxValue = Math.max(maxCh1, maxCh2);
+    const maxValue = Math.min(maxCh1, maxCh2);
 
     function isWithinRange(value, maxValue) {
         return value.y >= maxValue - 5 && value.y <= maxValue;
@@ -870,6 +870,7 @@ Análise disponivel para visualizar em: ${linkdapagina.trim()}`;
      //menor valor de criticalN1 e criticalN2
      let menorCriticaN1 = Math.min(ch1CriticaN1, ch2CriticaN1);
      let menorCriticaN2 = Math.min(ch1CriticaN2, ch2CriticaN2);
+     console.log("os valores de maxvalue são: " + maxValue + " " + menorCriticaN1 + " " + menorCriticaN2);
 
     new Chart(ctx, {
         //criação do grafico
@@ -910,6 +911,7 @@ Análise disponivel para visualizar em: ${linkdapagina.trim()}`;
                 }
             }]
         },
+        plugins: [ChartDataLabels],
         options: {
             onClick: function(evt) {
                 const points = this.getElementsAtEventForMode(evt, 'nearest', { intersect: true }, true);
@@ -980,9 +982,14 @@ Análise disponivel para visualizar em: ${linkdapagina.trim()}`;
                 },
                 datalabels: {
                     color: 'black',
-                    display: true,  // Sempre exibe data labels
+                    align: 'end',
+                    anchor: 'end',
+                    offset: 0, 
+                    display: function(context) {
+                        return context.dataset.data[context.dataIndex].y >= maxValue;
+                    },
                     formatter: function(value, context) {
-                        return value;  // Retorna o valor y do ponto de dados
+                        return value.y;
                     }
                 }
             }
