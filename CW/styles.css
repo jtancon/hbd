@@ -1,0 +1,316 @@
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    font-family: Verdana, sans-serif;
+    font-size: 11px;
+    margin: 0;
+    padding: 0;
+    background-color: #f0f0f0;
+}
+
+h1 {
+    color: #333;
+    font-size: 16px;
+    text-align: center;
+    padding: 20px 0;
+    font-family: Verdana, sans-serif;
+}
+
+h2 {
+    color: #333;
+    font-size: 14px;
+    font-family: Verdana, sans-serif;
+    padding-top: 5px;
+}
+
+footer {
+    margin-top: auto;
+    text-align: center;
+    font-family: Verdana, sans-serif;
+    font-size: 9px;
+}
+
+#meuGrafico {
+    max-height: 350px;
+    max-width: 100%;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    margin-top: auto; /* Move o gráfico para a parte inferior */
+    background-color: #f9f9f9;
+    margin-right: 10px;
+    padding-right: 10px;
+}
+
+.GraficoPerfil{
+    min-height: 300px;
+    min-width: 450px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    margin-top: auto; /* Move o gráfico para a parte inferior */
+    background-color: #f9f9f9;
+    margin-bottom: 10px; 
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+
+#alarmes {
+    max-height: 400px;
+    width: 100%;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    margin-top: 10px; /* Move o gráfico para a parte inferior */
+    background-color: #f9f9f9;
+    padding: 5px;
+}
+
+#dataContainer {
+    display: flex;
+    flex-direction: column-reverse;
+    padding: 5px;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+#divStatusGeral {
+    width: 400px;
+    text-align: left;
+    background-color: #f9f9f9;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    margin-right: 10px; 
+    margin-bottom: 10px; 
+}
+
+#alarmesCabecalho {
+    text-align: left;
+    background-color: #f9f9f9;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    margin-right: 10px; 
+    margin-top: 10px; 
+}
+
+
+
+.DIVAlarmes {
+    width: 100%;
+    text-align: left;
+    background-color: #f9f9f9;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    margin-left: 10px; 
+    margin-bottom: 10px; 
+}
+
+.DIVAlertas {
+    width: 100%;
+    text-align: left;
+    background-color: #f9f9f9;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    margin-left: 10px; 
+    margin-bottom: 10px; 
+}
+
+.DIVDivergencias {
+    width: 100%;
+    text-align: left;
+    background-color: #f9f9f9;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    margin-left: 10px; 
+    margin-bottom: 10px; 
+}
+
+
+.linha {
+    margin-bottom: -5px; /* Ajuste este valor para o espaçamento desejado */
+}
+
+.tabela-analise {
+    width: 400px;
+    background-color: #f9f9f9;
+    border-collapse: collapse;
+    border-radius: 5px;
+    overflow: hidden;
+    margin-bottom: 10px; 
+}
+
+.tabela-analise th {
+    background-color: #003865;
+    color: white;
+    font-weight: bold;
+    padding: 10px;
+    border: 1px solid #ccc;
+}
+
+.tabela-analise td {
+    padding: 5px;
+    border: 1px solid #ccc;
+}
+
+.tabela-analise td:nth-child(5), .tabela-analise td:nth-child(6) {
+    background-color: white;
+}
+
+#supervisorioButton {
+    background-color: white;
+    color: #003865;
+    border: 2px solid #003865;
+    padding: 5px 5px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 13px;
+    transition: background-color 0.5s ease, color 0.5s ease;
+    font-weight: bold;
+    margin-bottom: 10px; 
+}
+
+#supervisorioButton:hover, #supervisorioButton:active {
+    background-color: #003865;
+    color: white;
+    font-weight: bold;
+}
+
+#supervisorioButton:active {
+    background-color: #bbb;
+    color: #003865;
+}
+
+#BTNPerfil {
+    background-color: white;
+    color: #003865;
+    border: 2px solid #003865;
+    padding: 5px 15px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 13px;
+    transition: background-color 0.5s ease, color 0.5s ease;
+    font-weight: bold;
+    margin-bottom: 10px; 
+    margin-left: 5px;
+}
+
+#BTNPerfil:hover, #BTNPerfil:active {
+    background-color: #003865;
+    color: white;
+    font-weight: bold;
+}
+
+#BTNPerfil:active {
+    background-color: #bbb;
+    color: #003865;
+}
+
+#ArquivodePerfil {
+    background-color: white;
+    color: #003865;
+    border: 2px solid #003865;
+    padding: 5px 5px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 13px;
+    transition: background-color 0.5s ease, color 0.5s ease;
+    font-weight: bold;
+    margin-bottom: 10px; 
+}
+
+#ArquivodePerfil:hover, #ArquivodePerfil:active {
+    background-color: #003865;
+    color: white;
+    font-weight: bold;
+}
+
+#ArquivodePerfil:active {
+    background-color: #bbb;
+    color: #003865;
+}
+
+#BTNImprimir {
+    background-color: white;
+    color: #003865;
+    border: 2px solid #003865;
+    padding: 5px 15px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 13px;
+    transition: background-color 0.5s ease, color 0.5s ease;
+    font-weight: bold;
+    margin-bottom: 10px; 
+    margin-left: 5px;
+}
+
+#BTNImprimir:hover, #BTNImprimir:active {
+    background-color: #003865;
+    color: white;
+    font-weight: bold;
+}
+
+#BTNImprimir:active {
+    background-color: #bbb;
+    color: #003865;
+}
+
+#BTNCopiaLOG {
+    background-color: white;
+    color: #003865;
+    border: 2px solid #003865;
+    padding: 5px 15px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 13px;
+    transition: background-color 0.5s ease, color 0.5s ease;
+    font-weight: bold;
+    margin-bottom: 10px; 
+    margin-left: 5px;
+}
+
+#BTNCopiaLOG:hover, #BTNCopiaLOG:active {
+    background-color: #003865;
+    color: white;
+    font-weight: bold;
+}
+
+#BTNCopiaLOG:active {
+    background-color: #bbb;
+    color: #003865;
+}
+
+#alarmesContainer .tbalarmesTable {
+    width: 100%;
+    background-color: #f9f9f9;
+    border-collapse: collapse;
+    border-radius: 5px;
+    overflow: hidden;
+    margin-bottom: 10px; 
+}
+
+#alarmesContainer .tbalarmesTable th {
+    background-color: #003865;
+    color: white;
+    font-weight: bold;
+    padding: 10px;
+    border: 1px solid #ccc;
+}
+
+#alarmesContainer .tbalarmesTable td {
+    padding: 5px;
+    border: 1px solid #ccc;
+    text-align: center;
+}
+
+#alarmesContainer .tbalarmesTable td:nth-child(5), #alarmesContainer .tbalarmesTable td:nth-child(6) {
+    background-color: white;
+}
