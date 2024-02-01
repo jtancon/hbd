@@ -870,7 +870,20 @@ Análise disponivel para visualizar em: ${linkdapagina.trim()}`;
      //menor valor de criticalN1 e criticalN2
      let menorCriticaN1 = Math.min(ch1CriticaN1, ch2CriticaN1);
      let menorCriticaN2 = Math.min(ch1CriticaN2, ch2CriticaN2);
-     console.log("os valores de maxvalue são: " + maxValue + " " + menorCriticaN1 + " " + menorCriticaN2);
+
+    // Filtrar os valores menores que maxValue e ordená-los em ordem decrescente
+    let pontosFiltradosCh1 = pontosCh1.filter(p => p.y < maxValue).sort((a, b) => b.y - a.y);
+    let pontosFiltradosCh2 = pontosCh2.filter(p => p.y < maxValue).sort((a, b) => b.y - a.y);
+
+    // Pegar o segundo maior valor
+    let segundaMaiorTemperaturaCh1 = pontosFiltradosCh1[1];
+    let segundaMaiorTemperaturaCh2 = pontosFiltradosCh2[1];
+
+    // Imprimir os valores
+
+    //menor maior valor de segundaMaiorTemperaturaCh1 e segundaMaiorTemperaturaCh2
+    let menorSegundaMaiorTemperatura = Math.min(segundaMaiorTemperaturaCh1.y, segundaMaiorTemperaturaCh2.y);
+    console.log("os valores de menorSegundaMaiorTemperatura são: " + menorSegundaMaiorTemperatura);
 
     new Chart(ctx, {
         //criação do grafico
@@ -879,12 +892,19 @@ Análise disponivel para visualizar em: ${linkdapagina.trim()}`;
             datasets: [{
                 label: 'Veículos Lidos - ch1',
                 data: pontosCh1,
-                pointBackgroundColor: 'blue',
-                pointBorderColor: 'blue',
+                pointBackgroundColor: function(context) {
+                    return context.dataset.data[context.dataIndex].y >= menorSegundaMaiorTemperatura ? 'blue' : 'blue';
+                },
+                pointBorderColor: function(context) {
+                    return context.dataset.data[context.dataIndex].y >= menorSegundaMaiorTemperatura ? 'rgba(0, 0, 139, 1)' : 'rgba(0, 0, 0, 0)';
+                },
+                pointBorderWidth: function(context) {
+                    return context.dataset.data[context.dataIndex].y >= menorSegundaMaiorTemperatura ? 3 : 1;
+                },
                 pointHoverBackgroundColor: 'blue',
-                pointHoverBorderColor: 'blue',
+                pointHoverBorderColor: 'black',
                 datalabels: {
-                    color: 'black',
+                    color: 'rgba(0, 0, 139, 1)',
                     font: {
                         weight: 'bold'
                     },
@@ -896,12 +916,19 @@ Análise disponivel para visualizar em: ${linkdapagina.trim()}`;
             {
                 label: 'Veículos Lidos - ch2',
                 data: pontosCh2,
-                pointBackgroundColor: 'red',
-                pointBorderColor: 'red',
+                pointBackgroundColor: function(context) {
+                    return context.dataset.data[context.dataIndex].y >= menorSegundaMaiorTemperatura ? 'red' : 'red';
+                },
+                pointBorderColor: function(context) {
+                    return context.dataset.data[context.dataIndex].y >= menorSegundaMaiorTemperatura ? 'rgba(139, 0, 0, 1)' : 'rgba(0, 0, 0, 0)';
+                },
+                pointBorderWidth: function(context) {
+                    return context.dataset.data[context.dataIndex].y >= menorSegundaMaiorTemperatura ? 3 : 1;
+                },
                 pointHoverBackgroundColor: 'red',
-                pointHoverBorderColor: 'red',
+                pointHoverBorderColor: 'black',
                 datalabels: {
-                    color: 'black',
+                    color: 'rgba(139, 0, 0, 1)',
                     font: {
                         weight: 'bold'
                     },
@@ -981,12 +1008,11 @@ Análise disponivel para visualizar em: ${linkdapagina.trim()}`;
                     }
                 },
                 datalabels: {
-                    color: 'black',
                     align: 'end',
                     anchor: 'end',
                     offset: 0, 
                     display: function(context) {
-                        return context.dataset.data[context.dataIndex].y >= maxValue;
+                        return context.dataset.data[context.dataIndex].y >= menorSegundaMaiorTemperatura;
                     },
                     formatter: function(value, context) {
                         return value.y;
