@@ -871,19 +871,17 @@ Análise disponivel para visualizar em: ${linkdapagina.trim()}`;
      let menorCriticaN1 = Math.min(ch1CriticaN1, ch2CriticaN1);
      let menorCriticaN2 = Math.min(ch1CriticaN2, ch2CriticaN2);
 
-    // Filtrar os valores menores que maxValue e ordená-los em ordem decrescente
-    let pontosFiltradosCh1 = pontosCh1.filter(p => p.y < maxValue).sort((a, b) => b.y - a.y);
-    let pontosFiltradosCh2 = pontosCh2.filter(p => p.y < maxValue).sort((a, b) => b.y - a.y);
+    // Ordenar os valores em ordem decrescente
+    let pontosOrdenadosCh1 = [...pontosCh1].sort((a, b) => b.y - a.y);
+    let pontosOrdenadosCh2 = [...pontosCh2].sort((a, b) => b.y - a.y);
 
-    // Pegar o segundo maior valor
-    let segundaMaiorTemperaturaCh1 = pontosFiltradosCh1[1];
-    let segundaMaiorTemperaturaCh2 = pontosFiltradosCh2[1];
+    // Pegar os dois maiores valores
+    let maioresTemperaturasCh1 = pontosOrdenadosCh1.slice(0, 3);
+    let maioresTemperaturasCh2 = pontosOrdenadosCh2.slice(0, 3);
 
-    // Imprimir os valores
+    console.log("Os dois maiores valores de ch1 são: ", maioresTemperaturasCh1.map(p => p.y));
+    console.log("Os dois maiores valores de ch2 são: ", maioresTemperaturasCh2.map(p => p.y));
 
-    //menor maior valor de segundaMaiorTemperaturaCh1 e segundaMaiorTemperaturaCh2
-    let menorSegundaMaiorTemperatura = Math.min(segundaMaiorTemperaturaCh1.y, segundaMaiorTemperaturaCh2.y);
-    console.log("os valores de menorSegundaMaiorTemperatura são: " + menorSegundaMaiorTemperatura);
 
     new Chart(ctx, {
         //criação do grafico
@@ -893,13 +891,13 @@ Análise disponivel para visualizar em: ${linkdapagina.trim()}`;
                 label: 'Veículos Lidos - ch1',
                 data: pontosCh1,
                 pointBackgroundColor: function(context) {
-                    return context.dataset.data[context.dataIndex].y >= menorSegundaMaiorTemperatura ? 'blue' : 'blue';
+                    return context.dataset.data[context.dataIndex].y >= maioresTemperaturasCh1[2].y ? 'blue' : 'blue';
                 },
                 pointBorderColor: function(context) {
-                    return context.dataset.data[context.dataIndex].y >= menorSegundaMaiorTemperatura ? 'rgba(0, 0, 139, 1)' : 'rgba(0, 0, 0, 0)';
+                    return context.dataset.data[context.dataIndex].y >= maioresTemperaturasCh1[2].y ? 'rgba(0, 0, 139, 1)' : 'rgba(0, 0, 0, 0)';
                 },
                 pointBorderWidth: function(context) {
-                    return context.dataset.data[context.dataIndex].y >= menorSegundaMaiorTemperatura ? 3 : 1;
+                    return context.dataset.data[context.dataIndex].y >= maioresTemperaturasCh1[2].y ? 3 : 1;
                 },
                 pointHoverBackgroundColor: 'blue',
                 pointHoverBorderColor: 'black',
@@ -917,13 +915,13 @@ Análise disponivel para visualizar em: ${linkdapagina.trim()}`;
                 label: 'Veículos Lidos - ch2',
                 data: pontosCh2,
                 pointBackgroundColor: function(context) {
-                    return context.dataset.data[context.dataIndex].y >= menorSegundaMaiorTemperatura ? 'red' : 'red';
+                    return context.dataset.data[context.dataIndex].y >= maioresTemperaturasCh2[2] ? 'red' : 'red';
                 },
                 pointBorderColor: function(context) {
-                    return context.dataset.data[context.dataIndex].y >= menorSegundaMaiorTemperatura ? 'rgba(139, 0, 0, 1)' : 'rgba(0, 0, 0, 0)';
+                    return context.dataset.data[context.dataIndex].y >= maioresTemperaturasCh2[2] ? 'rgba(139, 0, 0, 1)' : 'rgba(0, 0, 0, 0)';
                 },
                 pointBorderWidth: function(context) {
-                    return context.dataset.data[context.dataIndex].y >= menorSegundaMaiorTemperatura ? 3 : 1;
+                    return context.dataset.data[context.dataIndex].y >= maioresTemperaturasCh2[2] ? 3 : 1;
                 },
                 pointHoverBackgroundColor: 'red',
                 pointHoverBorderColor: 'black',
@@ -1012,7 +1010,11 @@ Análise disponivel para visualizar em: ${linkdapagina.trim()}`;
                     anchor: 'end',
                     offset: 0, 
                     display: function(context) {
-                        return context.dataset.data[context.dataIndex].y >= menorSegundaMaiorTemperatura;
+                        if (context.datasetIndex === 0) {
+                            return context.dataset.data[context.dataIndex].y >= maioresTemperaturasCh1[2].y;
+                        } else if (context.datasetIndex === 1) {
+                            return context.dataset.data[context.dataIndex].y >= maioresTemperaturasCh2[2].y;
+                        }
                     },
                     formatter: function(value, context) {
                         return value.y;
