@@ -95,6 +95,7 @@ export function displayData(tabela) {
         new Chart(canvas, {
             type: 'line',
             data: chartData,
+            plugins: [ChartDataLabels],
             options: {
                 responsive: false,  // Desativa o redimensionamento automático
                 scales: {
@@ -123,8 +124,15 @@ export function displayData(tabela) {
                 },
                 plugins: {
                     datalabels: {
-                        color: 'black',
-                        display: true,  // Sempre exibe data labels
+                        align: 'end',
+                        anchor: 'end',
+                        offset: 0, 
+                        color: function(context) {
+                            return context.datasetIndex === 0 ? 'green' : 'blue';
+                        },
+                        display: function(context) {
+                            return context.datasetIndex === 0 || context.datasetIndex === 1;  // Exibe data labels apenas para ch1 e ch2
+                        },
                         formatter: function(value, context) {
                             return value;  // Retorna o valor y do ponto de dados
                         }
