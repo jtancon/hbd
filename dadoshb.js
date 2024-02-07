@@ -882,6 +882,11 @@ Análise disponivel para visualizar em: ${linkdapagina.trim()}`;
     console.log("Os dois maiores valores de ch1 são: ", maioresTemperaturasCh1.map(p => p.y));
     console.log("Os dois maiores valores de ch2 são: ", maioresTemperaturasCh2.map(p => p.y));
 
+    //maior entre max ch1 ch2 e absoluto
+    let maiorch1ch2abs = Math.max(maxCh1, maxCh2, absoluto);
+    maiorch1ch2abs = maiorch1ch2abs*1.2;
+    console.log("O maior valor entre ch1, ch2 e absoluto é: ", maiorch1ch2abs);
+
 
     new Chart(ctx, {
         //criação do grafico
@@ -962,6 +967,7 @@ Análise disponivel para visualizar em: ${linkdapagina.trim()}`;
                         display: true,
                         text: 'Temperatura'
                     },
+                    max: (maiorch1ch2abs),  // Defina o valor máximo para o eixo Y
                     grid: {
                         display: false  // Remova as grades do eixo Y
                     }

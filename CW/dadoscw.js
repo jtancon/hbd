@@ -451,18 +451,22 @@ export function displayData(extractedData) {
                 return;
             }
 
-            veiculo.axle.forEach(axle => {
-                pontosch3.push({
-                    x: axle.axleNum,
-                    y: (sitename === "Phoenix MB -Pimenta" || sitename === "PHOENIX MB Canguera") ? axle.che : axle.ch3,
-                    veiculo: number
+            if (veiculo.tipoVeiculo == 'Vagão') {
+                veiculo.axle.forEach(axle => {
+                    pontosch3.push({
+                        x: axle.axleNum,
+                        y: (sitename === "Phoenix MB -Pimenta" || sitename === "PHOENIX MB Canguera") ? axle.che : axle.ch3,
+                        veiculo: number,
+                        number: number  // Adiciona o number na consulta
+                    });
+                    pontosch4.push({
+                        x: axle.axleNum,
+                        y: (sitename === "Phoenix MB -Pimenta" || sitename === "PHOENIX MB Canguera") ? axle.chd : axle.ch4,
+                        veiculo: number,
+                        number: number  // Adiciona o number na consulta
+                    });
                 });
-                pontosch4.push({
-                    x: axle.axleNum,
-                    y: (sitename === "Phoenix MB -Pimenta" || sitename === "PHOENIX MB Canguera") ? axle.chd : axle.ch4,
-                    veiculo: number
-                });
-            });
+            }
         });
 
         //menor valor de criticalN1 e criticalN2
@@ -858,7 +862,7 @@ Análise disponivel para visualizar em: ${linkdapagina.trim()}`;
                         label: function(context) {
                             const ch3Value = pontosch3.find(p => p.x === context.raw.x)?.y;
                             const ch4Value = pontosch4.find(p => p.x === context.raw.x)?.y;
-                            return `axleNum: ${context.raw.x}, ch3: ${ch3Value}, ch4: ${ch4Value}`;
+                            return `${context.raw.veiculo} axleNum: ${context.raw.x}, ch3: ${ch3Value}, ch4: ${ch4Value}`;
                         }
                     }
                 },
