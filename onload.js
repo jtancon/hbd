@@ -68,8 +68,8 @@ botao.onclick = function() {
 if (temPerfil) {
     tabela.push({
         axle: axle,
-        temperatura: parseInt(temperatura * 5 / 9),  // Converte a temperatura para um inteiro depois de multiplicar por 5/9
-        perfil: valores.map(valor => parseInt(valor * 5 / 9))  // Converte cada valor de perfil para um inteiro depois de multiplicar por 5/9
+        temperatura: Math.ceil(temperatura * 5 / 9),  // Converte a temperatura para um inteiro depois de multiplicar por 5/9 e arredonda para cima
+        perfil: valores.map(valor => Math.ceil(valor * 5 / 9))  // Converte cada valor de perfil para um inteiro depois de multiplicar por 5/9 e arredonda para cima
     });
 }
         }

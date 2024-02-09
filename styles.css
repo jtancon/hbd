@@ -290,6 +290,32 @@ footer {
     color: #003865;
 }
 
+#BTNProcedimento {
+    background-color: white;
+    color: #003865;
+    border: 2px solid #003865;
+    padding: 5px 15px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 13px;
+    transition: background-color 0.5s ease, color 0.5s ease;
+    font-weight: bold;
+    margin-bottom: 10px; 
+    margin-left: 5px;
+}
+
+#BTNProcedimento:hover, #BTNProcedimento:active {
+    background-color: #003865;
+    color: white;
+    font-weight: bold;
+}
+
+#BTNProcedimento:active {
+    background-color: #bbb;
+    color: #003865;
+}
+
 #alarmesContainer .tbalarmesTable {
     width: 100%;
     background-color: #f9f9f9;
