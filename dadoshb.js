@@ -741,7 +741,7 @@ export function displayData(extractedData) {
 
                 // Verifica se quantidade de gates contados no A e B são iguais
                 if(gateA !== gateB) {
-                    diffGatesAlarme = "<span style='color: #C89F54;'><strong>Diferença entre gates A e B: </strong>" + Math.abs(parseFloat(gateA - gateB)).toFixed(0) + " - Existe diferença. (gateA Cnt: "+ gateA + " gateB Cnt: "+ gateB +") </span>";
+                    diffGatesAlarme = "<span style='color: #C89F54;'><strong>Erro Transdutor, diferença entre gates A e B: </strong>" + Math.abs(parseFloat(gateA - gateB)).toFixed(0) + " - Existe diferença. (gateA Cnt: "+ gateA + " gateB Cnt: "+ gateB +") </span>";
                 } else {
                     diffGatesAlarme = "<span style='color: green;'><strong>Quantidade de gates A e B:</strong> " + gateA + " - Sem diferença.</span>";
                 }

@@ -156,6 +156,12 @@ export function displayData(extractedData) {
         const direction = item.cabecalhoLeitura.state.reported.direction;
         const checkVehicles = item.fichaTrem.trem.counters.vehicles;
         const speedInOut = item.cabecalhoLeitura.state.reported.speedInOut;
+
+        //contagem gateA e B item.cabecalhoLeitura.state.reported.gateACtn
+        const gateA = item.cabecalhoLeitura.state.reported.gateACnt;
+        const gateB = item.cabecalhoLeitura.state.reported.gateBCnt;
+        //diferença gateA e B
+        const diferencaGate = Math.abs(gateA - gateB);        
           
         console.log(tempmin);
 
@@ -658,7 +664,20 @@ export function displayData(extractedData) {
                 // div divergencias
                 let tituloDivergencias = document.createElement('h2');
                 tituloDivergencias.textContent = 'Divergências';
-                divAlarmes.appendChild(tituloDivergencias);            
+                divAlarmes.appendChild(tituloDivergencias);      
+                
+                // Verifica se quantidade de gates contados no A e B são iguais
+                let diffGatesAlarme;
+                if(gateA !== gateB) {
+                    diffGatesAlarme = "<span style='color: #C89F54;'><strong>Erro Transdutor, diferença entre gates A e B: </strong>" + Math.abs(parseFloat(gateA - gateB)).toFixed(0) + " - Existe diferença. (gateA Cnt: "+ gateA + " gateB Cnt: "+ gateB +") </span>";
+                } else {
+                    diffGatesAlarme = "<span style='color: green;'><strong>Quantidade de gates A e B:</strong> " + gateA + " - Sem diferença.</span>";
+                }
+
+                let linhaGates = document.createElement('p');
+                linhaGates.className = 'linha';
+                linhaGates.innerHTML = diffGatesAlarme;
+                divAlarmes.appendChild(linhaGates);                
                 
                 // Adicione a div ao DOM
                 flexContainer.appendChild(divAlarmes);
@@ -783,11 +802,23 @@ Análise disponivel para visualizar em: ${linkdapagina.trim()}`;
         Math.max(...pontosch4.map(p => p.y))
     );
 
+    // Encontre o maior valor de temperatura em pontosch3 e pontosch4
+    // Ordenar os valores em ordem decrescente
+    let pontosOrdenadosch3 = [...pontosch3].sort((a, b) => b.y - a.y);
+    let pontosOrdenadosch4 = [...pontosch4].sort((a, b) => b.y - a.y);
 
+    // Pegar os dois maiores valores
+    let maioresTemperaturasch3 = pontosOrdenadosch3.slice(0, 3);
+    let maioresTemperaturasch4 = pontosOrdenadosch4.slice(0, 3);
+
+    console.log("Os dois maiores valores de ch3 são: ", maioresTemperaturasch3.map(p => p.y));
+    console.log("Os dois maiores valores de ch4 são: ", maioresTemperaturasch4.map(p => p.y));
 
     const maxch3 = Math.max(...pontosch3.map(p => p.y));
     const maxch4 = Math.max(...pontosch4.map(p => p.y));
-    const maxValue = Math.max(maxch3, maxch4);
+
+    // maior valor de ch3 e ch4
+    let maiorch3ch4abs = Math.max(maxch3, maxch4);
 
     function isWithinRange(value, maxValue) {
         return value.y >= maxValue - 5 && value.y <= maxValue;
@@ -800,26 +831,53 @@ Análise disponivel para visualizar em: ${linkdapagina.trim()}`;
             datasets: [{
                 label: 'Veículos Lidos - ch3',
                 data: pontosch3,
-                pointBackgroundColor:       'green',
-                pointBorderColor:           'green',
-                pointHoverBackgroundColor:  'green',
-                pointHoverBorderColor:      'green',
+                pointBackgroundColor: function(context) {
+                    return context.dataset.data[context.dataIndex].y >= maioresTemperaturasch3[2].y ? 'blue' : 'blue';
+                },
+                pointBorderColor: function(context) {
+                    return context.dataset.data[context.dataIndex].y >= maioresTemperaturasch3[2].y ? 'rgba(0, 0, 139, 1)' : 'rgba(0, 0, 0, 0)';
+                },
+                pointBorderWidth: function(context) {
+                    return context.dataset.data[context.dataIndex].y >= maioresTemperaturasch3[2].y ? 3 : 1;
+                },
+                pointHoverBackgroundColor: 'blue',
+                pointHoverBorderColor: 'black',
                 datalabels: {
-                    color: 'black'
+                    color: 'rgba(0, 0, 139, 1)',
+                    font: {
+                        weight: 'bold'
+                    },
+                    formatter: function(value, context) {
+                        return value.y;
+                    }
                 }
             },
             {
                 label: 'Veículos Lidos - ch4',
                 data: pontosch4,
-                pointBackgroundColor:           'orange',
-                pointBorderColor:               'orange',
-                pointHoverBackgroundColor:      'orange',
-                pointHoverBorderColor:          'orange',
+                pointBackgroundColor: function(context) {
+                    return context.dataset.data[context.dataIndex].y >= maioresTemperaturasch4[2].y ? 'red' : 'red';
+                },
+                pointBorderColor: function(context) {
+                    return context.dataset.data[context.dataIndex].y >= maioresTemperaturasch4[2].y ? 'rgba(139, 0, 0, 1)' : 'rgba(0, 0, 0, 0)';
+                },
+                pointBorderWidth: function(context) {
+                    return context.dataset.data[context.dataIndex].y >= maioresTemperaturasch4[2].y ? 3 : 1;
+                },
+                pointHoverBackgroundColor: 'red',
+                pointHoverBorderColor: 'black',
                 datalabels: {
-                    color: 'black'
+                    color: 'rgba(139, 0, 0, 1)',
+                    font: {
+                        weight: 'bold'
+                    },
+                    formatter: function(value, context) {
+                        return value.y;
+                    }
                 }
             }]
         },
+        plugins: [ChartDataLabels],
         options: {
             onClick: function(evt) {
                 const points = this.getElementsAtEventForMode(evt, 'nearest', { intersect: true }, true);
@@ -875,6 +933,21 @@ Análise disponivel para visualizar em: ${linkdapagina.trim()}`;
                             borderColor: 'rgb(255, 99, 132)',
                             borderWidth: 2
                         }
+                    }
+                },
+                datalabels: {
+                    align: 'end',
+                    anchor: 'end',
+                    offset: 0, 
+                    display: function(context) {
+                        if (context.datasetIndex === 0) {
+                            return context.dataset.data[context.dataIndex].y >= maioresTemperaturasch3[2].y;
+                        } else if (context.datasetIndex === 1) {
+                            return context.dataset.data[context.dataIndex].y >= maioresTemperaturasch4[2].y;
+                        }
+                    },
+                    formatter: function(value, context) {
+                        return value.y;
                     }
                 }
 
