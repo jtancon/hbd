@@ -207,6 +207,12 @@ export function displayData(extractedData) {
         const checkVehicles = item.cabecalhoLeitura.state.reported.divergence?.checkVehicles || 0;
         const fichaTrem = item.cabecalhoLeitura.state.reported.divergence?.fichaVehicles || 0;
         const speedInOut = item.cabecalhoLeitura.state.reported.speedInOut;
+
+        //contagem gateA e B item.cabecalhoLeitura.state.reported.gateACtn
+        const gateA = item.cabecalhoLeitura.state.reported.gateACtn;
+        const gateB = item.cabecalhoLeitura.state.reported.gateBCtn;
+        //diferença gateA e B
+        const diferencaGate = Math.abs(gateA - gateB);
           
         
         let alarmesCabecalho = document.getElementById('alarmesCabecalho');
@@ -729,8 +735,23 @@ export function displayData(extractedData) {
                 let linhaAxles = document.createElement('p');
                 linhaAxles.className = 'linha';
                 linhaAxles.innerHTML = diffAxlesAlarme;
-                divAlarmes.appendChild(linhaAxles);                
-                
+                divAlarmes.appendChild(linhaAxles); 
+
+                let diffGatesAlarme;
+
+                // Verifica se quantidade de gates contados no A e B são iguais
+                if(gateA !== gateB) {
+                    diffGatesAlarme = "<span style='color: #C89F54;'><strong>Diferença entre gates A e B: </strong>" + Math.abs(parseFloat(gateA - gateB)).toFixed(0) + " - Existe diferença. (gateA Cnt: "+ gateA + " gateB Cnt: "+ gateB +") </span>";
+                } else {
+                    diffGatesAlarme = "<span style='color: green;'><strong>Quantidade de gates A e B:</strong> " + gateA + " - Sem diferença.</span>";
+                }
+
+                let linhaGates = document.createElement('p');
+                linhaGates.className = 'linha';
+                linhaGates.innerHTML = diffGatesAlarme;
+                divAlarmes.appendChild(linhaGates);
+
+
                 // Adicione a div ao DOM
                 flexContainer.appendChild(divAlarmes);
 
@@ -791,6 +812,14 @@ export function displayData(extractedData) {
         }
         if (getPlainText(diffAxlesAlarme).trim() !== '') {
             textdivergencias += `${getPlainText(diffAxlesAlarme)}\n`;
+        }
+        if (getPlainText(diffGatesAlarme).trim() !== '') {
+            textdivergencias += `${getPlainText(diffGatesAlarme)}\n`;
+        }
+
+        //se a tabela de ${alarmes.trim()} não tiver mais de uma linha alem do cabeçalho não exibe
+        if (alarmes.split('\n').length <= 2) {
+            alarmes = '';
         }
 
         // Cria uma string com todo o conteúdo
