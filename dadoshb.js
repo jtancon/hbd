@@ -206,11 +206,12 @@ export function displayData(extractedData) {
         const direction = item.cabecalhoLeitura.state.reported.direction;
         const checkVehicles = item.cabecalhoLeitura.state.reported.divergence?.checkVehicles || 0;
         const fichaTrem = item.cabecalhoLeitura.state.reported.divergence?.fichaVehicles || 0;
-        const speedInOut = item.cabecalhoLeitura.state.reported.speedInOut || "0/0";
+        const speedInOut = item.cabecalhoLeitura.state.reported.speedInOut || item.cabecalhoLeitura.state.reported.speedKMh+"/"+item.cabecalhoLeitura.state.reported.speedKMh || "0/0";
 
         //contagem gateA e B item.cabecalhoLeitura.state.reported.gateACtn
-        const gateA = item.cabecalhoLeitura.state.reported.gateACtn || 0;
-        const gateB = item.cabecalhoLeitura.state.reported.gateBCtn || 0;
+        //hotbox phoenix não traz gateA e B usando checkAxle para não deixar valor vazio
+        const gateA = item.cabecalhoLeitura.state.reported.gateACtn || checkAxle || 0;
+        const gateB = item.cabecalhoLeitura.state.reported.gateBCtn || checkAxle || 0;
         //diferença gateA e B
         const diferencaGate = Math.abs(gateA - gateB);
 
