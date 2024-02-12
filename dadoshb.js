@@ -167,8 +167,8 @@ export function displayData(extractedData) {
                         axle: a.axleNum || "n/a",
                         ch1: a.ch1 || "n/a",
                         ch2: a.ch2 || "n/a",
-                        ch1: a.ch1 || "n/a",
-                        ch2: a.ch2 || "n/a"
+                        ch3: a.ch3 || "n/a",
+                        ch4: a.ch4 || "n/a"
                     };
                     tbVeiculoslidosResumo.push(linha);
                 });

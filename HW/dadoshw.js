@@ -1,6 +1,9 @@
 export function displayData(extractedData) {
+    let pontosch1 = [];
+    let pontosch2 = [];
     let pontosch3 = [];
     let pontosch4 = [];
+
 
     if (!Array.isArray(extractedData)) {
         console.error('extractedData deve ser um array');
@@ -165,8 +168,8 @@ export function displayData(extractedData) {
                         veiculo: veiculoLido.veiculo || "n/a",
                         carregado: veiculoLido.isLoad === true ? "Carregado" : veiculoLido.isLoad === false ? "Vazio" : "n/a",
                         axle: a.axleNum || "n/a",
-                        ch3: a.ch3 || "n/a",
-                        ch4: a.ch4 || "n/a",
+                        ch1: a.ch1 || "n/a",
+                        ch2: a.ch2 || "n/a",
                         ch3: a.ch3 || "n/a",
                         ch4: a.ch4 || "n/a"
                     };
@@ -206,7 +209,7 @@ export function displayData(extractedData) {
         const direction = item.cabecalhoLeitura.state.reported.direction;
         const checkVehicles = item.cabecalhoLeitura.state.reported.divergence?.checkVehicles || 0;
         const fichaTrem = item.cabecalhoLeitura.state.reported.divergence?.fichaVehicles || 0;
-        const speedInOut = item.cabecalhoLeitura.state.reported.speedInOut;
+        const speedInOut = item.cabecalhoLeitura.state.reported.speedInOut || item.cabecalhoLeitura.state.reported.speedKMh+"/"+item.cabecalhoLeitura.state.reported.speedKMh || "0/0";
 
         //contagem gateA e B item.cabecalhoLeitura.state.reported.gateACtn
         const gateA = item.cabecalhoLeitura.state.reported.gateACtn;
@@ -215,11 +218,18 @@ export function displayData(extractedData) {
         const diferencaGate = Math.abs(gateA - gateB);
 
         // speedin e speedout estão dentro de [0].cabecalhoLeitura.state.reported.speedInOut
-        console.log(speedInOut);
+        console.log("a velocidade de entrada e saida é : "+speedInOut);
 
-        //velocidade de entrada e saida
-        const [speedIn, speedOut] = speedInOut.split('/').map(Number);
-    
+        // Remove o sufixo "KPH" e divide a string em dois valores
+        const [speedInStr, speedOutStr] = speedInOut.replace(' KPH', '').split('/');
+
+        // Converte os valores em números
+        const speedIn = Number(speedInStr);
+        const speedOut = Number(speedOutStr);
+        
+        console.log("a velocidade de entrada é : "+speedInOut.split('/').map(Number));
+        console.log("a velocidade de saida é : "+speedOut);
+
         const diferencaSpeed = Math.abs(speedIn - speedOut);          
         
         let alarmesCabecalho = document.getElementById('alarmesCabecalho');
