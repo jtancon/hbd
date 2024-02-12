@@ -167,8 +167,8 @@ export function displayData(extractedData) {
                         axle: a.axleNum || "n/a",
                         ch1: a.ch1 || "n/a",
                         ch2: a.ch2 || "n/a",
-                        ch3: a.ch3 || "n/a",
-                        ch4: a.ch4 || "n/a"
+                        ch1: a.ch1 || "n/a",
+                        ch2: a.ch2 || "n/a"
                     };
                     tbVeiculoslidosResumo.push(linha);
                 });
@@ -213,11 +213,17 @@ export function displayData(extractedData) {
         const gateB = item.cabecalhoLeitura.state.reported.gateBCtn;
         //diferença gateA e B
         const diferencaGate = Math.abs(gateA - gateB);
-          
+
+        // speedin e speedout estão dentro de [0].cabecalhoLeitura.state.reported.speedInOut
+        console.log(speedInOut);
+
+        //velocidade de entrada e saida
+        const [speedIn, speedOut] = speedInOut.split('/').map(Number);
+    
+        const diferencaSpeed = Math.abs(speedIn - speedOut);          
         
         let alarmesCabecalho = document.getElementById('alarmesCabecalho');
         
-
         //verifica as falhas e mostra na div alarmesCabecalho
         let falhas = [
             'failTransducerSignalMiscount',
@@ -702,7 +708,40 @@ export function displayData(extractedData) {
                 linhaAlarmeTA.className = 'linha';
                 linhaAlarmeTA.innerHTML = alarmeTemperaturaAlta;
 
-                divAlarmes.appendChild(linhaAlarmeTA);                
+                divAlarmes.appendChild(linhaAlarmeTA);
+                
+                // Velocidade minima e diferença de velocidade
+                let menorVelocidade = Math.min(speedIn, speedOut);
+                let mensagemVelocidade = "";
+                let mensagemDiferenca = "";
+
+                // Verifica as condições de velocidade primeiro
+                if (menorVelocidade < 15) {
+                    mensagemVelocidade = "<span style='color: red;'><strong>Erro: Velocidade muito baixa.</strong> Velocidade: " + menorVelocidade + "</span>";
+                } else if (menorVelocidade < 20) {
+                    mensagemVelocidade = "<span style='color: #C89F54;'><strong>Velocidade baixa.</strong> Velocidade: " + menorVelocidade + "</span>";
+                } else {
+                    mensagemVelocidade = "<span style='color: green;'><strong>Velocidade dentro dos limites normais.</strong> Velocidade: " + menorVelocidade + "</span>";
+                }
+
+                // Em seguida, verifica as condições de diferença de velocidade
+                if (diferencaSpeed > 10) {
+                    mensagemDiferenca = "<span style='color: red;'><strong>Alta diferença na velocidade de entrada e saída.</strong> Diferença: " + diferencaSpeed + "</span>";
+                } else if (menorVelocidade < 20) {
+                    mensagemDiferenca = "<span style='color: green;'><strong>Diferença de velocidade dentro dos limites normais.</strong> Diferença: " + diferencaSpeed + "</span>";
+                } else {
+                    mensagemDiferenca = "<span style='color: green;'><strong>Diferença de velocidade dentro dos limites normais.</strong> Diferença: " + diferencaSpeed + "</span>";
+                }
+
+                let linhaVelocidade = document.createElement('p');
+                linhaVelocidade.className = 'linha';
+                linhaVelocidade.innerHTML = mensagemVelocidade;
+                divAlarmes.appendChild(linhaVelocidade);
+
+                let linhaDiferenca = document.createElement('p');
+                linhaDiferenca.className = 'linha';
+                linhaDiferenca.innerHTML = mensagemDiferenca;
+                divAlarmes.appendChild(linhaDiferenca);                
 
                 // div divergencias
                 let tituloDivergencias = document.createElement('h2');
@@ -741,7 +780,15 @@ export function displayData(extractedData) {
 
                 // Verifica se quantidade de gates contados no A e B são iguais
                 if(gateA !== gateB) {
-                    diffGatesAlarme = "<span style='color: #C89F54;'><strong>Erro Transdutor, diferença entre gates A e B: </strong>" + Math.abs(parseFloat(gateA - gateB)).toFixed(0) + " - Existe diferença. (gateA Cnt: "+ gateA + " gateB Cnt: "+ gateB +") </span>";
+                    let transdutor = "";
+                    if(gateA % 2 === 1 && gateB % 2 === 1) {
+                        transdutor = "<strong>Provável Transdutor A e B</strong>";
+                    } else if(gateA % 2 === 1) {
+                        transdutor = "<strong>Provável Transdutor A</strong>";
+                    } else if(gateB % 2 === 1) {
+                        transdutor = "<strong>Provável Transdutor B</strong>";
+                    }
+                    diffGatesAlarme = "<span style='color: #C89F54;'><strong>Transdutor, diferença entre gates A e B: </strong>" + Math.abs(parseFloat(gateA - gateB)).toFixed(0) + " - Existe diferença. (gateA Cnt: "+ gateA + " gateB Cnt: "+ gateB +") " + transdutor + "</span>";
                 } else {
                     diffGatesAlarme = "<span style='color: green;'><strong>Quantidade de gates A e B:</strong> " + gateA + " - Sem diferença.</span>";
                 }
@@ -845,34 +892,6 @@ Análise disponivel para visualizar em: ${linkdapagina.trim()}`;
 
         // Copia a string para a área de transferência
         navigator.clipboard.writeText(conteudo);
-
-        //outra versão
-     //         // Cria uma string com todo o conteúdo
-     //         var conteudo = `
-     //         <p style="font-family: Verdana;"><strong>Status Geral (Inf. Do LOG):</strong></p>
-     //         <p style="font-family: Verdana;"><strong>Hotbox:</strong> ${hotbox.trim()}</p>
-     //         <p style="font-family: Verdana;"><strong>Data/Hora:</strong> ${dataHora.trim()}</p>
-     //         <p style="font-family: Verdana;"><strong>Prefixo:</strong> ${prefixo.trim()}</p>
-     //         <p style="font-family: Verdana;"><strong>OS:</strong> ${os}</p>
-     //         <p style="font-family: Verdana;"><strong>Sentido do Trem:</strong> ${sentidoTrem.trim()}</p>
-     //         <p style="font-family: Verdana;"><strong>Posição das locomotivas:</strong> ${posicaoLocomotivas.trim()}</p>
-     //         <p style="font-family: Verdana;"><strong>Alarmes:</strong> ${getPlainText(linhaAlarmeFA.innerText)}</p>
-     //         <p style="font-family: Verdana;"><strong>Alertas:</strong> ${getPlainText(diffalarme)}</p>
-     //         <p style="font-family: Verdana;"><strong>Divergências:</strong> ${getPlainText(diffVehiclesAlarme)}</p>
-     //         <p style="font-family: Verdana;"><strong>Análise disponivel para visualizar em:</strong> ${linkdapagina.trim()}</p>
-     //         <img src="${dataUrl}">
-     //     `;
-    
-     //     // Codifica o conteúdo para uso em uma URL
-     //     var conteudoCodificado = encodeURIComponent(conteudo);
-    
-     //     console.log(conteudo);
-    
-     //     // Copia a string para a área de transferência
-     //     //navigator.clipboard.writeText(conteudo);
-    
-     //     // Abre o cliente de e-mail com um rascunho de e-mail preenchido
-     //     window.location.href = `mailto:?subject=Assunto do e-mail&body=${conteudoCodificado}`;
 
     });
 

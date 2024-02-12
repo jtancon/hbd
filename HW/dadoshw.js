@@ -92,13 +92,61 @@ export function displayData(extractedData) {
             acaoNecessaria: "• Manutenção é necessária. Troque o Pirômetro, o Cabo do Scanner ou o Scanner."
         }
     ];
+    
+    const tbproxhb = {
+        'TSF': { 'South': '45 km (TSF-TBS)', 'North': '-' },
+        'TBS': { 'South': '52 km (TBS-TIQ)', 'North': '45 km (TBS-TSF)' },
+        'TIQ': { 'South': '27 km (TIQ-TMJ)', 'North': '52 km (TIQ-TBS)' },
+        'TMJ': { 'South': '47 km (TMJ-TBE)', 'North': '27 km (TMJ-TIQ)' },
+        'TBE': { 'South': '50 km (TBE-TAG)', 'North': '47 km (TBE-TMJ)' },
+        'TAG': { 'South': '48 km (TAG-TVL)', 'North': '50 km (TAG-TBE)' },
+        'TVL': { 'South': '42 km (TVL-TOM)', 'North': '48 km (TVL-TAG)' },
+        'TOM': { 'South': '55 km (TOM-TLA)', 'North': '42 km (TOM-TVL)' },
+        'TLA': { 'South': '49 km (TLA-THE)', 'North': '55 km (TLA-TOM)' },
+        'THE': { 'South': '50 km (THE-TJA)', 'North': '49 km (THE-TLA)' },
+        'TJA': { 'South': '46 km (TJA-TVI)', 'North': '50 km (TJA-THE)' },
+        'TVI': { 'South': '45 km (TVI-TCE)', 'North': '46 km (TVI-TJA)' },
+        'TCE': { 'South': '56 km (TCE-TIN)', 'North': '45 km (TCE-TVI)' },
+        'TIN': { 'South': '41 km (TIN-TQI)', 'North': '56 km (TIN-TCE)' },
+        'TQI': { 'South': '42 km (TQI-TAP)', 'North': '41 km (TQI-TIN)' },
+        'TAP': { 'South': '55 km (TAP-ZUE)', 'North': '42 km (TAP-TQI)' },
+        'ZUE': { 'South': '50 km (ZUE-ZED)', 'North': '55 km (ZUE-TAP)' },
+        'ZED': { 'South': '60 km (ZED-ZVP)', 'North': '50 km (ZED-ZUE)' },
+        'ZVP': { 'South': '51 km (ZVP-ZEB)', 'North': '60 km (ZVP-ZED)' },
+        'ZEB': { 'South': '47 km (ZEB-ZRU)', 'North': '51 km (ZEB-ZVP)' },
+        'ZRU': { 'South': '55 km (ZRU-ZCV)', 'North': '47 km (ZRU-ZEB)' },
+        'ZCV': { 'South': '54 km (ZCV-ZCZ)', 'North': '55 km (ZCV-ZRU)' },
+        'ZCZ': { 'South': '81 km (ZCZ-ZTO)', 'North': '54 km (ZCZ-ZCV)' },
+        'ZTO': { 'South': '85 km (ZTO-ZVI)', 'North': '81 km (ZTO-ZCZ)' },
+        'ZVI': { 'South': '38 km (ZVI-ZQX)', 'North': '85 km (ZVI-ZTO)' },
+        'ZQX': { 'South': '62 km (ZQX-ZAC)', 'North': '38 km (ZQX-ZVI)' },
+        'ZAC': { 'South': '75 km (ZAC-ZXI)', 'North': '62 km (ZAC-ZQX)' },
+        'Phoenix MB -Pimenta': { 'Sul': '58 km (ZXI-ZKE)', 'Norte': '58 km (ZXI-ZKE)' },
+        'PHOENIX MB Canguera': { 'Sul': '-', 'Norte': '133 km(ZKE-ZAC)' },
+        'ZXW': { 'South': '-', 'North': '-' },
+        'POA': { 'South': '60 km (POA-PQI)', 'North': '-' },
+        'PQI': { 'South': '43 km (PQI-PPR)', 'North': '45 km (PQI-POA)' },
+        'PPR': { 'South': '37 km (PPR-PSS)', 'North': '52 km (PPR-PQI)' },
+        'PSS': { 'South': '61 km (PSS-PUD)', 'North': '27 km (PSS-PPR)' },
+        'PUD': { 'South': '36 km (PUD-PIT)', 'North': '47 km (PUD-PSS)' },
+        'PIT': { 'South': '37 km (PIT-POU)', 'North': '50 km (PIT-PUD)' },
+        'POU': { 'South': '47 km (POU-PGO)', 'North': '48 km (POU-PIT)' },
+        'PGO': { 'South': '-', 'North': '42 km (PGO-POU)' },
+        'LUV': { 'South': '142 km (LUV-LRF)', 'North': '-' },
+        'LRF': { 'South': '142 km (LRF-LPJ)', 'North': '142 km (LRF-LUV)' },
+        'LPJ': { 'South': '128 km (LPJ-LVZ) OU 126 km (LPJ-LAR)', 'North': '142 km (LPJ-LRF)' },
+        'LVZ': { 'South': '-', 'North': '128 km (LVZ-LPJ)' },
+        'LAR': { 'South': '116 km (LAR-LSQ)', 'North': '126 km (LAR-LPJ)' },
+        'LSQ': { 'South': '-', 'North': '116 km (LSQ-LAR)' },
+        'NCY': { 'South': '-', 'North': '-' }
+    };
 
     let flexContainer = document.createElement('div');
     flexContainer.style.display = 'flex';
     flexContainer.style.justifyContent = 'flex-start';
     dataContainer.appendChild(flexContainer);
 
-    let tempmin;
+    let absoluto;
     let ch3LowLimitN1, ch3CriticaN1, ch3LowLimitN2, ch3CriticaN2;
     let ch4LowLimitN1, ch4CriticaN1, ch4LowLimitN2, ch4CriticaN2;
 
@@ -115,8 +163,7 @@ export function displayData(extractedData) {
                         number: veiculoLido.number || "n/a",
                         tipo: veiculoLido.tipoVeiculo || "n/a",
                         veiculo: veiculoLido.veiculo || "n/a",
-                        vagao: veiculoLido.tipoVeiculo == 'Vagão' ? 'Sim' : 'Não',
-                        carregado: veiculoLido.isLoad === true ? "Carregado" : veiculoLido.isLoad === false ? "Vazio" : "Locomotiva",
+                        carregado: veiculoLido.isLoad === true ? "Carregado" : veiculoLido.isLoad === false ? "Vazio" : "n/a",
                         axle: a.axleNum || "n/a",
                         ch3: a.ch3 || "n/a",
                         ch4: a.ch4 || "n/a",
@@ -151,33 +198,32 @@ export function displayData(extractedData) {
         //cria as variaveis para usar na div status geral
         const arrival = item.cabecalhoLeitura.state.reported.arrival;
         const sitename = item.cabecalhoLeitura.state.reported.siteName || item.thing.thingName;
-        tempmin = item.thing.attributes.tempMin;
-        const checkAxle = item.fichaTrem.trem.counters.axles;
-        const qtdalarme = item.cabecalhoLeitura.state.reported.Alarms || 0;
+        absoluto = item.cabecalhoLeitura.state.reported.ABSHigh;//item.fichaTrem.trem.absolut;
+        localStorage.setItem('absoluto', absoluto);
+        const checkAxle = item.cabecalhoLeitura.state.reported.divergence?.checkAxle || 0;
+        const fichaAxles = item.cabecalhoLeitura.state.reported.divergence?.fichaAxles || 0;
+        const qtdalarme = item.cabecalhoLeitura.state.reported.systemWarning || 0;
         const direction = item.cabecalhoLeitura.state.reported.direction;
-        const checkVehicles = item.fichaTrem.trem.counters.vehicles;
+        const checkVehicles = item.cabecalhoLeitura.state.reported.divergence?.checkVehicles || 0;
+        const fichaTrem = item.cabecalhoLeitura.state.reported.divergence?.fichaVehicles || 0;
         const speedInOut = item.cabecalhoLeitura.state.reported.speedInOut;
 
         //contagem gateA e B item.cabecalhoLeitura.state.reported.gateACtn
-        const gateA = item.cabecalhoLeitura.state.reported.gateACnt;
-        const gateB = item.cabecalhoLeitura.state.reported.gateBCnt;
+        const gateA = item.cabecalhoLeitura.state.reported.gateACtn;
+        const gateB = item.cabecalhoLeitura.state.reported.gateBCtn;
         //diferença gateA e B
-        const diferencaGate = Math.abs(gateA - gateB);        
-          
-        console.log(tempmin);
+        const diferencaGate = Math.abs(gateA - gateB);
 
-        // speedin e speedout cabecalhoLeitura.state.reported.speedIn
-        const speedIn = item.cabecalhoLeitura.state.reported.speedIn;
-        const speedOut = item.cabecalhoLeitura.state.reported.speedOut;
+        // speedin e speedout estão dentro de [0].cabecalhoLeitura.state.reported.speedInOut
+        console.log(speedInOut);
 
-        //diferença speedin e speedout
-        const diferencaSpeed = Math.abs(speedIn - speedOut);
-
-        console.log("Diferença de velocidade: " + diferencaSpeed);
-
+        //velocidade de entrada e saida
+        const [speedIn, speedOut] = speedInOut.split('/').map(Number);
+    
+        const diferencaSpeed = Math.abs(speedIn - speedOut);          
+        
         let alarmesCabecalho = document.getElementById('alarmesCabecalho');
         
-
         //verifica as falhas e mostra na div alarmesCabecalho
         let falhas = [
             'failTransducerSignalMiscount',
@@ -224,15 +270,15 @@ export function displayData(extractedData) {
             return { lowLimitN1, criticalN1, lowLimitN2, criticalN2 };
         }
 
-        // 2 axle com menor temperatura ch3
-        let menorch3Axle = tbVeiculoslidosResumo.reduce((menor, linha) => linha.ch3 !== "n/a" && linha.ch3 !== 0 ? linha.ch3 < menor ? linha.ch3 : menor : menor, Infinity);
-        let menorch3Axle2 = tbVeiculoslidosResumo.reduce((menor, linha) => linha.ch3 !== "n/a" && linha.ch3 !== 0 && linha.ch3 > menorch3Axle ? linha.ch3 < menor ? linha.ch3 : menor : menor, Infinity);
+        //2 axle com maior temperatura ch3
+        let maiorch3Axle = tbVeiculoslidosResumo.reduce((maior, linha) => linha.ch3 !== "n/a" ? linha.ch3 > maior ? linha.ch3 : maior : maior, 0);
+        let maiorch3Axle2 = tbVeiculoslidosResumo.reduce((maior, linha) => linha.ch3 !== "n/a" && linha.ch3 < maiorch3Axle ? linha.ch3 > maior ? linha.ch3 : maior : maior, 0);
 
-        // 2 axle com menor temperatura ch4
-        let menorch4Axle = tbVeiculoslidosResumo.reduce((menor, linha) => linha.ch4 !== "n/a" && linha.ch4 !== 0 ? linha.ch4 < menor ? linha.ch4 : menor : menor, Infinity);
-        let menorch4Axle2 = tbVeiculoslidosResumo.reduce((menor, linha) => linha.ch4 !== "n/a" && linha.ch4 !== 0 && linha.ch4 > menorch4Axle ? linha.ch4 < menor ? linha.ch4 : menor : menor, Infinity);
+        //2 axle com maior temperatura ch4
+        let maiorch4Axle = tbVeiculoslidosResumo.reduce((maior, linha) => linha.ch4 !== "n/a" ? linha.ch4 > maior ? linha.ch4 : maior : maior, 0);
+        let maiorch4Axle2 = tbVeiculoslidosResumo.reduce((maior, linha) => linha.ch4 !== "n/a" && linha.ch4 < maiorch4Axle ? linha.ch4 > maior ? linha.ch4 : maior : maior, 0);
 
-        console.log(menorch3Axle, menorch3Axle2, menorch4Axle, menorch4Axle2);
+        console.log(maiorch3Axle, maiorch3Axle2, maiorch4Axle, maiorch4Axle2);
 
         //organizar dados para tabela analise (media ch3, desvio padrao, temperatura critica, low limit, maior temperatura, nivel sigma)
         //media ch3
@@ -278,14 +324,9 @@ export function displayData(extractedData) {
         }
         
         // Atribua valores a elas dentro do escopo atual
-        ({ lowLimitN1: ch3LowLimitN1, lowLimitN2: ch3LowLimitN2 } = calculateN1N2(sitename, mediach3, desvioch3));
-        ch3CriticaN1 = 35;
-        ch3CriticaN2 = 35;
-
-        ({ lowLimitN1: ch4LowLimitN1, lowLimitN2: ch4LowLimitN2 } = calculateN1N2(sitename, mediach4, desvioch4));
-        ch4CriticaN1 = 35;
-        ch4CriticaN2 = 35;
-
+        ({ lowLimitN1: ch3LowLimitN1, criticalN1: ch3CriticaN1, lowLimitN2: ch3LowLimitN2, criticalN2: ch3CriticaN2 } = calculateN1N2(sitename, mediach3, desvioch3));
+        ({ lowLimitN1: ch4LowLimitN1, criticalN1: ch4CriticaN1, lowLimitN2: ch4LowLimitN2, criticalN2: ch4CriticaN2 } = calculateN1N2(sitename, mediach4, desvioch4));  
+        
         console.log(ch3LowLimitN1, ch3CriticaN1, ch3LowLimitN2, ch3CriticaN2);
         console.log(ch4LowLimitN1, ch4CriticaN1, ch4LowLimitN2, ch4CriticaN2);
 
@@ -293,17 +334,10 @@ export function displayData(extractedData) {
         let maiorch3 = tbVeiculoslidosResumo.reduce((maior, linha) => linha.ch3 !== "n/a" ? linha.ch3 > maior ? linha.ch3 : maior : maior, 0);
         //maior temperatura ch4
         let maiorch4 = tbVeiculoslidosResumo.reduce((maior, linha) => linha.ch4 !== "n/a" ? linha.ch4 > maior ? linha.ch4 : maior : maior, 0);
-             
-
-        //menor ch3 que não é 0
-        let menorch3 = tbVeiculoslidosResumo.reduce((menor, linha) => linha.ch3 !== "n/a" && linha.ch3 !== 0 ? linha.ch3 < menor ? linha.ch3 : menor : menor, Infinity);
-        //menor ch4 que não é 0
-        let menorch4 = tbVeiculoslidosResumo.reduce((menor, linha) => linha.ch4 !== "n/a" && linha.ch4 !== 0 ? linha.ch4 < menor ? linha.ch4 : menor : menor, Infinity);
-
-         //nivel sigma ch3
-        let sigmach3 = parseFloat(((menorch3 - mediach3) / desvioch3).toFixed(2));
+        //nivel sigma ch3
+        let sigmach3 = parseFloat(((maiorch3 - mediach3) / desvioch3).toFixed(2));
         //nivel sigma ch4
-        let sigmach4 = parseFloat(((menorch4 - mediach4) / desvioch4).toFixed(2));
+        let sigmach4 = parseFloat(((maiorch4 - mediach4) / desvioch4).toFixed(2));
 
         // Teste de freio agarrado
         let alarmesFreioAgarrado = [];
@@ -380,31 +414,35 @@ export function displayData(extractedData) {
 
         let p7 = document.createElement('p');
         p7.className = 'linha';
-        p7.innerHTML = '<strong>Temp Min:</strong> ' + tempmin;
+        p7.innerHTML = '<strong>Absoluto:</strong> ' + absoluto;
         div.appendChild(p7);
         
         let p8 = document.createElement('p');
         p8.className = 'linha';
-        p8.innerHTML = '<strong>Numero de veiculos:</strong> ' + checkVehicles; 
+        p8.innerHTML = '<strong>Numero de veiculos:</strong> Contados ' + checkVehicles + ' - Ficha ' + fichaTrem; // Substitua por valor real
         div.appendChild(p8);
 
         let p9 = document.createElement('p');
         p9.className = 'linha';
-        p9.innerHTML = '<strong>Numero de eixos:</strong> ' + checkAxle;
+        p9.innerHTML = '<strong>Numero de eixos:</strong> Contados ' + checkAxle + ' - Ficha ' + fichaAxles; // Substitua por valor real
         div.appendChild(p9);
         
         let p10 = document.createElement('p');
         p10.className = 'linha';
-        p10.innerHTML = '<strong>Numero de alarmes:</strong> ' + qtdalarme;
+        p10.innerHTML = '<strong>Numero de alarmes:</strong> ' + qtdalarme; // Substitua por valor real
         div.appendChild(p10);
         
-
-
-        //posição das locomotivas
+        let directionValue = tbproxhb[sitename]?.[direction] ?? '';
         let p11 = document.createElement('p');
         p11.className = 'linha';
-        p11.innerHTML = '<strong>Posição das locomotivas:</strong> ' + posicoesLocomotivas.join(", ");
+        p11.innerHTML = '<strong>Proximo HB:</strong> ' + directionValue;
         div.appendChild(p11);
+
+        //posição das locomotivas
+        let p12 = document.createElement('p');
+        p12.className = 'linha';
+        p12.innerHTML = '<strong>Posição das locomotivas:</strong> ' + posicoesLocomotivas.join(", ");
+        div.appendChild(p12);
         
         // Adicione o div ao DOM
         flexContainer.appendChild(div);
@@ -421,7 +459,7 @@ export function displayData(extractedData) {
             ['Low Limit (N1)', parseFloat(ch3LowLimitN1).toFixed(2), parseFloat(ch4LowLimitN1).toFixed(2)],
             ['Temperatura Crítica (N2)', parseFloat(ch3CriticaN2).toFixed(2), parseFloat(ch4CriticaN2).toFixed(2)],
             ['Low Limit (N2)', parseFloat(ch3LowLimitN2).toFixed(2), parseFloat(ch4LowLimitN2).toFixed(2)],
-            ['Menor Temperatura', menorch3, menorch4],
+            ['Maior Temperatura', maiorch3, maiorch4,],
             ['Nível SIGMA', sigmach3, sigmach4]
         ];
 
@@ -471,22 +509,18 @@ export function displayData(extractedData) {
                 return;
             }
 
-            if (veiculo.tipoVeiculo == 'Vagão') {
-                veiculo.axle.forEach(axle => {
-                    pontosch3.push({
-                        x: axle.axleNum,
-                        y: (sitename === "Phoenix MB -Pimenta" || sitename === "PHOENIX MB Canguera") ? axle.che : axle.ch3,
-                        veiculo: number,
-                        number: number  // Adiciona o number na consulta
-                    });
-                    pontosch4.push({
-                        x: axle.axleNum,
-                        y: (sitename === "Phoenix MB -Pimenta" || sitename === "PHOENIX MB Canguera") ? axle.chd : axle.ch4,
-                        veiculo: number,
-                        number: number  // Adiciona o number na consulta
-                    });
+            veiculo.axle.forEach(axle => {
+                pontosch3.push({
+                    x: axle.axleNum,
+                    y: (sitename === "Phoenix MB -Pimenta" || sitename === "PHOENIX MB Canguera") ? axle.che : axle.ch3,
+                    veiculo: number
                 });
-            }
+                pontosch4.push({
+                    x: axle.axleNum,
+                    y: (sitename === "Phoenix MB -Pimenta" || sitename === "PHOENIX MB Canguera") ? axle.chd : axle.ch4,
+                    veiculo: number
+                });
+            });
         });
 
         //menor valor de criticalN1 e criticalN2
@@ -508,7 +542,21 @@ export function displayData(extractedData) {
         }
 
         //muda titulo da pagina
-        document.title = 'Coldwheel - ' + sitename +' - ' + arrival;
+        document.title = 'Hotbox - ' + sitename +' - ' + arrival;
+
+        // Teste de Tendência critica de rolamento para N2
+        let alarmesTendenciacritican2 = [];
+        let veiculosVerificados3 = {};
+
+        for (let i = 0; i < tbVeiculoslidosResumo.length; i++) {
+            if (!veiculosVerificados3[tbVeiculoslidosResumo[i].axle]) {
+                if ((tbVeiculoslidosResumo[i].ch3 > menorCriticaN2) || 
+                    (tbVeiculoslidosResumo[i].ch4 > menorCriticaN2)) {
+                    alarmesTendenciacritican2.push(tbVeiculoslidosResumo[i].axle);
+                }
+                veiculosVerificados3[tbVeiculoslidosResumo[i].axle] = true;
+            }
+        }
 
         // Monta tabela de veículos com alarme de freio agarrado
         let veiculosComAlarmeFA = tbVeiculoslidosResumo.filter(veiculo => alarmesFreioAgarrado.includes(veiculo.number.toString()));
@@ -517,28 +565,43 @@ export function displayData(extractedData) {
             return {...veiculo, alarme: "Freio agarrado"};
         });
 
-        // alarme de menor que temp min
-        let alarmesTempMin = [];
-        let veiculosVerificados5 = {};
+        // Monta tabela de veículos com alarme de Tendência critica de rolamento N1
+        let veiculosComAlarmeTPN1 = tbVeiculoslidosResumo.filter(veiculo => alarmesTendenciacritican1.includes(veiculo.axle));
+
+        veiculosComAlarmeTPN1 = veiculosComAlarmeTPN1.map(veiculo => {
+            return {...veiculo, alarme: "Tendência critica de rolamento N1"};
+        });
+
+        // Monta tabela de veículos com alarme de Tendência critica de rolamento N2
+        let veiculosComAlarmeTPN2 = tbVeiculoslidosResumo.filter(veiculo => alarmesTendenciacritican2.includes(veiculo.axle));
+
+        veiculosComAlarmeTPN2 = veiculosComAlarmeTPN2.map(veiculo => {
+            return {...veiculo, alarme: "Tendência critica de rolamento N2"};
+        });
+
+        //alarmes absoluto
+        let alarmesAbsoluto = [];
+        let veiculosVerificados4 = {};
 
         for (let i = 0; i < tbVeiculoslidosResumo.length; i++) {
-            if (!veiculosVerificados5[tbVeiculoslidosResumo[i].number]) {
-                // Adiciona condição para verificar se o veículo é um vagão
-                if (tbVeiculoslidosResumo[i].vagao === 'Sim') {
-                    if ((tbVeiculoslidosResumo[i].ch3 < tempmin) ||
-                        (tbVeiculoslidosResumo[i].ch4 < tempmin)) {
-                        alarmesTempMin.push(tbVeiculoslidosResumo[i].number);
-                    }
+            if (!veiculosVerificados4[tbVeiculoslidosResumo[i].axle]) {
+                if ((tbVeiculoslidosResumo[i].ch3 > absoluto) ||
+                    (tbVeiculoslidosResumo[i].ch4 > absoluto)) {
+                    alarmesAbsoluto.push(tbVeiculoslidosResumo[i].axle);
                 }
-                veiculosVerificados5[tbVeiculoslidosResumo[i].number] = true;
+                veiculosVerificados4[tbVeiculoslidosResumo[i].axle] = true;
             }
         }
 
-        //montar tabela veiculos com alarmes de temperatura minima
-        let veiculosComAlarmeTempMin = tbVeiculoslidosResumo.filter(veiculo => alarmesTempMin.includes(veiculo.axle) && veiculo.carregado !== 'Locomotiva');
+        // Monta tabela de veículos com alarme de Absoluto
+        let veiculosComAlarmeAbsoluto = tbVeiculoslidosResumo.filter(veiculo => alarmesAbsoluto.includes(veiculo.axle));
+
+        veiculosComAlarmeAbsoluto = veiculosComAlarmeAbsoluto.map(veiculo => {
+            return {...veiculo, alarme: "Absoluto"};
+        });
 
         // Combina todas as listas de veículos com alarmes
-        let veiculosComAlarmes = [...veiculosComAlarmeFA, ...veiculosComAlarmeTempMin];
+        let veiculosComAlarmes = [...veiculosComAlarmeFA, ...veiculosComAlarmeTPN1, ...veiculosComAlarmeTPN2, ...veiculosComAlarmeAbsoluto];
 
         // Montar tabela de veículos com alarmes
         let tbalarmesContainer = document.getElementById("alarmesContainer");
@@ -593,38 +656,52 @@ export function displayData(extractedData) {
 
                 divAlarmes.appendChild(linhaAlarmeFA);
 
-                //alarme de temperatura minima
-                let linhaAlarmeTempMin = document.createElement('p');
-                linhaAlarmeTempMin.className = 'linha';
+                //alarme de tendencia critica de rolamento N1
+                let linhaAlarmeTPN1 = document.createElement('p');
+                linhaAlarmeTPN1.className = 'linha';
 
-                if (alarmesTempMin.length > 0) {
-                    linhaAlarmeTempMin.innerHTML = "<span style='color: red;'><strong>Alarme de roda fria nos veiculos:</strong> " + alarmesTempMin.join(", ") + "</span>" ;
+                if (alarmesTendenciacritican1.length > 0) {
+                    linhaAlarmeTPN1.innerHTML = "<span style='color: red;'><strong>Tendência critica de rolamento N1 nos eixos:</strong> " + alarmesTendenciacritican1.join(", ") + "</span>" ;
                 } else {
-                    linhaAlarmeTempMin.innerHTML = "<span style='color: green;'><strong></strong></span>" ;
+                    linhaAlarmeTPN1.innerHTML = "<span style='color: green;'><strong></strong></span>" ;
                 }
 
-                divAlarmes.appendChild(linhaAlarmeTempMin);
+                divAlarmes.appendChild(linhaAlarmeTPN1);
+
+                //alarme de tendencia critica de rolamento N2
+                let linhaAlarmeTPN2 = document.createElement('p');
+                linhaAlarmeTPN2.className = 'linha';
+
+                if (alarmesTendenciacritican2.length > 0) {
+                    linhaAlarmeTPN2.innerHTML = "<span style='color: red;'><strong>Tendência critica de rolamento N2 nos eixos:</strong> " + alarmesTendenciacritican2.join(", ") + "</span>" ;
+                } else {
+                    linhaAlarmeTPN2.innerHTML = "<span style='color: green;'><strong></strong></span>" ;
+                }
+
+                divAlarmes.appendChild(linhaAlarmeTPN2);
+
+                //alarme de absoluto
+                let linhaAlarmeAbsoluto = document.createElement('p');
+                linhaAlarmeAbsoluto.className = 'linha';
+
+                if (alarmesAbsoluto.length > 0) {
+                    linhaAlarmeAbsoluto.innerHTML = "<span style='color: red;'><strong>Alarme de absoluto nos eixos:</strong> " + alarmesAbsoluto.join(", ") + "</span>" ;
+                }
+
+                divAlarmes.appendChild(linhaAlarmeAbsoluto);
 
                 // div alertas
                 let tituloAlertas = document.createElement('h2');
                 tituloAlertas.textContent = 'Alertas';
                 divAlarmes.appendChild(tituloAlertas);
 
-                // linha alarme de diferença entre ch3 e ch4
-                let diffalarme;
-
-                if (diffch3ch4 > 15) {
-                    diffalarme = "<span style='color: #FF5733;'><strong>Diferença entre ch3 e ch4:</strong> " + parseFloat(diffch3ch4).toFixed(2) + " - Alta diferença entre ch3 e ch4.</span>";
-                } else if (diffch3ch4 > 10) {
-                    diffalarme = "<span style='color: #FFFF00;'><strong>Diferença entre ch3 e ch4:</strong> " + parseFloat(diffch3ch4).toFixed(2) + " - Diferença moderada entre ch3 e ch4.</span>";
-                } else {
-                    diffalarme = "<span style='color: green;'><strong>Diferença entre ch3 e ch4:</strong> " + parseFloat(diffch3ch4).toFixed(2) + " - Diferença ok.</span>";
-                }
-
+                //linha alarme de diferença entre ch3 e ch4
+                let diffalarme = diffch3ch4 > 2.4 ? "<span style='color: #FF5733;'><strong>Diferença entre ch3 e ch4:</strong> " + parseFloat(diffch3ch4).toFixed(2) + "- Alta diferença entre ch3 e ch4.</span>" : "<span style='color: green;'><strong>Diferença entre ch3 e ch4:</strong> " + parseFloat(diffch3ch4).toFixed(2) + " - Diferença ok.</span>";
+        
                 let linha = document.createElement('p');
                 linha.className = 'linha';
                 linha.innerHTML = diffalarme;
-                divAlarmes.appendChild(linha);
+                divAlarmes.appendChild(linha);    
                 
                 //temp alta no mesmo canal
                 let linhaAlarmeTA = document.createElement('p');
@@ -664,13 +741,41 @@ export function displayData(extractedData) {
                 let linhaDiferenca = document.createElement('p');
                 linhaDiferenca.className = 'linha';
                 linhaDiferenca.innerHTML = mensagemDiferenca;
-                divAlarmes.appendChild(linhaDiferenca);
+                divAlarmes.appendChild(linhaDiferenca);                
 
                 // div divergencias
                 let tituloDivergencias = document.createElement('h2');
                 tituloDivergencias.textContent = 'Divergências';
-                divAlarmes.appendChild(tituloDivergencias);      
+                divAlarmes.appendChild(tituloDivergencias);
                 
+                // divergencia entre veiculos contados e veiculos na ficha
+                let diffVehicles = Math.abs(fichaTrem - checkVehicles);
+                let diffVehiclesAlarme;
+                if (checkVehicles === diffVehicles) {
+                    diffVehiclesAlarme = "<span style='color: #C89F54;'><strong>Não prefixou.</strong></span>";
+                } else {
+                    diffVehiclesAlarme = diffVehicles > 2.4 ? "<span style='color: #C89F54;'><strong>Diferença entre veiculos contados e ficha:</strong> " + parseFloat(diffVehicles).toFixed(0) + " - Existe diferença.</span>" : "<span style='color: green;'><strong>Diferença entre veiculos contados e ficha:</strong> " + parseFloat(diffVehicles).toFixed(0) + " - Diferença ok.</span>";
+                }
+                
+                let linhaVehicles = document.createElement('p');
+                linhaVehicles.className = 'linha';
+                linhaVehicles.innerHTML = diffVehiclesAlarme;
+                divAlarmes.appendChild(linhaVehicles);
+                
+                // divergencia entre eixos contatos e eixos na ficha
+                let diffAxles = Math.abs(checkAxle - fichaAxles);
+                let diffAxlesAlarme;
+                if (checkAxle === diffAxles) {
+                    diffAxlesAlarme = "<span style='color: #C89F54;'><strong>Não prefixou.</strong></span>";
+                } else {
+                    diffAxlesAlarme = diffAxles > 2.4 ? "<span style='color: #C89F54;'><strong>Diferença entre eixos contatos e ficha:</strong> " + parseFloat(diffAxles).toFixed(0) + " - Existe diferença.</span>" : "<span style='color: green;'><strong>Diferença entre eixos contatos e ficha:</strong> " + parseFloat(diffAxles).toFixed(0) + " - Diferença ok.</span>";
+                }
+
+                let linhaAxles = document.createElement('p');
+                linhaAxles.className = 'linha';
+                linhaAxles.innerHTML = diffAxlesAlarme;
+                divAlarmes.appendChild(linhaAxles); 
+
                 let diffGatesAlarme;
 
                 // Verifica se quantidade de gates contados no A e B são iguais
@@ -691,8 +796,9 @@ export function displayData(extractedData) {
                 let linhaGates = document.createElement('p');
                 linhaGates.className = 'linha';
                 linhaGates.innerHTML = diffGatesAlarme;
-                divAlarmes.appendChild(linhaGates);                
-                
+                divAlarmes.appendChild(linhaGates);
+
+
                 // Adicione a div ao DOM
                 flexContainer.appendChild(divAlarmes);
 
@@ -735,6 +841,9 @@ export function displayData(extractedData) {
         if (linhaAlarmeTPN2.innerText.trim() !== '') {
             textAlarmesCopy += `${linhaAlarmeTPN2.innerText}\n`;
         }
+        if (linhaAlarmeAbsoluto.innerText.trim() !== '') {
+            textAlarmesCopy += `${linhaAlarmeAbsoluto.innerText}\n`;
+        }
 
         let textalertas = '';
         if (getPlainText(diffalarme).trim() !== '') {
@@ -742,6 +851,22 @@ export function displayData(extractedData) {
         }
         if (getPlainText(alarmeTemperaturaAlta).trim() !== '') {
             textalertas += `${getPlainText(alarmeTemperaturaAlta)}\n`;
+        }
+
+        let textdivergencias = '';
+        if (getPlainText(diffVehiclesAlarme).trim() !== '') {
+            textdivergencias += `${getPlainText(diffVehiclesAlarme)}\n`;
+        }
+        if (getPlainText(diffAxlesAlarme).trim() !== '') {
+            textdivergencias += `${getPlainText(diffAxlesAlarme)}\n`;
+        }
+        if (getPlainText(diffGatesAlarme).trim() !== '') {
+            textdivergencias += `${getPlainText(diffGatesAlarme)}\n`;
+        }
+
+        //se a tabela de ${alarmes.trim()} não tiver mais de uma linha alem do cabeçalho não exibe
+        if (alarmes.split('\n').length <= 2) {
+            alarmes = '';
         }
 
         // Cria uma string com todo o conteúdo
@@ -757,6 +882,8 @@ Alarmes:
 ${textAlarmesCopy}
 Alertas:
 ${textalertas}
+Divergências:
+${textdivergencias}
 ${alarmes.trim()}
 
 Análise disponivel para visualizar em: ${linkdapagina.trim()}`;
@@ -772,23 +899,26 @@ Análise disponivel para visualizar em: ${linkdapagina.trim()}`;
 
     
     let pontoSelecionado;  // Variável para armazenar o valor do ponto selecionado
-    
+
     // Cria uma instância do gráfico
     const ctx = document.getElementById('meuGrafico').getContext('2d');
-    
     // Encontre o maior valor de axleNum em pontosch3 e pontosch4
     let maxAxleNum = Math.max(
         Math.max(...pontosch3.map(p => p.x)),
         Math.max(...pontosch4.map(p => p.x))
     );
+    const maxch3 = Math.max(...pontosch3.map(p => p.y));
+    const maxch4 = Math.max(...pontosch4.map(p => p.y));
+    const maxValue = Math.min(maxch3, maxch4);
 
-    // Encontre o maior valor de temperatura em pontosch3 e pontosch4
-    let maxTemp = Math.max(
-        Math.max(...pontosch3.map(p => p.y)),
-        Math.max(...pontosch4.map(p => p.y))
-    );
+    function isWithinRange(value, maxValue) {
+        return value.y >= maxValue - 5 && value.y <= maxValue;
+    }
 
-    // Encontre o maior valor de temperatura em pontosch3 e pontosch4
+     //menor valor de criticalN1 e criticalN2
+     let menorCriticaN1 = Math.min(ch3CriticaN1, ch4CriticaN1);
+     let menorCriticaN2 = Math.min(ch3CriticaN2, ch4CriticaN2);
+
     // Ordenar os valores em ordem decrescente
     let pontosOrdenadosch3 = [...pontosch3].sort((a, b) => b.y - a.y);
     let pontosOrdenadosch4 = [...pontosch4].sort((a, b) => b.y - a.y);
@@ -800,15 +930,11 @@ Análise disponivel para visualizar em: ${linkdapagina.trim()}`;
     console.log("Os dois maiores valores de ch3 são: ", maioresTemperaturasch3.map(p => p.y));
     console.log("Os dois maiores valores de ch4 são: ", maioresTemperaturasch4.map(p => p.y));
 
-    const maxch3 = Math.max(...pontosch3.map(p => p.y));
-    const maxch4 = Math.max(...pontosch4.map(p => p.y));
+    //maior entre max ch3 ch4 e absoluto
+    let maiorch3ch4abs = Math.max(maxch3, maxch4, absoluto);
+    maiorch3ch4abs = maiorch3ch4abs*1.2;
+    console.log("O maior valor entre ch3, ch4 e absoluto é: ", maiorch3ch4abs);
 
-    // maior valor de ch3 e ch4
-    let maiorch3ch4abs = Math.max(maxch3, maxch4);
-
-    function isWithinRange(value, maxValue) {
-        return value.y >= maxValue - 5 && value.y <= maxValue;
-    }
 
     new Chart(ctx, {
         //criação do grafico
@@ -842,13 +968,13 @@ Análise disponivel para visualizar em: ${linkdapagina.trim()}`;
                 label: 'Veículos Lidos - ch4',
                 data: pontosch4,
                 pointBackgroundColor: function(context) {
-                    return context.dataset.data[context.dataIndex].y >= maioresTemperaturasch4[2].y ? 'red' : 'red';
+                    return context.dataset.data[context.dataIndex].y >= maioresTemperaturasch4[2] ? 'red' : 'red';
                 },
                 pointBorderColor: function(context) {
-                    return context.dataset.data[context.dataIndex].y >= maioresTemperaturasch4[2].y ? 'rgba(139, 0, 0, 1)' : 'rgba(0, 0, 0, 0)';
+                    return context.dataset.data[context.dataIndex].y >= maioresTemperaturasch4[2] ? 'rgba(139, 0, 0, 1)' : 'rgba(0, 0, 0, 0)';
                 },
                 pointBorderWidth: function(context) {
-                    return context.dataset.data[context.dataIndex].y >= maioresTemperaturasch4[2].y ? 3 : 1;
+                    return context.dataset.data[context.dataIndex].y >= maioresTemperaturasch4[2] ? 3 : 1;
                 },
                 pointHoverBackgroundColor: 'red',
                 pointHoverBorderColor: 'black',
@@ -871,7 +997,6 @@ Análise disponivel para visualizar em: ${linkdapagina.trim()}`;
                     const firstPoint = points[0];
                     const axleNum = this.data.datasets[firstPoint.datasetIndex].data[firstPoint.index].x;
                     pontoSelecionado = axleNum;  // Atualiza a variável com o valor de axleNum do ponto selecionado
-                    console.log(pontoSelecionado);
                 }
             },
             scales: {
@@ -890,13 +1015,12 @@ Análise disponivel para visualizar em: ${linkdapagina.trim()}`;
                         display: true,
                         text: 'Temperatura'
                     },
-                    max: maxTemp+((maxTemp/100)*20),  // Defina o valor máximo para o eixo X
+                    max: (maiorch3ch4abs),  // Defina o valor máximo para o eixo Y
                     grid: {
                         display: false  // Remova as grades do eixo Y
                     }
                 }
             },
-
             plugins: {
                 legend: {
                     position: 'bottom'
@@ -906,17 +1030,31 @@ Análise disponivel para visualizar em: ${linkdapagina.trim()}`;
                         label: function(context) {
                             const ch3Value = pontosch3.find(p => p.x === context.raw.x)?.y;
                             const ch4Value = pontosch4.find(p => p.x === context.raw.x)?.y;
-                            return `${context.raw.veiculo} axleNum: ${context.raw.x}, ch3: ${ch3Value}, ch4: ${ch4Value}`;
+                            return `axleNum: ${context.raw.x}, ch3: ${ch3Value}, ch4: ${ch4Value}`;
                         }
                     }
                 },
                 annotation: {
                     annotations: {
-                        tempmin: {
+                        Absoluto: {
                             type: 'line',
-                            yMin: tempmin,
-                            yMax: tempmin,
-                            borderColor: 'rgb(255, 99, 132)',
+                            yMin: absoluto,
+                            yMax: absoluto,
+                            borderColor: 'rgb(255, 99, 132)',menorCriticaN2
+                            //borderWidth: 2
+                        },
+                        N1: {
+                            type: 'line',
+                            yMin: menorCriticaN1,
+                            yMax: menorCriticaN1,
+                            borderColor: 'rgb(255, 255, 0)',
+                            borderWidth: 2
+                        },
+                        N2: {
+                            type: 'line',
+                            yMin: menorCriticaN2,
+                            yMax: menorCriticaN2,
+                            borderColor: 'rgb(255, 165, 0)',
                             borderWidth: 2
                         }
                     }
@@ -936,7 +1074,6 @@ Análise disponivel para visualizar em: ${linkdapagina.trim()}`;
                         return value.y;
                     }
                 }
-
             }
         }
     });

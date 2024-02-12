@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analise de log Hotwheel</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@1.0.2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.debug.js"></script>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+</head>
+<body>
+    <!-- código---------------------------- -->
+    <h1>Analise de log Hotwheel</h1>
+
+    <div id="dataContainer" type="module">
+        
+        <div id="alarmes" type="module">
+            <h2>Tabela de veiculos com alarmes</h2>
+            <div id="alarmesContainer" type="module"></div>
+        </div>
+        <div id="alarmesCabecalho" type="module"></div>
+        <canvas id="meuGrafico" type="module"></canvas>
+        <div id="supervisorioDiv">
+            <button id="supervisorioButton">Abrir página do supervisório</button>
+            <button id="BTNImprimir">Imprimir</button>
+            <button id="BTNCopiaLOG">Copiar</button>
+        </div>
+    </div>
+    <div id="analisecontainer" type="module"></div>
+    <script src="onloadhw.js" type="module"></script>
+    <script src="dadoshw.js" type="module"></script>
+    <!-- fim do código--------------------- -->
+
+</body>
+</html>
