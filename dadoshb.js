@@ -150,6 +150,8 @@ export function displayData(extractedData) {
     let ch1LowLimitN1, ch1CriticaN1, ch1LowLimitN2, ch1CriticaN2;
     let ch2LowLimitN1, ch2CriticaN1, ch2LowLimitN2, ch2CriticaN2;
 
+    
+
 
 
 
@@ -262,12 +264,19 @@ export function displayData(extractedData) {
         });
 
         function calculateN1N2(sitename, mean, standardDeviation) {
-            const lowLimitN1 = (sitename === "LAR" || sitename === "LPJ" || sitename === "LRF" || sitename === "LUV" || sitename === "LVZ" || sitename === "NCY") ? 33 : 
+            let lowLimitN1 = (sitename === "LAR" || sitename === "LPJ" || sitename === "LRF" || sitename === "LUV" || sitename === "LVZ" || sitename === "NCY") ? 33 : 
                                 (sitename === "Phoenix MB -Pimenta" || sitename === "PHOENIX MB Canguera") ? 65 : 35;
-            const criticalN1 = (mean + 6 * standardDeviation > lowLimitN1) ? mean + 6 * standardDeviation : lowLimitN1;
-            const lowLimitN2 = (sitename === "LAR" || sitename === "LPJ" || sitename === "LRF" || sitename === "LUV" || sitename === "LVZ" || sitename === "NCY") ? 33 : 
+            let criticalN1 = (parseFloat(mean) + (6 * parseFloat(standardDeviation)) > lowLimitN1) ? parseFloat(mean) + (6 * parseFloat(standardDeviation)) : lowLimitN1;
+
+            let lowLimitN2 = (sitename === "LAR" || sitename === "LPJ" || sitename === "LRF" || sitename === "LUV" || sitename === "LVZ" || sitename === "NCY") ? 33 : 
                                 (sitename === "Phoenix MB -Pimenta" || sitename === "PHOENIX MB Canguera") ? 65 : 38;
-            const criticalN2 = (mean + 7 * standardDeviation > lowLimitN2) ? mean + 7 * standardDeviation : lowLimitN2;
+            let criticalN2 = (parseFloat(mean) + (7 * parseFloat(standardDeviation)) > lowLimitN2) ? parseFloat(mean) + (7 * parseFloat(standardDeviation)) : lowLimitN2;
+
+            console.log("Site", sitename)
+            console.log("mean: ", mean)
+            console.log("Standar", standardDeviation)
+            console.log("criticalN1 teste: ", parseFloat(mean) + (6 *parseFloat(standardDeviation)));
+
             return { lowLimitN1, criticalN1, lowLimitN2, criticalN2 };
         }
 
@@ -457,8 +466,8 @@ export function displayData(extractedData) {
             ['Temperatura Média', mediaCh1, mediaCh2],
             ['Desvio Padrão (DP)', desvioCh1, desvioCh2],
             ['Temperatura Crítica (N1)', parseFloat(ch1CriticaN1).toFixed(2), parseFloat(ch2CriticaN1).toFixed(2)],
-            ['Low Limit (N1)', parseFloat(ch1LowLimitN1).toFixed(2), parseFloat(ch2LowLimitN1).toFixed(2)],
-            ['Temperatura Crítica (N2)', parseFloat(ch1CriticaN2).toFixed(2), parseFloat(ch2CriticaN2).toFixed(2)],
+            ['Low Limit (N1)', parseFloat(ch1LowLimitN1).toFixed(2), parseFloat(ch2LowLimitN1).toFixed(2)],//erro
+            ['Temperatura Crítica (N2)', parseFloat(ch1CriticaN2).toFixed(2), parseFloat(ch2CriticaN2).toFixed(2)],//erro
             ['Low Limit (N2)', parseFloat(ch1LowLimitN2).toFixed(2), parseFloat(ch2LowLimitN2).toFixed(2)],
             ['Maior Temperatura', maiorCh1, maiorCh2,],
             ['Nível SIGMA', sigmaCh1, sigmaCh2]
